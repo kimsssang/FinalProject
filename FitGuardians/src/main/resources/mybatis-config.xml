@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "mybatis-3-config.dtd" >
+<configuration>
+
+	
+	<settings>
+		<setting name="jdbcTypeForNull" value="NULL"/>
+	</settings>
+	
+	<typeAliases>
+		<typeAlias type="com.kh.fitguardians.gym.model.vo.Gym" alias="Gym"/>
+		<typeAlias alias="Member" type="com.kh.fitguardians.member.model.vo.Member"/>
+		<typeAlias alias="MemberInfo" type="com.kh.fitguardians.member.model.vo.MemberInfo"/>
+		<typeAlias type="com.kh.fitguardians.chat.model.vo.ChatRoom" alias="ChatRoom"/>
+		<typeAlias type="com.kh.fitguardians.chat.model.vo.Message" alias="Message"/>
+		<typeAlias type="com.kh.fitguardians.chat.model.vo.MessageParticipantDTO" alias="MessageParticipantDTO"/>
+		<typeAlias alias="Exercise" type="com.kh.fitguardians.exercise.model.vo.ExercisePlan"/>
+		<typeAlias alias="Workout" type="com.kh.fitguardians.exercise.model.vo.Workout"/>
+		<typeAlias alias="Schedule" type="com.kh.fitguardians.member.model.vo.Schedule"/>
+		<typeAlias type="com.kh.fitguardians.common.model.vo.QrInfo" alias="QrInfo"/>
+		<typeAlias type="com.kh.fitguardians.member.model.vo.TrainerInfo" alias="TrainerInfo"/>
+	</typeAliases>
+	
+	<typeHandlers>
+		<typeHandler handler="com.kh.fitguardians.common.StringArrayTypeHandler" javaType="java.util.List"/>
+	</typeHandlers>
+	
+	<mappers>
+		<mapper resource="/mappers/gym-mapper.xml"/>
+		<mapper resource="/mappers/member-mapper.xml"/>
+		<mapper resource="/mappers/chat-mapper.xml"/>
+		<mapper resource="/mappers/exercise-mapper.xml"/>
+
+	</mappers>
+
+</configuration>

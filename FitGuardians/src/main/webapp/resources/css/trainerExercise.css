@@ -1,0 +1,64 @@
+.selectExercise{
+    width: 200px;
+    height: 20px;
+}
+
+span{
+    margin:20px;
+}
+
+.exercisePrescription{
+    margin:20px;
+}
+
+
+
+.aiRecommend{
+    margin:20px 20px;
+
+}
+
+.aiRecommend span{
+    font-size:23px;
+    font-weight:700;
+}
+
+.airRecommend div{
+    margin:20px;
+}
+
+.planIndex{
+    font-weight:700;
+    font-size:20px;
+    margin:2%;
+    margin-left:4%;
+}
+
+#aiPlan{
+    margin:20px; 
+    width: 180px; 
+    height:25px;
+}
+
+#saveBtn{
+    margin:20px;
+    float:right;
+}
+
+.fc-prev-button, .fc-next-button {
+    font-size: 12px !important; 
+    color:white;
+    padding: 5px 5px !important; 
+    width: 40px !important; 
+    height: 40px !important; 
+} 
+
+.fc-icon-chevron-left, .fc-icon-chevron-right{
+    margin:0;
+    padding:0;
+}
+
+input[type=checkbox]{
+	margin:10px;
+    text-align: center;
+}

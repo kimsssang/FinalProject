@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="exerciseMapper">
+    <!-- ai플랜, 트레이너 플랜 작성 -->
+    
+     <!-- 트레이너 플랜 -->
+ <resultMap type="Workout" id="workoutResultset">
+  	<result column="ex_no" property="exerciseNo"/>
+ 	<result column="user_id" property="userId"/>
+ 	<result column="workout_title" property="workoutTitle"/>
+ 	<result column="workout_date" property="workoutDate"/>
+ 	<result column="workout_category" property="workoutCategory"/>
+ 	<result column="difficulty" property="difficulty"/>
+ 	<result column="description" property="description"/>
+ </resultMap>
+ 
+ <insert id="addExercise">
+	INSERT 
+	  INTO WORKOUT 
+	     (
+           EX_NO
+         , USER_ID
+         , WORKOUT_TITLE
+         , WORKOUT_DATE
+         , WORKOUT_CATEGORY
+         , DIFFICULTY
+         , DESCRIPTION
+         ) 
+	VALUES 
+	     (
+    	   SEQ_WORKOUT_EX_NO.NEXTVAL
+    	 , #{userId}
+    	 , #{workoutTitle}
+    	 , TO_DATE (#{workoutDate}, 'YYYY-MM-DD')
+    	 , #{workoutCategory}
+    	 , #{difficulty}
+    	 , #{description}
+		)
+ </insert>
+ 
+ <select id="selectWorkoutList" resultMap="workoutResultset">
+	select 
+	       ex_no
+	     , user_id
+	     , workout_title
+	     , workout_date
+	     , workout_category
+	     , difficulty
+	     , description
+	  from workout
+	 where user_id = #{userId}
+ </select>
+ 
+ 
+</mapper>

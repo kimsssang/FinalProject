@@ -1,0 +1,338 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="memberMapper">
+	
+	<resultMap type="Member" id="memberResultset">
+		<result column="user_no" property="userNo"/>
+		<result column="user_id" property="userId"/>
+		<result column="user_pwd" property="userPwd"/>
+		<result column="user_name" property="userName"/>
+		<result column="email" property="email"/>
+		<result column="phone" property="phone"/>
+		<result column="gender" property="gender"/>
+		<result column="age" property="age"/>
+		<result column="address" property="address"/>
+		<result column="enroll_date" property="enrollDate"/>
+		<result column="user_level" property="userLevel"/>
+		<result column="pt" property="pt"/>
+		<result column="qr" property="qr"/>
+		<result column="profile_pic" property="profilePic"/>
+		<result column="membership" property="membership"/>
+	</resultMap>
+	
+	<resultMap type="Schedule" id="scheduleResult">
+		<result column="schedule_no" property="scheduleNo"/>
+		<result column="user_no" property="userNo"/>
+		<result column="schedule_title" property="scheduleTitle"/>
+		<result column="schedule_des" property="scheduleDes"/>
+		<result column="start_date" property="startDate"/>
+		<result column="end_date" property="endDate"/>
+		<result column="dow" property="dow"/>
+		<result column="back_color" property="backColor"/>
+	</resultMap>
+	
+	<resultMap type="QrInfo" id="qrInfoResult">
+		<result column="qr_no" property="qrNo"/> 
+		<result column="id" property="id"/>
+		<result column="type" property="type"/>
+		<result column="created_at" property="createdAt"/>
+		<result column="valid_date" property="validUntil"/>
+		<result column="attendance" property="attendance"/>
+		<result column="att_status" property="attStatus"/>
+	</resultMap>
+	
+	<resultMap type="MemberInfo" id="memberInfoResult">
+		<result column="user_no" property="userNo"/>
+		<result column="height" property="height"/>
+		<result column="weight" property="weight"/>
+		<result column="disease" property="disease" typeHandler="com.kh.fitguardians.common.StringArrayTypeHandler"/>
+		<result column="goal" property="goal"/>
+	</resultMap>
+	
+	<resultMap type="TrainerInfo" id="TrainerInfoResult">
+		<result column="user_no" property="userNo"/>
+		<result column="tr_career" property="trCareer"/>
+		<result column="tr_Certi" property="trCerti"/>
+		<result column="tr_descript" property="trDescript"/>
+		<result column="tr_profile" property="trProfile"/>
+	</resultMap>
+	
+	<select id="checkId" resultType="int">
+		select count(user_id)
+		  from member
+		 where user_id = #{userId}
+		   and status = 'Y'
+	</select>
+
+	<insert id="insertMember" parameterType="Member">
+		INSERT 
+		  INTO member 
+		     ( user_no
+		     , user_id
+		     , user_pwd
+		     , user_name
+		     , email
+		     , phone
+		     , gender
+		     , age
+		     , address
+		     , user_level
+		     , profile_pic
+		     , qr
+		     )
+        VALUES
+        	 (
+        	   seq_mno.nextval
+        	 , #{userId}
+        	 , #{userPwd}
+        	 , #{userName}
+        	 , #{email}
+        	 , #{phone}
+        	 , #{gender}
+        	 , #{age}
+        	 , #{address}
+        	 , #{userLevel} 
+        	 , #{profilePic}
+        	 , #{qr}
+        	 )
+	</insert>
+	
+	<select id="selectUserNo" resultType="int">
+	    SELECT seq_mno.currval 
+	      FROM dual
+	</select>
+	
+	<insert id="insertMemberInfo" parameterType="MemberInfo">
+		INSERT 
+		  INTO MEMBER_INFO
+		     (
+		       user_no
+		     , height
+		     , weight
+		     , disease
+		     , goal
+		     )
+		VALUES
+		     (
+		       #{userNo}
+		     , #{height}
+		     , #{weight}
+		     , #{disease}
+		     , #{goal}
+		     )
+	</insert>
+	
+	<select id="loginMember" resultMap="memberResultset">
+		select user_no
+		     , user_id
+		     , user_pwd
+		     , user_name
+		     , email
+		     , phone
+		     , gender
+		     , age
+		     , address
+		     , enroll_date
+		     , user_level
+		     , pt
+		     , qr
+		     , profile_pic
+		     , membership
+		  from member
+		 where status = 'Y'
+		   and user_id = #{userId}
+	</select>
+	
+	<insert id="insertTrainerCalendar">
+		insert 
+		  into schedule
+		     (
+		       schedule_no
+		     , user_no
+		     , schedule_title
+		     , start_date
+		     , end_date
+		     , back_color
+		     )
+		values
+		     (
+		       seq_cno.nextval
+		     , #{userNo}
+		     , #{scheduleTitle}
+		     , #{startDate}
+		     , #{endDate}
+		     , #{backColor}
+		     )
+	</insert>
+	
+	<select id="selectSchedule" resultMap="scheduleResult">
+		select schedule_no
+		     , schedule_title
+		     , start_date
+		     , end_date
+		     , back_color
+		  from schedule
+		 where user_no = #{userNo}
+	</select>
+	
+	<select id="findDuplicate" resultType="int">
+		select count(schedule_no)
+		  from schedule
+		 where schedule_title = #{scheduleTitle}
+		   and start_date = #{startDate}
+	</select>
+	
+	<insert id="insertQrInfo">
+		insert 
+		  into qrinfo
+		     (
+		       qr_no
+		     , id
+		     , type
+		     , created_at
+		     , valid_until
+		     )
+		values
+			 (
+			   seq_qno.nextval
+			 , #{id}
+			 , #{type}
+			 , #{createdAt}
+			 , #{validUntil}
+			 )
+	</insert>
+	
+	<select id="qrCheck" resultMap="qrInfoResult">
+		select qr_no
+		     , id
+		     , type
+		     , created_at
+		     , valid_until
+		     , attendance
+		     , att_status
+		  from qrinfo
+		 where status = 'Y'
+		   and id = #{id}
+           and to_timestamp(created_at, 'YYYY-MM-DD"T"HH24:MI:SS.FF') between
+           to_timestamp(#{createdAt}, 'YYYY-MM-DD"T"HH24:MI:SS.FF') and
+           to_timestamp(#{validUntil}, 'YYYY-MM-DD"T"HH24:MI:SS.FF')
+	</select>
+	
+	<update id="updateAttendance">
+		update qrinfo
+		   set attendance = #{attendance}
+		   <choose>
+		   		<when test="type == 'trainee'">
+				     , att_status = '결석'
+		   		</when>
+		   		<otherwise>
+		   			, att_status = '출근'
+		   		</otherwise>
+		   </choose>
+		  where qr_no = #{qrNo}
+	</update>
+	
+	<update id="updateAttStatus">
+		update qrinfo
+		   set attendance = null
+		   <choose>
+		   		<when test="type == 'trainee'">
+				     , att_status = '출석'
+		   		</when>
+		   		<otherwise>
+		   			, att_status = '퇴근'
+		   		</otherwise>
+		   </choose>
+		 where qr_no = #{qrNo}
+	</update>
+	
+	
+	<select id="getTrainee" resultMap="memberResultset">
+		select * 
+		  from member 
+		 where pt = #{userId}
+		   and user_level = 2
+	</select>
+	
+	<select id="selectMemberInfo" resultMap="memberInfoResult">
+		select user_no
+		     , height
+		     , weight
+		     , disease
+		     , goal
+		  from member_info
+		where user_no = #{userNo}
+	</select>
+	
+	<update id="updateDisease">
+		update member_info
+		   set height = #{height}
+		     , weight = #{weight}
+		     , disease = #{disease, typeHandler=com.kh.fitguardians.common.StringArrayTypeHandler}
+		     , goal = #{goal}
+		 where user_no = #{userNo}
+	</update>
+	
+	<update id="updateMemberPwd">
+		update member
+		   set user_pwd = #{userPwd}
+		 where user_no = #{userNo}
+	</update>
+	
+	<update id="updateMemberEmail">
+		update member
+		   set email = #{email}
+		 where user_no = #{userNo}
+	</update>
+	
+	<update id="deleteMember">
+		update member
+		   set status = 'N'
+		 where user_no = #{userNo}
+	</update>
+	
+	<update id="updateMemberProfilePic">
+		update member
+		   set profile_pic = #{profilePic}
+		 where user_no = #{userNo}
+	</update>
+	
+	<insert id="insertTrainerInfo">
+		insert 
+		  into trainerinfo
+		     (
+		     , user_no
+		     , tr_career
+		     , tr_certi
+		     , tr_profile
+		     , tr_descript
+		     )
+		values
+		     (
+		       #{userNo}
+		     , #{trCareer}
+		     , #{trCerti}
+		     , #{trProfile}
+		     , #{trDescript}
+		     )
+	</insert>
+	
+	<select id="selectTrainerInfo" resultMap="TrainerInfoResult">
+		select
+		        tr_career
+		      , tr_certi
+		      , tr_profile
+		      , tr_descript
+		  from trainerinfo
+		 where user_no = #{userNo}
+	</select>
+	
+	<update id="updateTrainerInfo">
+		update trainerinfo
+		   set tr_career = #{trCareer}
+		     , tr_certi = #{trCerti}
+		     , tr_profile = #{trProfile}
+		     , tr_descript = #{trDescript}
+		 where user_no = #{userNo}
+	</update>
+</mapper>

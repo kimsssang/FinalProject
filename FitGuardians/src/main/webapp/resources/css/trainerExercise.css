@@ -11,8 +11,6 @@ span{
     margin:20px;
 }
 
-
-
 .aiRecommend{
     margin:20px 20px;
 
@@ -62,3 +60,16 @@ input[type=checkbox]{
 	margin:10px;
     text-align: center;
 }
+
+.searchEx{
+	margin:20px;
+	
+}
+
+#exerciseSearchForm{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+

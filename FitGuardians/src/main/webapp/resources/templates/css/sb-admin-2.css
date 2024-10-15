@@ -11279,19 +11279,3 @@ footer.sticky-footer .copyright {
 body.sidebar-toggled footer.sticky-footer {
   width: 100%;
 }
-
-/* change img */
-#changePictureForm #productImages {
-  width: 440px;
-  height: 400px;
-  box-shadow: 1px 1px 7px #455c71;
-  border-radius: 10px;
-  margin: 20px 0 10px 10px;
-}
-
-#changePictureForm #productImages img{
-  width: 440px;
-  height: 400px;
-
-}
-

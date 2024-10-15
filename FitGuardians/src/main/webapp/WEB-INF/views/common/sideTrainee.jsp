@@ -60,7 +60,7 @@ pageEncoding="UTF-8"%>
 
       <!-- Nav Item - Dashboard -->
       <li class="nav-item active">
-        <a class="nav-link" href="main.co">
+        <a class="nav-link" href="dashboard.me">
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>메인화면</span></a
         >
@@ -102,11 +102,30 @@ pageEncoding="UTF-8"%>
       <li class="nav-item">
         <a
           class="nav-link collapsed"
-          href="mypage.me"
+          href="#"
+          data-toggle="collapse"
+          data-target="#collapseUtilities"
+          aria-expanded="true"
+          aria-controls="collapseUtilities"
         >
           <i class="fas fa-user"></i>
-          <span> 마이 페이지</span>
+          <span>내정보 변경</span>
         </a>
+        <div
+          id="collapseUtilities"
+          class="collapse"
+          aria-labelledby="headingUtilities"
+          data-parent="#accordionSidebar"
+        >
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item" href="utilities-color.html"
+              >개인정보 변경</a
+            >
+            <a class="collapse-item" href="utilities-border.html"
+              >신체 정보 변경</a
+            >
+          </div>
+        </div>
       </li>
 
       <!-- Divider -->
@@ -135,7 +154,7 @@ pageEncoding="UTF-8"%>
           data-parent="#accordionSidebar"
         >
           <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="login.html">운동 관리</a>
+            <a class="collapse-item" href="traineeExercisePlanner.tn">운동 관리</a>
             <a class="collapse-item" href="register.html">식단 관리</a>
           </div>
         </div>
@@ -143,10 +162,10 @@ pageEncoding="UTF-8"%>
 
       <!-- Nav Item - Charts -->
       <li class="nav-item">
-        <a class="nav-link" href="calendar.me">
+        <a class="nav-link" href="javascript:void(0)">
           <i class="fas fa-fw fa-chart-area"></i>
-          <span>스케줄러</span>
-          </a>
+          <span>스케쥴러</span></a
+        >
       </li>
       
       <hr class="sidebar-divider" />

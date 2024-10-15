@@ -6,10 +6,9 @@ import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.kh.fitguardians.common.model.vo.QrInfo;
+import com.kh.fitguardians.member.model.vo.BodyInfo;
 import com.kh.fitguardians.member.model.vo.Member;
 import com.kh.fitguardians.member.model.vo.MemberInfo;
-import com.kh.fitguardians.member.model.vo.Schedule;
-import com.kh.fitguardians.member.model.vo.TrainerInfo;
 
 @Repository
 public class MemberDao {
@@ -58,42 +57,49 @@ public class MemberDao {
 		return sqlSession.update("memberMapper.updateDisease", mInfo);
 	}
 
-	public int memberPwdCheck(SqlSessionTemplate sqlSession, Member m) {
-		return sqlSession.selectOne("memberMapper.memberPwdCheck", m);
+	public Member getTrainerInfo(SqlSessionTemplate sqlSession, String trainerId) {
+		return sqlSession.selectOne("memberMapper.getTrainerInfo", trainerId);
 	}
 
-	public int updateMemberPwd(SqlSessionTemplate sqlSession, Member m) {
-		return sqlSession.update("memberMapper.updateMemberPwd", m);
+	public MemberInfo getMemberInfo(SqlSessionTemplate sqlSession, int userNo) {
+		return sqlSession.selectOne("memberMapper.getMemberInfo", userNo);
 	}
 
-	public int updateMemberEmail(SqlSessionTemplate sqlSession, Member m) {
-		return sqlSession.update("memberMapper.updateMemberEmail", m);
+	public BodyInfo getBodyInfo(SqlSessionTemplate sqlSession, String userId) {
+		return sqlSession.selectOne("memberMapper.getBodyInfo", userId);
 	}
 
-	public int deleteMember(SqlSessionTemplate sqlSession, int userNo) {
-		return sqlSession.update("memberMapper.deleteMember", userNo);
+	public ArrayList<Member> getTraineeList(SqlSessionTemplate sqlSession, String userId) {
+		ArrayList<Member> m = (ArrayList)sqlSession.selectList("memberMapper.getTraineeList", userId);
+		//System.out.println("m의 값" + m);
+		return m;
 	}
 
-	public ArrayList<Schedule> selectSchedule(SqlSessionTemplate sqlSession, int userNo) {
-		return (ArrayList)sqlSession.selectList("memberMapper.selectSchedule", userNo);
+	public Member getTraineeDetails(SqlSessionTemplate sqlSession, String userId) {
+		return sqlSession.selectOne("memberMapper.getTraineeDetails", userId);
 	}
 
-	public int updateMemberProfilePic(SqlSessionTemplate sqlSession, Member m) {
-		return sqlSession.update("memberMapper.updateMemberProfilePic", m);
+	public ArrayList<BodyInfo> getTraineeBodyInfo(SqlSessionTemplate sqlSession, String userId) {
+		return (ArrayList)sqlSession.selectList("memberMapper.getTraineeBodyInfo", userId);
 	}
 
-	public int insertTrainerInfo(SqlSessionTemplate sqlSession, TrainerInfo trInfo) {
-		return sqlSession.insert("memberMapper.insertTrainerInfo", trInfo);
+	public MemberInfo getTraineeInfo(SqlSessionTemplate sqlSession, int userNo) {
+		return sqlSession.selectOne("memberMapper.getTraineeInfo", userNo);
 	}
 
-	public TrainerInfo selectTrainerInfo(SqlSessionTemplate sqlSession, int userNo) {
-		return sqlSession.selectOne("memberMapper.selectTrainerInfo", userNo);
+	public int saveBodyInfo(SqlSessionTemplate sqlSession, BodyInfo bi) {
+		return sqlSession.insert("memberMapper.saveBodyInfo", bi);
 	}
 
-	public int updateTrainerInfo(SqlSessionTemplate sqlSession, TrainerInfo trInfo) {
-		return sqlSession.update("memberMapper.updateTrainerInfo", trInfo);
+	public int deleteBodyInfo(SqlSessionTemplate sqlSession, int bodyInfoNo) {
+		return sqlSession.update("memberMapper.deleteBodyInfo", bodyInfoNo);
 	}
 
-
+	public ArrayList<BodyInfo> getRecentInfo(SqlSessionTemplate sqlSession, String userId) {
+		return (ArrayList)sqlSession.selectList("memberMapper.getRecentInfo", userId);
+	}
+	
+	
+	
 
 }

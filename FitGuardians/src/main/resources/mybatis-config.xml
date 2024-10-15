@@ -18,7 +18,8 @@
 		<typeAlias alias="Workout" type="com.kh.fitguardians.exercise.model.vo.Workout"/>
 		<typeAlias alias="Schedule" type="com.kh.fitguardians.member.model.vo.Schedule"/>
 		<typeAlias type="com.kh.fitguardians.common.model.vo.QrInfo" alias="QrInfo"/>
-		<typeAlias type="com.kh.fitguardians.member.model.vo.TrainerInfo" alias="TrainerInfo"/>
+		<typeAlias type="com.kh.fitguardians.member.model.vo.BodyInfo" alias="BodyInfo"/>
+		<typeAlias type="com.kh.fitguardians.exercise.model.vo.TnWorkout" alias="TnWorkout"/>
 	</typeAliases>
 	
 	<typeHandlers>

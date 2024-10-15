@@ -58,7 +58,7 @@ public class ChatDao {
 
     // 활성화된 채팅 상대 조회 (트레이너용)
     public ArrayList<MessageParticipantDTO> getActiveParticipantsForTrainer(SqlSessionTemplate sqlSession, int userNo) {
-    	//System.out.println("Fetching active participants for trainer with userNo: " + userNo);
+    	System.out.println("Fetching active participants for trainer with userNo: " + userNo);
         return (ArrayList) sqlSession.selectList("ChatMapper.getActiveParticipantsForTrainer", userNo);
     }
     

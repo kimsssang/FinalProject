@@ -1,20 +1,13 @@
 package com.kh.fitguardians.member.controller;
 
-import java.io.IOException;
-
-import java.io.IOException;
-
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
-import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -24,76 +17,102 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.ModelAndView;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
 import com.google.zxing.BarcodeFormat;
 import com.google.zxing.WriterException;
 import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.kh.fitguardians.common.model.vo.QrInfo;
-import com.google.gson.Gson;
 import com.kh.fitguardians.member.model.service.MemberServiceImpl;
+import com.kh.fitguardians.member.model.vo.BodyInfo;
 import com.kh.fitguardians.member.model.vo.Member;
 import com.kh.fitguardians.member.model.vo.MemberInfo;
-import com.kh.fitguardians.member.model.vo.Schedule;
-import com.kh.fitguardians.member.model.vo.TrainerInfo;
 
 @Controller
 public class MemberController {
-
+	
 	@Autowired
 	private MemberServiceImpl mService = new MemberServiceImpl();
 	@Autowired
-	private BCryptPasswordEncoder bcryptPasswordEncoder;
+	private BCryptPasswordEncoder bcryptPasswordEncoder; 
 	@Autowired
 	private ServletContext servletContext;
-
-	@RequestMapping("main.co")
+	
+	@RequestMapping("dashboard.me")
 	public String goMain() {
-		return "main";
+		return "Trainee/traineeDashboard";
 	}
+	
+    @RequestMapping("traineeDetail.me")
+    public ModelAndView memberDetailView(@RequestParam("userId") String userId, ModelAndView mv) {
 
-	@RequestMapping("traineeDetail.me")
-	public String memberDetailView() {
-		return "Trainer/traineeDetailInfo";
-	}
+    	Member m = mService.getTraineeDetails(userId);
+    	ArrayList<BodyInfo> bi = mService.getTraineeBodyInfo(userId);
+    	MemberInfo mi = mService.getTraineeInfo(m.getUserNo());
+    	// 최근 6개 데이터 조회문
+    	ArrayList<BodyInfo> recentBi = mService.getRecentInfo(userId);
+    	
+    	// 가장 최근 1개 데이터 조회문
+    	BodyInfo lastBodyInfo = null;
+    	
+    	for (BodyInfo bodyInfo : bi) {
+    	    lastBodyInfo = bodyInfo;
+    	}
+    	double lastSmm = lastBodyInfo.getSmm();
+    	double lastFat = lastBodyInfo.getFat();
+    	double lastBmi = lastBodyInfo.getBmi();
+    	
+    	mv.addObject("m" , m);
+    	mv.addObject("bi" , bi);
+    	mv.addObject("mi", mi);
+    	mv.addObject("lastSmm", String.format("%.1f", lastSmm));
+    	mv.addObject("lastFat", String.format("%.1f", lastFat));
+    	mv.addObject("lastBmi", String.format("%.1f", lastBmi));
+    	mv.addObject("recentBi", recentBi);
+    	
+    	mv.setViewName("Trainer/traineeDetailInfo");
+    	
+        return mv;
+    }
 
 	@RequestMapping("loginform.me")
 	public String loginForm() throws IOException {
 		return "common/loginForm";
 	}
-
+	
 	@RequestMapping("enrollForm.me")
 	public String enrollForm() {
 		return "common/enrollForm";
 	}
-
+	
 	@ResponseBody
 	@RequestMapping("checkId.me")
 	public String memberCheckId(String userId) {
 		int result = mService.checkId(userId);
-		if (result > 0) {
+		if(result > 0) {
 			return "YYYN";
-		} else {
+		}else {
 			return "YYYI";
 		}
 	}
-
+	
 	@ResponseBody
 	@RequestMapping("auth.email")
 	public String ajaxAuthEmail(String email) {
 		int randomCode = mService.authEmail(email);
 		return randomCode + "";
 	}
-
+	
+	
 	@RequestMapping(value = "enroll.me", produces = "text/html; charset=UTF-8")
 	public String memberEnroll(Member m, String memberInfo, HttpServletRequest request) throws IOException {
 		String encPwd = bcryptPasswordEncoder.encode(m.getUserPwd());
@@ -130,24 +149,18 @@ public class MemberController {
 			}
 		}
 		
+		int result2 = mService.insertQrInfo(qr);
+		int result1 = mService.insertMember(m);
+		
+		
 		
 		// 기본 프로필 사진 설정
         String profile = m.getProfilePic() == null ? 
             (m.getGender().equals("F") ? "resources/profilePic/gymW.png" : "resources/profilePic/gymM.png") : 
             m.getProfilePic();
         m.setProfilePic(profile);
-        
-        // 트레이너일때 기본 트레이너 정보 입력
-        if(m.getUserLevel().equals("1")) {
-        	TrainerInfo trInfo = new TrainerInfo();
-        	trInfo.setUserNo(m.getUserNo());
-        	trInfo.setTrCareer("");
-        	trInfo.setTrCerti("");
-        	trInfo.setTrDescript("");
-        	trInfo.setTrProfile("resources/trProfile/blank-profile-picture.webp");
-        	int result3 = mService.insertTrainerInfo(trInfo); 
-        	
-        }
+		
+        System.out.println(memberInfo);
 		// 회원 추가 정보가 있는지 확인
         if (memberInfo != null && !memberInfo.isEmpty()) {
             // 추가 정보가 있으면 추가 정보 저장
@@ -159,22 +172,14 @@ public class MemberController {
             }
             
             int result = mService.insertMemberWithInfo(m, info);
-            int result2 = mService.insertQrInfo(qr);
-            if (result > 0 && result2 > 0) {
+            if (result > 0 && result1 > 0 && result2 > 0) {
                 request.getSession().setAttribute("alertMsg", "회원가입이 완료되었습니다. 환영합니다!");
                 return "Trainee/traineeDashboard";
             }
         } else {
             // 추가 정보가 없으면 기존 방식대로 회원가입 처리
-        	MemberInfo info = new MemberInfo();
-        	info.setUserNo(m.getUserNo());
-        	info.setHeight(0);
-        	info.setWeight(0);
-        	info.setDisease(null);
-        	info.setGoal("");
-            int result = mService.insertMemberWithInfo(m, info);
-            int result2 = mService.insertQrInfo(qr);
-            if (result > 0 && result2 > 0) {
+            int result = mService.insertMember(m);
+            if (result > 0 && result1 > 0 && result2 > 0) {
                 request.getSession().setAttribute("alertMsg", "회원가입이 완료되었습니다. 환영합니다!");
                 return "Trainee/traineeDashboard";
             }
@@ -182,38 +187,97 @@ public class MemberController {
         request.getSession().setAttribute("errorMsg", "회원가입에 실패했습니다.");
         return "common/loginForm";
 	}
-
+	
 	@RequestMapping("login.me")
 	public String memberLogin(Member m, HttpServletRequest request) {
 		Member loginUser = mService.loginMember(m);
 		HttpSession session = request.getSession();
-		if (loginUser != null) {
-			if (bcryptPasswordEncoder.matches(m.getUserPwd(), loginUser.getUserPwd())) {
+		if(loginUser != null) {
+			if(bcryptPasswordEncoder.matches(m.getUserPwd(), loginUser.getUserPwd())) {
+				
 				session.setAttribute("loginUser", loginUser);
-				return "main";
-			} else {
+				
+				// 트레이너 정보 알아오기
+				String trainerId = loginUser.getPt();
+				Member trainer = mService.getTrainerInfo(trainerId);
+	
+				if(loginUser.getUserLevel().equals("2")) {
+					
+					// 회원 추가정보 가져오기
+					MemberInfo mi = mService.getMemberInfo(loginUser.getUserNo());
+					
+					// 회원 신체정보 가져오기
+					BodyInfo bi = mService.getBodyInfo(loginUser.getUserId());
+					
+					// 회원 최근 6개 신체정보 가져오기
+			    	ArrayList<BodyInfo> recentBi = mService.getRecentInfo(loginUser.getUserId());
+					
+					// 회원
+					session.setAttribute("trainer", trainer);
+					session.setAttribute("mi", mi);
+					session.setAttribute("bi", bi);
+					session.setAttribute("recentBi", recentBi);
+
+					return "Trainee/traineeDashboard";
+				}else {
+					// 트레이너 - 
+					return "redirect:traineeList.me";
+				}
+			}else {
 				session.setAttribute("errorMsg", "비밀번호가 일치하지 않습니다. 다시 입력해주세요!");
 				return "redirect:loginform.me";
 			}
-
-		} else {
+			
+		}else {
 			session.setAttribute("errorMsg", "아이디가 틀렸습니다 다시 입력해주세요!");
 			return "redirect:loginform.me";
 		}
-
+		
+	}
+	
+	@RequestMapping("traineeList.me")
+	public ModelAndView traineeList(HttpSession session, ModelAndView mv) {
+		// 페이지가 로드되자마자 트레이너의 담당 회원이 조회되야 한다.
+		String userId = ((Member)session.getAttribute("loginUser")).getUserId();
+		ArrayList<Member> list = mService.getTraineeList(userId);
+		//System.out.println("userId :" + userId);
+		
+		//System.out.println(list);
+		mv.addObject("list", list)
+		  .setViewName("Trainer/traineeManagement");
+		
+		return mv;
+	}
+	
+	@ResponseBody
+	@RequestMapping("saveBodyInfo.me")
+	public String saveBodyInfo(BodyInfo bi){
+		
+		int result = mService.saveBodyInfo(bi);
+		///System.out.println(result);
+		return result>0?"success":"error";
+		
+	}
+	
+	@ResponseBody
+	@RequestMapping("deleteBodyInfo.me")
+	public String deleteBodyInfo(int bodyInfoNo) {
+		int result = mService.deleteBodyInfo(bodyInfoNo);
+		return result >0?"success":"error";
 	}
 
+	
 	@RequestMapping("logout.me")
 	public String memberlogOut(HttpServletRequest request) {
 		request.getSession().invalidate();
 		return "redirect:/";
 	}
-
+	
 	@RequestMapping("qrForm.me")
 	public String qrCheckForm() {
 		return "common/checkQr";
 	}
-
+	
 	@ResponseBody
 	@RequestMapping("qrCheck.me")
 	public String MemberQrCheck(@RequestBody Map<String, String> request) {
@@ -224,261 +288,74 @@ public class MemberController {
 		int result2 = 0;
 		try {
 			qrInfo = objectMapper.readValue(qrData, QrInfo.class);
-			// qr 일치 확인
-			QrInfo qrResult = mService.qrCheck(qrInfo);
-			LocalDateTime now = LocalDateTime.now();
-
-			if (qrResult != null) {
-				// 출석
-				if (qrResult.getAttendance() == null) {
-					qrResult.setAttendance(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
-					int upResult = mService.updateAttendance(qrResult);
-					return "YYYQ";
-				} else {
-
-					LocalDateTime attendanceTime = LocalDateTime.parse(qrResult.getAttendance(),
-							DateTimeFormatter.ISO_DATE_TIME);
-					Duration duration = Duration.between(attendanceTime, now);
-					long hours = duration.toHours();
-					System.out.println(hours);
-
-					if (qrResult.getType().equals("trainee") && hours >= 1) {
-						qrResult.setAttendance(now.toString());
-						result1 = mService.updateAttStatus(qrResult);
-					} else if (qrResult.getType().equals("trainer") && hours >= 6) {
-						qrResult.setAttendance(now.toString());
-						result2 = mService.updateAttStatus(qrResult);
+				// qr 일치 확인
+				QrInfo qrResult = mService.qrCheck(qrInfo);
+				LocalDateTime now = LocalDateTime.now();
+				
+				if(qrResult != null) {
+					// 출석
+					if(qrResult.getAttendance() == null) {
+						qrResult.setAttendance(LocalDateTime.now().format(DateTimeFormatter.ISO_DATE_TIME));
+						int upResult = mService.updateAttendance(qrResult);
+						return "YYYQ";
+					}else {
+						
+						LocalDateTime attendanceTime = LocalDateTime.parse(qrResult.getAttendance(), DateTimeFormatter.ISO_DATE_TIME); 
+						Duration duration = Duration.between(attendanceTime, now);
+						long hours = duration.toHours();
+						System.out.println(hours);
+						
+						
+						if(qrResult.getType().equals("trainee") && hours >= 1) {
+							qrResult.setAttendance(now.toString());
+							result1 = mService.updateAttStatus(qrResult);
+						}else if(qrResult.getType().equals("trainer") && hours >= 6) {
+							qrResult.setAttendance(now.toString());
+							result2 = mService.updateAttStatus(qrResult);
+						}
+						
+						
 					}
-
 				}
-			}
-
+				
+				
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-
-		if (result1 > 0 || result2 > 0) {
+		
+		if(result1 > 0 || result2 > 0) {
 			return "YYQQ";
-		} else {
+		}else {
 			return "NNQQ";
 		}
 	}
-
+	
 	// mypage 관련
 	@RequestMapping("mypage.me")
 	public String myPage(HttpServletRequest request) {
 		HttpSession session = request.getSession();
 		Member m = (Member) session.getAttribute("loginUser");
-		if (m.getUserLevel().equals("2")) {
+		if(m.getUserLevel().equals("2")) {
 			MemberInfo mInfo = mService.selectMemberInfo(m.getUserNo());
-			
 			Gson gson = new Gson();
 			String diseaseJson = gson.toJson(mInfo.getDisease());
 			request.setAttribute("memberInfo", mInfo);
 			request.setAttribute("disease", diseaseJson);
-		}else {
-			TrainerInfo trInfo = mService.selectTrainerInfo(m.getUserNo());
-			request.setAttribute("trInfo", trInfo);
 		}
 		return "common/myPage";
 	}
-
+	
 	@ResponseBody
 	@RequestMapping("changeDisease.me")
 	public String updateDisease(MemberInfo mInfo) {
-
+		
 		int result = mService.updateDisease(mInfo);
-		if (result > 0) {
+		if(result > 0) {
 			return "DDDY";
-		} else {
+		}else {
 			return "DDDN";
 		}
 	}
-
-	@ResponseBody
-	@RequestMapping("checkPwd.me")
-	public String memberPwdCheck(Member m, String userEncoPwd, HttpServletRequest request) {
-		// Member login = (Member) request.getSession().getAttribute("loginUser");
-		if (bcryptPasswordEncoder.matches(m.getUserPwd(), userEncoPwd)) {
-			return "YYYP";
-		} else {
-			return "NNNP";
-		}
-
-	}
-
-	@ResponseBody
-	@RequestMapping("changePwd.me")
-	public String updateMemberPwd(Member m, HttpServletRequest request) {
-		// 비밀번호 암호화작업
-		String encPwd = bcryptPasswordEncoder.encode(m.getUserPwd());
-		m.setUserPwd(encPwd);
-
-		int result = mService.updateMemberPwd(m);
-		if (result > 0) {
-			Member loginUser = mService.loginMember(m);
-			request.getSession().setAttribute("loginUser", loginUser);
-			return "YYCP";
-		} else {
-			return "NNCP";
-		}
-
-	}
-
-	@ResponseBody
-	@RequestMapping("changeEmail.me")
-	public String updateMemberEmail(Member m, HttpServletRequest request) {
-		System.out.println(m);
-		int result = mService.updateMemberEmail(m);
-		if (result > 0) {
-			Member updateMember = mService.loginMember(m);
-			request.getSession().setAttribute("loginUser", updateMember);
-			return "YYYE";
-		} else {
-			return "NNNE";
-		}
-
-	}
-
-	@ResponseBody
-	@RequestMapping("delete.me")
-	public String deleteMember(int userNo, HttpServletRequest request) {
-
-		int result = mService.deleteMember(userNo);
-		if (result > 0) {
-			request.getSession().invalidate();
-			return "YYYD";
-		} else {
-			return "NNND";
-		}
-	}
 	
-	@RequestMapping(value="calendar.pt", produces="application/json")
-	public String trainerCalender(HttpSession session, HttpServletRequest request) {
-		Member loginUser = (Member) session.getAttribute("loginUser");
-		
-		ArrayList<Schedule> schedule = mService.selectSchedule(loginUser.getUserNo());
-		request.setAttribute("schedule", schedule);
-		return "Trainer/trainerCalendar";
-	}
 	
-	@RequestMapping(value="calendar.me", produces="application/json")
-	public String traineeCalender(HttpSession session, HttpServletRequest request) {
-		Member loginUser = (Member) session.getAttribute("loginUser");
-		
-		ArrayList<Schedule> schedule = mService.selectSchedule(loginUser.getUserNo());
-		request.setAttribute("schedule", schedule);
-		return "Trainer/trainerCalendar";
-	}
-	
-	@RequestMapping("changePicture.me")
-	public String updateMemberProfilePic(Member m, MultipartFile upfile, HttpSession session) {
-		
-		// 기본 설정 프로필일땐 바로 삽입
-		if(m.getProfilePic() == "resources/profilePic/gymM.png" && m.getProfilePic() == "resources/profilePic/gymW.png") {
-			String changeName = saveFile(upfile, session);
-			m.setProfilePic("resources/profilePic/" + changeName);
-			
-		}else { // 다른 사진에서 새로운 사진 업로드하면 다른사진 삭제 후 진행
-			new File(session.getServletContext().getRealPath(m.getProfilePic())).delete();
-			String changeName = saveFile(upfile, session);
-			m.setProfilePic("resources/profilePic/" + changeName);
-			
-		}
-		
-		int result = mService.updateMemberProfilePic(m);
-		if(result > 0) {
-			Member updateMember = mService.loginMember(m);
-			session.setAttribute("loginUser", updateMember);
-			session.setAttribute("alertMsg", "프로필사진이 변경 되었습니다!");
-			return "redirect:/";
-		}else {
-			session.setAttribute("errorMsg", "프로필사진 변경 실패");
-			return "redirect:/";
-		}
-		
-	}
-	
-	@ResponseBody
-	@RequestMapping("updateInfo.tr")
-	public String ajaxUpdateTrainerInfo(
-			@ModelAttribute TrainerInfo trInfo,
-			@RequestParam(value="upfiles", required=false) MultipartFile upfiles, HttpSession session) {
-		System.out.println(trInfo);
-		System.out.println(upfiles);
-		String changeName = "";
-		int result = 0;
-		if(upfiles != null && upfiles.getSize() > 0) { // 새로 변경할 사진 있을 때
-			// 새로 변경할 때 사진이 기본 사진일때
-			if(trInfo.getTrProfile().equals("resources/trProfilePic/blank-profile-picture.webp") ) {
-				changeName = saveFileTr(upfiles, session);
-
-			}else { // 새로 변경하는데 사진이 기본 사진이 아닐때 원래 사진 지우기
-				new File(session.getServletContext().getRealPath(trInfo.getTrProfile())).delete();
-				changeName = saveFileTr(upfiles, session);
-			}
-			
-			trInfo.setTrProfile("resources/trProfilePic/" + changeName);
-			result = mService.updateTrainerInfo(trInfo);
-			
-		}else {
-			// 새로 변경할 사진 없을 때 
-			result = mService.updateTrainerInfo(trInfo);
-		}
-		
-		return result > 0 ? "YYTR" : "NNTR";
-	}
-
-	
-	/**첨부파일 서버 폴더에 저장하는 역할
-	 * @param upfile
-	 * @param session
-	 * @return 변경된 파일명
-	 */
-	public String saveFile(MultipartFile upfile, HttpSession session) {
-		String originName = upfile.getOriginalFilename();
-		// 
-		String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-		int random = (int)(Math.random() * 90000 + 10000);
-		String ext = originName.substring(originName.lastIndexOf("."));
-		
-		String changeName = currentTime + random + ext;
-		// 업로드 폴더 경로
-		String savePath = session.getServletContext().getRealPath("/resources/profilePic/");
-		
-		try {
-			upfile.transferTo(new File(savePath + changeName));
-		} catch (IllegalStateException | IOException e) {
-			e.printStackTrace();
-
-		}
-		
-		return changeName;
-	}
-	
-	/**첨부파일 서버 폴더에 저장하는 역할
-	 * @param upfile
-	 * @param session
-	 * @return 변경된 파일명
-	 */
-	public String saveFileTr(MultipartFile upfile, HttpSession session) {
-		String originName = upfile.getOriginalFilename();
-		// 
-		String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date());
-		int random = (int)(Math.random() * 90000 + 10000);
-		String ext = originName.substring(originName.lastIndexOf("."));
-		
-		String changeName = currentTime + random + ext;
-		// 업로드 폴더 경로
-		String savePath = session.getServletContext().getRealPath("/resources/trProfilePic/");
-		
-		try {
-			upfile.transferTo(new File(savePath + changeName));
-		} catch (IllegalStateException | IOException e) {
-			e.printStackTrace();
-
-		}
-		
-		return changeName;
-	}
 }

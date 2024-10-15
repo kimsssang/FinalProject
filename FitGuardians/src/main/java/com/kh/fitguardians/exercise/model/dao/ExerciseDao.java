@@ -24,6 +24,10 @@ public class ExerciseDao {
 		return (ArrayList)sqlSession.selectList("exerciseMapper.selectWorkoutList", userId);
 	}
 
+	public int deleteExercise(SqlSessionTemplate sqlSession, int exerciseNo) {
+		return sqlSession.update("exerciseMapper.deleteExercise", exerciseNo);
+	}
+
 	
 
 }

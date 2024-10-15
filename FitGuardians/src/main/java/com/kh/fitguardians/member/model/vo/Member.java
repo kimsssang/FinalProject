@@ -1,5 +1,7 @@
 package com.kh.fitguardians.member.model.vo;
 
+import java.util.Date;
+
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,4 +29,20 @@ public class Member {
 	private String qr;
 	private String profilePic;
 	private String membership;
+	
+	// 조인할 예정
+	// memberInfo테이블 컬럼
+	private double height;
+	private double weight;
+	private String disease;
+	private String goal;
+	
+	// bodyInfo테이블 컬럼
+	private int bodyInfoNo;
+	private Date measureDate;
+	private double bmi;
+	private double fat;
+	private double smm;
+	private String biStatus;
+	
 }

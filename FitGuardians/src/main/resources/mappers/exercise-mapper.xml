@@ -12,6 +12,7 @@
  	<result column="workout_category" property="workoutCategory"/>
  	<result column="difficulty" property="difficulty"/>
  	<result column="description" property="description"/>
+ 	<result column="workout_status" property="workoutStatus"/>
  </resultMap>
  
  <insert id="addExercise">
@@ -25,6 +26,7 @@
          , WORKOUT_CATEGORY
          , DIFFICULTY
          , DESCRIPTION
+         , WORKOUT_STATUS
          ) 
 	VALUES 
 	     (
@@ -35,6 +37,7 @@
     	 , #{workoutCategory}
     	 , #{difficulty}
     	 , #{description}
+    	 , 'Y'
 		)
  </insert>
  
@@ -49,7 +52,15 @@
 	     , description
 	  from workout
 	 where user_id = #{userId}
+	   and workout_status = 'Y'
  </select>
+ 
+ <update id="deleteExercise">
+ 	update
+ 	       workout
+ 	   set workout_status = 'N'
+ 	 where ex_no = #{exerciseNo}    
+ </update>
  
  
 </mapper>

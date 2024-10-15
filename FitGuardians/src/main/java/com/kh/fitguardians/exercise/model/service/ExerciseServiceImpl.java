@@ -31,6 +31,11 @@ public class ExerciseServiceImpl {
 	public ArrayList<Workout> selectWorkoutList(String userId) {
 		return eDao.selectWorkoutList(sqlSession, userId);
 	}
+	
+	public int deleteExercise(int exerciseNo) {
+		return eDao.deleteExercise(sqlSession, exerciseNo);
+	}
+
 
 	
 }

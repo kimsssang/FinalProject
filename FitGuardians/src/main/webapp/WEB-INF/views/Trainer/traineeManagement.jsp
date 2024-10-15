@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri ="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -40,71 +43,33 @@
 
                          <!-- 회원 관리 카드 row -> 회원 한명씩 추가될 때 마다 col 카드 추가 -->
 
-                    <div class="row">
+                            <div class="row">
 
-                        <div class="col-lg-6">
-                            <div class="card mb-3 py-4 border-left-primary">
-                                <div class="card-body"  style="display:flex;">
-                                    <div style="margin-left:30px;">
-                                        <div style="border-radius:50%; border:1px solid royalblue; width:150px; height:150px; overflow:hidden;">
-                                            <img src="${ pageContext.request.contextPath }/resources/uploadFiles/manprofile.PNG" style="max-width:100%; max-height:100%; object-fit:cover;"/>
-                                            
-                                        </div>
-                                    </div>
-                                    <div style="margin-left:30px;">
-                                        <a class = "traineeName" href="traineeDetail.me" style="cursor:pointer; text-decoration:none;">뫅두팔</a>
-                                        <br/>
-                                        <span>나이 : 30살</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>성별: 남성</span> <br/>
-                                        <span>키 : 175cm</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>몸무게 : 100kg</span> <br/>
-                                        <span>골격근량 : 2%</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>BMI(체질량지수) : 88%</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>체지방량 :85%</span> <br/>
-                                        <span>운동 목표 : 개돼지에서 벗어나고 차은우로 다시태어나기</span> <br/>
-                                    </div>
-                                  </div>
-                                </div>
-                            </div>
-
-                            <div class="col-lg-6">
-                                <div class="card mb-3 py-4 border-left-primary">
-                                    <div class="card-body"  style="display:flex;">
-                                        <div style="margin-left:30px;">
-                                            <div style="border-radius:50%; border:1px solid royalblue; width:150px; height:150px; overflow:hidden;">
-                                            	<img src="${ pageContext.request.contextPath }/resources/uploadFiles/manprofile.PNG" style="max-width:100%; max-height:100%; object-fit:cover;"/>
-                                            </div>
-                                        </div>
-                                        <div style="margin-left:30px;">
-                                            <a class = "traineeName" href="traineeDetail.me" style="cursor:pointer; text-decoration:none;">강철혁</a>
-                                            <br/>
-                                            <span>나이 : 35살</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>성별: 남성</span> <br/>
-                                            <span>키 : 200cm</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>몸무게 : 150kg</span> <br/>
-                                            <span>골격근량 : 98%</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>BMI(체질량지수) : 5%</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>체지방량 : 2%</span> <br/>
-                                            <span>운동 목표 : 더 개쩌는 근돼가 되기</span> <br/>
-                                        </div>
-                                      </div>
-                                    </div>
-                                </div>
-
-<!--                                 
                                 <div class="col-lg-6">
+                                <c:forEach var="m" items="${list}">
                                     <div class="card mb-3 py-4 border-left-primary">
                                         <div class="card-body"  style="display:flex;">
                                             <div style="margin-left:30px;">
-                                                <div style="border-radius:50%; border:1px solid royalblue; width:150px; height:150px;"></div>
+                                                <div style="border-radius:50%; border:1px solid royalblue; width:150px; height:150px; overflow:hidden;">
+                                                    <img src="${ pageContext.request.contextPath }/resources/uploadFiles/manprofile.PNG" style="max-width:100%; max-height:100%; object-fit:cover;"/>
+                                                
+                                                </div>
                                             </div>
-                                            <div class="traineeName" style="margin-left:30px;">
-                                                뫅두팔 <br/><br/>
-                                                <span>나이 : 30살</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>성별: 남성</span> <br/>
-                                                <span>키 : 175cm</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>몸무게 : 100kg</span> <br/>
-                                                <span>골격근량 : 2%</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>BMI(체질량지수) : 88%</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>체지방량 :85%</span> <br/>
-                                                <span>운동 목표 : 개돼지에서 벗어나고 차은우로 다시태어나기</span> <br/>
+                                            <div style="margin-left:30px;">
+                                                <a class = "traineeName" href="traineeDetail.me?userId=${m.userId}" style="cursor:pointer; text-decoration:none;">${m.userName}</a>
+                                                <br/>
+                                                <span>나이 : ${m.age}살</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>성별: ${m.gender}</span> <br/>
+                                                <span>키 : ${m.height}cm</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>몸무게 : ${m.weight}kg</span> <br/>
+                                                <span>골격근량 : <fmt:formatNumber value="${m.smm}" pattern="#.#" /> &#37;</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>BMI(체질량지수) :  <fmt:formatNumber value="${m.bmi}" pattern="#.#" /> &#37;</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>체지방량 : <fmt:formatNumber value="${m.fat}" pattern="#.#" /> &#37;</span> <br/>
+                                                <span>운동 목표 : ${m.goal}</span> <br/>
                                             </div>
-                                          </div>
                                         </div>
-                                    </div> -->
-                                
-                    </div>
+                                        </div>
+                                    </div>
+                                </c:forEach>
+                            </div>
 
                         <!-- 회원 관리 카드 끝 -->
-
 
                     </div>
              </div>

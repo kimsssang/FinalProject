@@ -49,11 +49,11 @@
             <form action="login.me" method="post">
                 <!-- 아이디 -->
                 <div class="first-input input__block first-input__block">
-                    <input type="text" placeholder="아이디" class="input" id="userId" name="userId" value="jang10"/>
+                    <input type="text" placeholder="아이디" class="input" id="userId" name="userId" />
                 </div>
                 <!-- 비밀번호 -->
                 <div class="input__block">
-                    <input type="password" placeholder="비밀번호" class="input" id="userPwd" name="userPwd" value="qwer1234@"/>
+                    <input type="password" placeholder="비밀번호" class="input" id="userPwd" name="userPwd" />
                 </div>
                 <!-- 로그인 버튼 -->
                 <button class="signin__btn">

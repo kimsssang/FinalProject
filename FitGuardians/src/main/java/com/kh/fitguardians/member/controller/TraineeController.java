@@ -54,6 +54,20 @@ public class TraineeController {
 		return result;
 	}
 	
+	@RequestMapping("sendDatatoTrainer.tn")
+	public String sendDatatoTrainer(@RequestBody TnWorkout tn, HttpSession session, Model model) {
+		
+		System.out.println("tn 넘어오나 : " + tn);
+		// user의 값을 여기서 얻는다.
+		String userId = ((Member)session.getAttribute("loginUser")).getUserId();
+		tn.setUserId(userId);
+		
+		model.addAttribute("data", tn);
+		
+		System.out.println("tn 세팅 후 어떻냐 : " + tn);
+		
+		return "Trainer/traineeDetailInfo";
+	}
 	
 	
 

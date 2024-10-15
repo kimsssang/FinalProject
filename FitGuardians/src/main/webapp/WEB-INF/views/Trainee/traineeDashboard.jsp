@@ -248,24 +248,35 @@
                                                                 //console.log(result);
                                                                 $('#exercisePlanTable tbody').empty();
 
-                                                                // 오늘 날짜 구하기
-                                                                let today = new Date().toISOString().split("T")[0];
+                                                                // let now = new Date();
+                                                                // console.log("Local Date:", now);
+                                                                // console.log("ISO String:", now.toISOString());
 
-                                                                //console.log("today :", today);
+                                                                // // 오늘 날짜 구하기
+                                                                // let today = new Date().toISOString().split("T")[0];
+                                                                // console.log("today(formatted) :", today);
+
+                                                                // -> 이렇게 했더니, toISOString()을 사용하면 UTC 시간을 반환하는데, 이는 한국 지역시와 차이가 있어서 오류가 발생할 수 있다(새벽 1시 기준)
+                                                                // 따라서 지역시간(toLocaleDateString)을 사용해야 한다.
+
+                                                                // 한국 표준시 형식
+                                                                let today = new Date();
+                                                                let todayString = today.getFullYear() + '-' + 
+                                                                                String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                                                                                String(today.getDate()).padStart(2, '0');
+                                                                //console.log('오늘 날짜 :', todayString);
 
                                                                 // result의 결과의 날짜가 오늘인 경우
-                                                                 let todayWorkout = result.filter(plan =>{
+                                                                let todayWorkout = result.filter(plan =>{
                                                                     //console.log("plan.workoutDate", plan.workoutDate);
-
+                            
                                                                     // YYYY-MM-DD로 변환
                                                                     let workoutDateString = plan.workoutDate.split(" ")[0];
-
-                                                                    // workoutDate를 ISO로 변환
-                                                                    let workoutDate = new Date(workoutDateString + 'T00:00:00Z'); //시간대를 utc로 설정
-                                                                    let formattedDate = workoutDate.toISOString().split("T")[0]; // YYYY-MM-DD형식으로 변환
-                                                                    return formattedDate === today;
-                                                                 }) 
-                                                                 //console.log("todayWorkout :", todayWorkout);
+                                                                   // console.log("운동 날짜 문자열:", workoutDateString);
+                            
+                                                                    return workoutDateString === todayString;
+                                                                }) 
+                                                                //console.log("todayWorkout :", todayWorkout);
 
                                                                 if(todayWorkout.length>0){ // 배열값이 하나라도 있을때
                                                                     
@@ -277,7 +288,7 @@
                                                                     todayWorkout.forEach((plan)=>{
                                                                     let exerciseNo = plan.exerciseNo;
                                                                     let workoutTitle = plan.workoutTitle;
-                                                                    let workoutDate = new Date(plan.workoutDate).toISOString().split("T")[0];
+                                                                    let workoutDate = new Date(plan.workoutDate).toLocaleDateString('ko-KR');
                                                                     let workoutCategory = plan.workoutCategory;
                                                                     let difficulty = plan.difficulty;
                                                                     let description = plan.description;

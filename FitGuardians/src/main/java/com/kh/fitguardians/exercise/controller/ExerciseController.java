@@ -344,7 +344,15 @@ public class ExerciseController {
 	
 	@ResponseBody
 	@RequestMapping(value="selectTodayWorkout.ex", produces="application/json; charset:utf-8")
-	public String selectTodayWorkut(@RequestParam String userId) {
+	public String selectTodayWorkout(@RequestParam String userId) {
+		//System.out.println("사용자 아이디 : " + userId);
+		ArrayList<Workout> list = eService.selectWorkoutList(userId);
+		return new Gson().toJson(list);
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="selectTodayWorkoutforTrainer.ex", produces="application/json; charset:utf-8")
+	public String selectTodayWorkutforTrainer(@RequestParam String userId) {
 		//System.out.println("사용자 아이디 : " + userId);
 		ArrayList<Workout> list = eService.selectWorkoutList(userId);
 		return new Gson().toJson(list);

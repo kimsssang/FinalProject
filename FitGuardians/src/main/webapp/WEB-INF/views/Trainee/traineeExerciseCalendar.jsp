@@ -71,7 +71,9 @@
 						<!-- Page Heading -->
 						<h1 class="h3 mb-4 text-gray-800">오늘 운동 계획표 입력하기</h1>
 							
+						<div class="card shadow mb-4" style="padding:20px;">
 						<div id='calendar'></div>
+						</div>
 
 						<!-- modal 입력창 -->
 							<div class="modal fade" id="calendarModal" tabindex="-1"
@@ -273,7 +275,7 @@
 							})
 						}
 					</script>
-				</div>
+				</>
 			</div>
 		</div>
 	</body>

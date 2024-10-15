@@ -26,6 +26,7 @@
     <!-- 외부 자바스크립트 파일 : 차트 -->
     <script defer src ="./resources/js/traineeDetailInfo.js"></script>
 
+
 </head>
 
 
@@ -74,17 +75,106 @@
                         <div class="card-body">
                             <div style="height:165px;">
                                 <span class="planner">운동 플래너</span>
-                                <ul>
-                                    <li>
-                                        상체 : 깔쌈하게 운동하기(5회 5세트)
-                                    </li>
-                                    <li>
-                                        코어 : 깔쌈하게 운동하기(5회 5세트)
-                                    </li>
-                                    <li>
-                                        하체 : 깔쌈하게 운동하기(5회 5세트)
-                                    </li>
-                                </ul>
+                               
+                                <div class="traineePlanner">
+                                    <table class="table table-bordered exerciseTable" id="exercisePlanTable">
+                                        <thead class="thead-light">
+                                            <tr>
+                                                <th>플랜 번호</th>
+                                                <th>플랜 제목</th>
+                                                <th>날짜</th>
+                                                <th>난이도</th>
+                                                <th>설명</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        <!-- 여기에 값 들어올 예정 -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <script>
+                                    $(document).ready(function() {
+                                        
+                                        let userId = '${m.userId}';
+
+                                        console.log(userId);
+            
+                                        $.ajax({
+                                            url : "selectTodayWorkoutforTrainer.ex",
+                                            data : {
+                                                userId : userId,
+                                            },
+                                            success : function(result){
+                                                console.log(result);
+                                                $('#exercisePlanTable tbody').empty();
+            
+                                                // let now = new Date();
+                                                // console.log("Local Date:", now);
+                                                // console.log("ISO String:", now.toISOString());
+
+                                                // // 오늘 날짜 구하기
+                                                // let today = new Date().toISOString().split("T")[0];
+                                                // console.log("today(formatted) :", today);
+
+                                                // -> 이렇게 했더니, toISOString()을 사용하면 UTC 시간을 반환하는데, 이는 한국 지역시와 차이가 있어서 오류가 발생할 수 있다(새벽 1시 기준)
+                                                // 따라서 지역시간(toLocaleDateString)을 사용해야 한다.
+
+                                                // 한국 표준시 형식
+                                                let today = new Date();
+                                                let todayString = today.getFullYear() + '-' + 
+                                                                  String(today.getMonth() + 1).padStart(2, '0') + '-' + 
+                                                                  String(today.getDate()).padStart(2, '0');
+                                                //console.log('오늘 날짜 :', todayString);
+
+                                                // result의 결과의 날짜가 오늘인 경우
+                                                 let todayWorkout = result.filter(plan =>{
+                                                    //console.log("plan.workoutDate", plan.workoutDate);
+            
+                                                    // YYYY-MM-DD로 변환
+                                                    let workoutDateString = plan.workoutDate.split(" ")[0];
+                                                    //console.log("운동 날짜 문자열:", workoutDateString);
+            
+                                                    return workoutDateString === todayString;
+                                                 }) 
+                                                 //console.log("todayWorkout :", todayWorkout);
+            
+                                                if(todayWorkout.length>0){ // 배열값이 하나라도 있을때
+                                                    
+                                                    // html 작성하기
+                                                    // value를 forEach문 밖으로 꺼내기
+                                                    let value = '';
+            
+                                                    // 오늘 날짜의 배열의 값을 하나하나 뽑기
+                                                    todayWorkout.forEach((plan)=>{
+                                                    let exerciseNo = plan.exerciseNo;
+                                                    let workoutTitle = plan.workoutTitle;
+                                                    let workoutDate = new Date(plan.workoutDate).toLocaleDateString('ko-KR');
+                                                    let workoutCategory = plan.workoutCategory;
+                                                    let difficulty = plan.difficulty;
+                                                    let description = plan.description;
+            
+                                                    value += "<tr>"
+                                                           + "<td>" + exerciseNo + "</td>"
+                                                           + "<td>" + workoutTitle + "</td>"
+                                                           + "<td>" + workoutDate + "</td>"
+                                                           + "<td>" + difficulty + "</td>"
+                                                           + "<td>" + description + "</td>"
+                                                           + "</tr>";
+                                                        });
+            
+                                                        // value값 table에 동적으로 생성하기 
+                                                        $("#exercisePlanTable tbody").html(value);
+                                                }else{
+                                                    $('#exercisePlanTable tbody').html('<tr><td colspan="5">운동 계획이 없습니다.</td></tr>')
+                                                }
+            
+                                            },
+                                            error : function(){},
+                                        })
+                                        
+                                    })
+                                    </script>
+            
                             </div>
                             <br/>
                             <div style="height:165px;">

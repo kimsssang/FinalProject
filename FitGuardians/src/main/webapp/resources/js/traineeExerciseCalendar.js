@@ -69,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
             $('#modalWorkoutTarget').text(' 운동 표적: '+ targetMuscle);
             $('#modalDifficulty').text('운동 난이도: ' + difficultyLabel);
             $('#modalDescription').text('운동 설명: '+ plan.extendedProps.description);
-            
+
             // Show the modal
             $('#eventModal').modal('show');
     
@@ -78,8 +78,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // exPlanList 데이터 추출
     let workouts = exPlanList;
-
-
 
     workouts.forEach(workout => {
         calendar.addEvent({
@@ -94,6 +92,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
+   
     
     // 캘린더 랜더링
     calendar.render();

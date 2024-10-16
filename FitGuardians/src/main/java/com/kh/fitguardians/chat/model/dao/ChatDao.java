@@ -18,6 +18,42 @@ public class ChatDao {
 	    int result = session.insert("ChatMapper.sendMessage", message);
 	    return result;
     }
+    
+    // 채팅방 생성
+    public int createChatRoom(SqlSessionTemplate session, int senderNo, int receiverNo) {
+    	
+    	// 파라미터를 Map에 담기 인자를 두개 넘겨야 하므로 맵에 담자
+        Map<String, Integer> params = new HashMap<>();
+        params.put("userNo", senderNo);
+        params.put("trainerNo", receiverNo);
+        
+    	int result = session.insert("ChatMapper.createChatRoom", params );
+    	return result;
+    }
+    
+    // 채팅방 존재 확인
+    public int checkChatRoomExists(SqlSessionTemplate session, int senderNo, int receiverNo) {
+        
+    	Map<String, Integer> params = new HashMap<>();
+        params.put("senderNo", senderNo);
+        params.put("receiverNo", receiverNo);
+        
+        int result = session.selectOne("ChatMapper.checkChatRoomExists", params );
+    	return result;
+    }
+    
+    // 채팅방 번호 가져오기
+    public Integer getChatRoomNo(SqlSessionTemplate session, int senderNo, int receiverNo) {
+        
+    	Map<String, Integer> params = new HashMap<>();
+        params.put("senderNo", senderNo);
+        params.put("receiverNo", receiverNo);
+    	
+        int result = session.selectOne("ChatMapper.getChatRoomNo", params );
+    	return result;
+    }
+
+    
 
     // 특정 채팅방의 메시지 조회
     public ArrayList<Message> getMessages(SqlSessionTemplate session, int chNo, int senderNo, int receiverNo) {
@@ -39,12 +75,23 @@ public class ChatDao {
 
     
     // 메시지 상태 업데이트 (추가 기능)
-    public int updateMessageStatus(SqlSessionTemplate session, int msgNo, String status) {
-        Map<String, Object> param = new HashMap<>();
-        param.put("msgNo", msgNo);
-        param.put("status", status);
-        return session.update("ChatMapper.updateMessageStatus", param);
+    public int updateMessageStatus(SqlSessionTemplate session, ArrayList<Message> messagesToUpdate) {
+        int totalUpdated = 0;
+
+        for (Message message : messagesToUpdate) {
+            // 메시지 정보를 출력하여 디버깅
+            System.out.println("업데이트할 메시지 번호: " + message.getMsgNo());
+            System.out.println("업데이트할 채팅방 번호: " + message.getChNo());
+            System.out.println("업데이트할 수신자 번호: " + message.getReceiverNo());
+            System.out.println("업데이트할 상태: " + message.getMsgStatus());
+
+            totalUpdated += session.update("ChatMapper.updateMessageStatus", message); // XML 매퍼에 정의된 SQL 쿼리 호출
+        }
+        System.out.println("DAO에서 상태 업데이트 된 메시지 수 : " + totalUpdated);
+
+        return totalUpdated; // 업데이트된 메시지 수 반환
     }
+
     
     // 활성화된 채팅 수
     public int getActiveChatCount(SqlSessionTemplate sqlSession, int userNo) {

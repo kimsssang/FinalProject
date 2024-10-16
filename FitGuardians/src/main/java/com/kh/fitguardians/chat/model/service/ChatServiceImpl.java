@@ -23,25 +23,49 @@ public class ChatServiceImpl implements ChatService {
 	
 	// 메시지 전송
 	@Override
-	public int sendMessage(Message message) {
-		if (message.getMsgStatus() == null) {
+	public Message sendMessage(Message message) {
+	    if (message.getMsgStatus() == null) {
 	        message.setMsgStatus("U"); // 기본값 설정
 	    }
 	    int result = chatDao.sendMessage(sqlSession, message);
 	    
-	    return result;
+	    if (result > 0) {
+	        return message; // 메시지 객체를 반환
+	    } else {
+	        return null; // 실패 시 null 반환
+	    }
 	}
+
+	
+	// 채팅방 생성
+	@Override
+	public int createChatRoom(int senderNo, int receiverNo) {
+		
+		return chatDao.createChatRoom(sqlSession ,senderNo, receiverNo);
+	}
+	
+	// 서비스에서 채팅방 존재 여부 확인 및 번호 가져오기
+	@Override
+	public Integer checkChatRoomAndGetNumber(int senderNo, int receiverNo) {
+	    int exists = chatDao.checkChatRoomExists(sqlSession, senderNo, receiverNo);
+	    if (exists > 0) {
+	        return chatDao.getChatRoomNo(sqlSession, senderNo, receiverNo);
+	    }
+	    return null; // 채팅방이 존재하지 않으면 null 반환
+	}
+
 
 	@Override
 	public ArrayList<Message> getMessage(int chNo, int senderNo, int receiverNo) {
 		
 		return chatDao.getMessages(sqlSession, chNo, senderNo, receiverNo);
 	}
-
+	
+	// 메시지 상태 업데이트
 	@Override
-	public int updateMessageStatus(int msgNo, String status) {
-		
-		return chatDao.updateMessageStatus(sqlSession, msgNo, status);
+	public int updateMessageStatus(ArrayList<Message> messagesToUpdate) {
+		System.out.println("서비스에서 상태 업데이트 : " + messagesToUpdate);				
+		return chatDao.updateMessageStatus(sqlSession, messagesToUpdate);
 	}
 
 	
@@ -70,6 +94,8 @@ public class ChatServiceImpl implements ChatService {
 	public ArrayList<Member> searchTrainers(String keyword) {
 		return chatDao.searchTrainers(sqlSession, keyword);
 	}
+
+	
 	
 	
 

@@ -82,6 +82,14 @@
   	  <result column="description" property="description" />
   	  <result column="workout_status" property="workoutStatus" />
    </resultMap>
+   
+   <resultMap type="TrainerInfo" id="TrainerInfoResult">
+		<result column="user_no" property="userNo"/>
+		<result column="tr_career" property="trCareer"/>
+		<result column="tr_Certi" property="trCerti"/>
+		<result column="tr_descript" property="trDescript"/>
+		<result column="tr_profile" property="trProfile"/>
+	</resultMap>
 	
 	<select id="checkId" resultType="int">
 		select count(user_id)
@@ -333,18 +341,6 @@
 		     , goal = #{goal}
 		 where user_no = #{userNo}
 	</update>
-	
-	<update id="updateMemberPwd">
-		update member
-		   set user_pwd = #{userPwd}
-		 where user_no = #{userNo}
-	</update>
-	
-	<update id="updateMemberEmail">
-		update member
-		   set email = #{email}
-		 where user_no = #{userNo}
-	</update>
 
 	<insert id="saveBodyInfo">
 	insert 
@@ -420,12 +416,6 @@
 	     where rownum = 1
 	</select>
 	
-	<update id="deleteMember">
-		update member
-		   set status = 'N'
-		 where user_no = #{userNo}
-	</update>
-	
 	<!-- trainee를 위한 Mappers -->
 	<insert id="addTraineeExPlan">
 		insert
@@ -466,7 +456,68 @@
 	 where ex_no = #{exerciseNo}
 	</update>
 	
+	<update id="updateMemberPwd">
+		update member
+		   set user_pwd = #{userPwd}
+		 where user_no = #{userNo}
+	</update>
 	
+	<update id="updateMemberEmail">
+		update member
+		   set email = #{email}
+		 where user_no = #{userNo}
+	</update>
+	
+	<update id="deleteMember">
+		update member
+		   set status = 'N'
+		 where user_no = #{userNo}
+	</update>
+	
+	<update id="updateMemberProfilePic">
+		update member
+		   set profile_pic = #{profilePic}
+		 where user_no = #{userNo}
+	</update>
+	
+	<insert id="insertTrainerInfo">
+		insert 
+		  into trainerinfo
+		     (
+		     , user_no
+		     , tr_career
+		     , tr_certi
+		     , tr_profile
+		     , tr_descript
+		     )
+		values
+		     (
+		       #{userNo}
+		     , #{trCareer}
+		     , #{trCerti}
+		     , #{trProfile}
+		     , #{trDescript}
+		     )
+	</insert>
+	
+	<select id="selectTrainerInfo" resultMap="TrainerInfoResult">
+		select
+		        tr_career
+		      , tr_certi
+		      , tr_profile
+		      , tr_descript
+		  from trainerinfo
+		 where user_no = #{userNo}
+	</select>
+	
+	<update id="updateTrainerInfo">
+		update trainerinfo
+		   set tr_career = #{trCareer}
+		     , tr_certi = #{trCerti}
+		     , tr_profile = #{trProfile}
+		     , tr_descript = #{trDescript}
+		 where user_no = #{userNo}
+	</update>
 	
 	
 </mapper>

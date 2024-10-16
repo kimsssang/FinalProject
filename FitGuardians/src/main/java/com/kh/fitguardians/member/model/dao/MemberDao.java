@@ -133,6 +133,21 @@ public class MemberDao {
 		return sqlSession.update("memberMapper.updateTrainerInfo", trInfo);
 	}
 
+	public Member selectMemberBySocialIdKey(SqlSessionTemplate sqlSession, String api) {
+		return sqlSession.selectOne("memberMapper.selectMemberBySocialIdKey", api);
+	}
 	
+	public int insertSocialMember(SqlSessionTemplate sqlSession, Member newUser) {
+		return sqlSession.insert("memberMapper.insertSocialMember", newUser);
+	}
+	
+	public boolean checkAdditionalInfo(SqlSessionTemplate sqlSession, int userNo) {
+		int result = sqlSession.selectOne("memberMapper.checkAdditionalInfo", userNo);
+		if(result > 0) {
+			return true;
+		}else {
+			return false;
+		}
+	}
 
 }

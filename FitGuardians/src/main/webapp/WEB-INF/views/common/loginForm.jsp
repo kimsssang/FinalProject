@@ -8,11 +8,9 @@
         <title>FitGuardians</title>
         <link rel="stylesheet" href="resources/css/loginForm.css">
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-        
-    
-    <!-- sweetalert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.all.min.js"></script>
-	<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.min.css" rel="stylesheet">
+	    <!-- sweetalert2 -->
+	    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.all.min.js"></script>
+		<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.min.css" rel="stylesheet">
     </head>
     <body>
     	<c:if test="${ not empty errorMsg }">
@@ -35,13 +33,13 @@
             <!-- 상위 버튼 -->
             <ul class="links">
                 <li>
-                    <a href="#" id="signin">로그인</a>
+                    <a href="javascript:void(0)" id="signin">로그인</a>
                 </li>
                 <li>
                     <a href="enrollForm.me" id="signup">회원가입</a>
                 </li>
                 <li>
-                    <a href="#" id="reset">초기화</a>
+                    <a href="javascript:void(0)" id="reset">초기화</a>
                 </li>
             </ul>
 
@@ -65,26 +63,48 @@
                 <p>OR</p>
             </div>
             <!-- 카카오 소셜 로그인 -->
-            <button class="socialLogin__btn kakao__btn">
-                <i class="fa fa-github"></i>
+            <button class="socialLogin__btn kakao__btn" value="kakao">
                 카카오로 로그인하기
             </button>
             <!-- 네이버 소셜 로그인 -->
-            <button class="socialLogin__btn naver__btn">
-                <i class="fa fa-github"></i>
+            <button class="socialLogin__btn naver__btn" value="naver">
                 네이버로 로그인하기
             </button>
             <!-- 구글 소셜 로그인 -->
-            <button class="socialLogin__btn google__btn">
+            <button class="socialLogin__btn google__btn" value="google">
                 <!-- <img src="../resources/svg/web_neutral_rd_na.svg" alt=""/> -->
                 구글로 로그인하기
             </button>
         </div>
+		<script>
+            $(function(){
+                //----------- 초기화 버튼 ---------------------
+                let reset = $(".links").find("li").find("#reset"); 
+                reset.on("click",function(e){
+                    e.preventDefault();
+                    $(this).parent().parent().siblings("form")
+                    .find(".input__block").find(".input").val("");
+                })
 
-        <footer>
-            <p>
-                <!-- 테스트 -->
-            </p>
-        </footer>
+                // 와우! 버튼에도 value값을 설정할 수 있었다니!
+                //----------- 소셜 로그인 버튼 ---------------------
+                $(".socialLogin__btn").click(function(){
+
+                    let btnValue = $(this).val()
+					
+                    $.ajax({
+                        url: 'socialLogin.me',
+                        data: { social: btnValue },
+                        success:function(data){
+                        	window.location.href = data;  // 서버에서 대시보드로 리다이렉트하는 URL을 반환받아 이동
+                        },
+                        error:function(){
+                            console.log("소셜 로그인 실패")
+                        },
+                    })
+                    
+                });
+            });
+        </script>
     </body>
 </html>

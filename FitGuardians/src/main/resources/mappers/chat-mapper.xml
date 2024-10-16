@@ -71,6 +71,47 @@
 	    )
 	</insert>
 	
+	<!-- 채팅방 생성 -->
+	<insert id="createChatRoom" parameterType="map">
+	    INSERT 
+	      INTO CHAT_ROOM 
+	         ( CH_NO, 
+	           USER_NO, 
+	           TRAINER_NO, 
+	           CREATE_DATE, 
+	           STATUS
+	         )
+	    VALUES 
+	    	 ( SEQ_CHNO.NEXTVAL, 
+	    	   #{userNo}, 
+	    	   #{trainerNo}, 
+	    	   SYSDATE, 
+	    	   'Y'
+	    	 )
+	</insert>
+	
+	<!-- 채팅방 존재 확인 -->
+	<select id="checkChatRoomExists" parameterType="map" resultType="int">
+	    SELECT COUNT(*)
+	      FROM CHAT_ROOM
+	     WHERE (USER_NO = #{senderNo} AND TRAINER_NO = #{receiverNo}) OR 
+	     	   (USER_NO = #{receiverNo} AND TRAINER_NO = #{senderNo})
+	</select>
+	
+	<!-- 채팅방 번호 가져오기 -->
+	<select id="getChatRoomNo" parameterType="map" resultType="int">
+	    SELECT CH_NO
+	      FROM CHAT_ROOM
+	     WHERE (USER_NO = #{senderNo} AND TRAINER_NO = #{receiverNo}) OR 
+	           (USER_NO = #{receiverNo} AND TRAINER_NO = #{senderNo})
+	</select>
+	
+	
+	
+	
+	
+	
+	
 	<select id="getMessages" parameterType="map" resultMap="messageResult">
 	    SELECT 
 		    m.PROFILE_PIC,
@@ -99,11 +140,14 @@
 
 	
 	<!-- 메시지 상태 업데이트 -->
-	<update id="updateMessageStatus" parameterType="map">
-		update message
-		   set msg_status = #{status}
-		 where msg_no = #{msgNo}
+	<update id="updateMessageStatus" parameterType="Message">
+	    UPDATE MESSAGE
+	       SET MSG_STATUS = 'R'
+	     WHERE MSG_NO = #{msgNo}
+	       AND CH_NO = #{chNo}
+	       AND RECEIVER_NO = #{receiverNo}
 	</update>
+
 	
 	<!-- 활성 채팅방 수 -->
 	<select id="getActiveChatCount" resultType="int" parameterType="map">

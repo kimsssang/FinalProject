@@ -4,10 +4,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.http.HttpClient;
+import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
@@ -25,7 +27,9 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -46,6 +50,11 @@ import com.kh.fitguardians.exercise.model.vo.ExerciseInfo;
 import com.kh.fitguardians.exercise.model.vo.ExercisePlan;
 import com.kh.fitguardians.exercise.model.vo.Workout;
 import com.kh.fitguardians.member.model.vo.Member;
+
+import net.nurigo.sdk.NurigoApp;
+import net.nurigo.sdk.message.exception.NurigoMessageNotReceivedException;
+import net.nurigo.sdk.message.model.Message;
+import net.nurigo.sdk.message.service.DefaultMessageService;
 
 @Controller
 public class ExerciseController {
@@ -356,6 +365,29 @@ public class ExerciseController {
 		//System.out.println("사용자 아이디 : " + userId);
 		ArrayList<Workout> list = eService.selectWorkoutList(userId);
 		return new Gson().toJson(list);
+	}
+	
+	// 카카오톡을 이용하여 운동 플래너 알림(coolSMS)
+	public void sendPlanMsg() {
+		DefaultMessageService messageService =  NurigoApp.INSTANCE.initialize("NCSWQ4C5POFIF6OC", "GFMNC6WRGCNVLSL8J34GTZHPUQ9EA45P", "https://api.coolsms.co.kr");
+		
+		
+
+		Message message = new Message();
+		message.setFrom("계정에서 등록한 발신번호 입력");
+		message.setTo("수신번호 입력");
+		message.setText("SMS는 한글 45자, 영자 90자까지 입력할 수 있습니다.");
+
+		try {
+		  // send 메소드로 ArrayList<Message> 객체를 넣어도 동작합니다!
+		  messageService.send(message);
+		} catch (NurigoMessageNotReceivedException exception) {
+		  // 발송에 실패한 메시지 목록을 확인할 수 있습니다!
+		  System.out.println(exception.getFailedMessageList());
+		  System.out.println(exception.getMessage());
+		} catch (Exception exception) {
+		  System.out.println(exception.getMessage());
+		}    
 	}
 
 

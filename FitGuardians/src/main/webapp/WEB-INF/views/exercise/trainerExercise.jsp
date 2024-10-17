@@ -510,15 +510,7 @@
 											name="calendar_date"> <label for="taskId"
 											class="col-form-label">운동 내용</label>
 										<textarea class="form-control" id="calendar_description"
-											name="calendar_description" style="height: 200px;">(이름입력)님, 안녕하세요! 
-금일 운동 스케줄을 알려드립니다.
-
-
-
-
-오늘도 좋은 운동이 되시길 바랍니다. 감사합니다.
-FitGuardians팀 트레이너 (트레이너 이름)
-										</textarea>
+											name="calendar_description" style="height: 200px;"></textarea>
 
 									</div>
 								</div>

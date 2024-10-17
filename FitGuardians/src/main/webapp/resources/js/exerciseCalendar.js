@@ -163,6 +163,9 @@
             if(ajaxRequest !== null){
                 ajaxRequest.abort();
             }
+
+            // 문자 전송 api 이용하기 위한 값 보내기
+            // ajaxRequest = $.ajax();
             
             // 1) JSON객체로 값 보내고 받기
             ajaxRequest = $.ajax({

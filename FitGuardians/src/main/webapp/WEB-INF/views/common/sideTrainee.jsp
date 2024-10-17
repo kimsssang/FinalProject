@@ -179,19 +179,19 @@ pageEncoding="UTF-8"%>
             <div class="collapse-item mealpage">
               식단관리
               <a
-                class="collapse-item mealpagea"
+                class="collapse-item "
                 style="display: none"
                 href="traineesnedMealplan.bo"
                 >식단 보내기</a
               >
               <a
-                class="collapse-item mealpagea"
+                class="collapse-item "
                 style="display: none"
                 href="traineesendMealPlanList.bo"
                 >보낸 식단 확인</a
               >
               <a
-                class="collapse-item mealpagea"
+                class="collapse-item "
                 style="display: none"
                 href="traineemealplan.bo"
                 >받은 식단 확인</a

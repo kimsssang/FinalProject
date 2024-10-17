@@ -10,13 +10,19 @@ import com.kh.fitguardians.member.model.vo.Member;
 public interface ChatService {
 	
 	// 메시지 전송
-	int sendMessage(Message message);
+	Message sendMessage(Message message);
+	
+	// 채팅방 생성
+	int createChatRoom(int senderNo, int receiverNo);
+	
+	// 채팅방 존재 여부 확인 및 번호 가져오기
+    Integer checkChatRoomAndGetNumber(int senderNo, int receiverNo);
 	
 	// 특정 채팅방의 메시지 조회
 	ArrayList<Message> getMessage(int chNo, int senderNo, int receiverNo);
 	
-	// 읽었는지 여부 확인
-	int updateMessageStatus(int msgNo, String status);
+	// 메시지 상태 업데이트
+	int updateMessageStatus(ArrayList<Message> messagesToUpdate);
 	
 	// 활성화된 채팅 수 조회
     int getActiveChatCount(int userNo);

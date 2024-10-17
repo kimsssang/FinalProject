@@ -13,6 +13,8 @@ import com.kh.fitguardians.member.model.dao.MemberDao;
 import com.kh.fitguardians.member.model.vo.BodyInfo;
 import com.kh.fitguardians.member.model.vo.Member;
 import com.kh.fitguardians.member.model.vo.MemberInfo;
+import com.kh.fitguardians.member.model.vo.Schedule;
+import com.kh.fitguardians.member.model.vo.TrainerInfo;
 
 @Service
 public class MemberServiceImpl implements MemberService{
@@ -151,8 +153,68 @@ public class MemberServiceImpl implements MemberService{
 		return mDao.getRecentInfo(sqlSession, userId);
 	}
 
-	
+	@Override
+	public int updateMemberPwd(Member m) {
+		return mDao.updateMemberPwd(sqlSession, m);
+	}
 
+	@Override
+	public int updateMemberEmail(Member m) {
+		return mDao.updateMemberEmail(sqlSession, m);
+	}
+
+	@Override
+	public int deleteMember(int userNo) {
+		return mDao.deleteMember(sqlSession, userNo);
+	}
+
+	@Override
+	public ArrayList<Schedule> selectSchedule(int userNo) {
+		return mDao.selectSchedule(sqlSession, userNo);
+	}
+
+	@Override
+	public int updateMemberProfilePic(Member m) {
+		return mDao.updateMemberProfilePic(sqlSession, m);
+	}
+
+	@Override
+	public int insertTrainerInfo(TrainerInfo trInfo) {
+		int userNo = mDao.selectUserNo(sqlSession);
+		trInfo.setUserNo(userNo);
+		return mDao.insertTrainerInfo(sqlSession, trInfo);
+	}
+
+	@Override
+	public TrainerInfo selectTrainerInfo(int userNo) {
+		return mDao.selectTrainerInfo(sqlSession, userNo);
+	}
+
+	@Override
+	public int updateTrainerInfo(TrainerInfo trInfo) {
+		return mDao.updateTrainerInfo(sqlSession, trInfo);
+	}
+
+	@Override
+	public Member selectMemberBySocialIdKey(String api) {
+		return mDao.selectMemberBySocialIdKey(sqlSession, api);
+	}
+
+	@Override
+	public int insertSocialMember(Member newUser) {
+		return mDao.insertSocialMember(sqlSession, newUser);
+	}
+
+	@Override
+	public boolean checkAdditionalInfo(int userNo) {
+		return mDao.checkAdditionalInfo(sqlSession, userNo);
+	}
+
+	@Override
+	public int addAdditionalInfo(MemberInfo addAdditionalInfo) {
+		// mDao 재사용
+		return mDao.insertMemberInfo(sqlSession, addAdditionalInfo); // MEMBER_INFO에 데이터 삽입;
+	}
 	
 
 	

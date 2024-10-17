@@ -13,7 +13,7 @@ import lombok.ToString;
 @ToString
 public class MemberInfo {
 	
-	private int userNo;
+	private int userNo;			// 사용자번호(외래키)
 	private int height;			// 키
 	private int weight;			// 몸무게
 	private List<String> disease;		// 기저질환

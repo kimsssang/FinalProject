@@ -15,6 +15,7 @@
 		<result column="enroll_date" property="enrollDate"/>
 		<result column="user_level" property="userLevel"/>
 		<result column="pt" property="pt"/>
+		<result column="api" property="api"/>
 		<result column="qr" property="qr"/>
 		<result column="profile_pic" property="profilePic"/>
 		<result column="membership" property="membership"/>
@@ -82,6 +83,14 @@
   	  <result column="description" property="description" />
   	  <result column="workout_status" property="workoutStatus" />
    </resultMap>
+   
+   <resultMap type="TrainerInfo" id="TrainerInfoResult">
+		<result column="user_no" property="userNo"/>
+		<result column="tr_career" property="trCareer"/>
+		<result column="tr_Certi" property="trCerti"/>
+		<result column="tr_descript" property="trDescript"/>
+		<result column="tr_profile" property="trProfile"/>
+	</resultMap>
 	
 	<select id="checkId" resultType="int">
 		select count(user_id)
@@ -333,18 +342,6 @@
 		     , goal = #{goal}
 		 where user_no = #{userNo}
 	</update>
-	
-	<update id="updateMemberPwd">
-		update member
-		   set user_pwd = #{userPwd}
-		 where user_no = #{userNo}
-	</update>
-	
-	<update id="updateMemberEmail">
-		update member
-		   set email = #{email}
-		 where user_no = #{userNo}
-	</update>
 
 	<insert id="saveBodyInfo">
 	insert 
@@ -420,12 +417,6 @@
 	     where rownum = 1
 	</select>
 	
-	<update id="deleteMember">
-		update member
-		   set status = 'N'
-		 where user_no = #{userNo}
-	</update>
-	
 	<!-- trainee를 위한 Mappers -->
 	<insert id="addTraineeExPlan">
 		insert
@@ -466,7 +457,129 @@
 	 where ex_no = #{exerciseNo}
 	</update>
 	
+	<update id="updateMemberPwd">
+		update member
+		   set user_pwd = #{userPwd}
+		 where user_no = #{userNo}
+	</update>
 	
+	<update id="updateMemberEmail">
+		update member
+		   set email = #{email}
+		 where user_no = #{userNo}
+	</update>
 	
+	<update id="deleteMember">
+		update member
+		   set status = 'N'
+		 where user_no = #{userNo}
+	</update>
+	
+	<update id="updateMemberProfilePic">
+		update member
+		   set profile_pic = #{profilePic}
+		 where user_no = #{userNo}
+	</update>
+	
+	<insert id="insertTrainerInfo">
+		insert 
+		  into trainerinfo
+		     (
+		     , user_no
+		     , tr_career
+		     , tr_certi
+		     , tr_profile
+		     , tr_descript
+		     )
+		values
+		     (
+		       #{userNo}
+		     , #{trCareer}
+		     , #{trCerti}
+		     , #{trProfile}
+		     , #{trDescript}
+		     )
+	</insert>
+	
+	<select id="selectTrainerInfo" resultMap="TrainerInfoResult">
+		select
+		        tr_career
+		      , tr_certi
+		      , tr_profile
+		      , tr_descript
+		  from trainerinfo
+		 where user_no = #{userNo}
+	</select>
+	
+	<update id="updateTrainerInfo">
+		update trainerinfo
+		   set tr_career = #{trCareer}
+		     , tr_certi = #{trCerti}
+		     , tr_profile = #{trProfile}
+		     , tr_descript = #{trDescript}
+		 where user_no = #{userNo}
+	</update>
+	
+	<select id="selectMemberBySocialIdKey" resultMap="memberResultset">
+		select user_no
+		     , user_id
+		     , user_pwd
+		     , user_name
+		     , email
+		     , phone
+		     , gender
+		     , age
+		     , address
+		     , enroll_date
+		     , user_level
+		     , pt
+		     , api
+		     , qr
+		     , profile_pic
+		     , membership
+		  from member
+		 where status = 'Y'
+		   and api = #{api}
+	</select>
+	
+	<insert id="insertSocialMember">
+		insert
+		  into member
+		     ( 
+		       user_no
+		     , user_id
+		     , user_pwd
+		     , user_name
+		     , email
+		     , phone
+		     , gender
+		     , age
+		     , user_level
+		     , api
+		     , qr
+		     , profile_pic
+		     )
+		values
+		     (
+		       seq_mno.nextval
+		     , #{userId}
+		     , #{userPwd}
+     		 , #{userName}
+		     , #{email}
+		     , #{phone}
+		     , #{gender}
+		     , #{age}
+		     , 2 			  -- 일반 회원만 소셜 로그인 가능하게함 
+		     , #{api}
+		     , #{qr}
+		     , #{profilePic}
+		     )
+	</insert>
+	<select id="checkAdditionalInfo" resultType="int">
+		SELECT 
+		       COUNT(*)
+		  FROM MEMBER_INFO 
+		 WHERE USER_NO = #{userNo}
+	</select>
 	
 </mapper>

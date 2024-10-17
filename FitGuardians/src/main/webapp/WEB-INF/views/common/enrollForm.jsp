@@ -27,13 +27,13 @@
             <!-- 상위 버튼 -->
             <ul class="links">
                 <li>
-                	<span id="signup">회원가입</span>
+                	<a href="loginform.me" id="signin">로그인</a>
                 </li>
                 <li>
-                    
+                    <a href="javascript:void(0)" id="signup">회원가입</a>
                 </li>
                 <li>
-                    <a href="#" id="reset">초기화</a>
+                    <a href="javascript:void(0)" id="reset">초기화</a>
                 </li>
             </ul>
 
@@ -91,7 +91,7 @@
                 <div class="input-group mb-3 ml-4">
                     <input type="text" placeholder="전화번호" class="form-control" id="phone" name="phone"/>
                 </div>
-                <!-- 전화번호 -->
+                <!-- 우편번호 -->
                 <div class="input-group mb-3 ml-4">
 						<input type="text" placeholder="우편번호" class="form-control" id="postNum" name="address"/>
 					<div class="input-group-prepend">

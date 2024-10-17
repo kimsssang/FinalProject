@@ -8,10 +8,13 @@
 <head>
 <meta charset="UTF-8">
 <title>Top Bar</title>
-<!-- sweetalert2 -->
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.all.min.js"></script>
-<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.min.css" rel="stylesheet">
-
+<c:if test="${not empty loginUser && not empty loginUser.api}">
+	<!-- sweetalert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.all.min.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.min.css" rel="stylesheet">
+	
+	<link rel="stylesheet" href="resources/css/topBar.css">
+</c:if>
 </head>
 <body>
 <!-- Topbar -->
@@ -138,7 +141,7 @@
 						        <div class="modal-content">
 						            <div class="modal-header">
 						                <!-- 동적으로 선택된 사용자 이름 렌더링 -->
-						                <h5 class="modal-title" id="chatModalLabel">${chatPartnerName}님과의 채팅</h5>
+						                <h5 class="modal-title" id="chatModalLabel">${participantName}님과의 채팅</h5>
 						                <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
 						            </div>
 						            <div class="modal-body">
@@ -146,7 +149,7 @@
 						                <div id="chatMessages" style="height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px;">
 						                    <!-- EL 표현식을 사용하여 채팅 메시지를 렌더링 -->
 						                    <c:forEach var="message" items="${messages}">
-						                        <div class="d-flex mb-3">
+						                        <div class="d-flex mb-3" style="position: relative;">
 						                            <!-- 메시지 보낸 사람이 현재 로그인한 유저인지 확인 -->
 						                            <c:choose>
 						                                <c:when test="${message.senderId == currentUserId}">
@@ -174,7 +177,7 @@
 						                </div>
 						                <!-- 입력 영역 -->
 						                <div class="input-group mt-3">
-						                    <input type="text" class="form-control" id="messageInput" placeholder="메시지를 입력하세요..." />
+						                    <input type="text" class="form-control" id="messageInputTopBar" placeholder="메시지를 입력하세요..." />
 						                    <button id="sendMessageButton" class="btn btn-primary" type="button">Send</button>
 						                </div>
 						            </div>
@@ -200,13 +203,13 @@
 		                            <!-- Dropdown - User Information -->
 		                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
 		                                aria-labelledby="userDropdown">
-		                                <a class="dropdown-item" href="">
+		                                <a class="dropdown-item" href="#">
 		                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-											profile
+		                                    Profile
 		                                </a>
-		                                <a class="dropdown-item" href="mypage.me">
+		                                <a class="dropdown-item" href="#">
 		                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-		                                    My Page
+		                                    Settings
 		                                </a>
 		                                <a class="dropdown-item" href="#">
 		                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -256,32 +259,37 @@
 	<script>
 	    // 현재 시간을 가져오는 함수
 	    var getCurrentTime = function() {
-		    var now = new Date();
-		    var year = now.getFullYear();
-		    var month = ('0' + (now.getMonth() + 1)).slice(-2); // 월은 0부터 시작하므로 +1
-		    var day = ('0' + now.getDate()).slice(-2);
-		    var hours = ('0' + now.getHours()).slice(-2);
-		    var minutes = ('0' + now.getMinutes()).slice(-2);
-		    
-		    return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes;
-		};
-		
-	    
-	 	// 변수 선언
+	        var now = new Date();
+	        var year = now.getFullYear();
+	        var month = ('0' + (now.getMonth() + 1)).slice(-2); // 월은 0부터 시작하므로 +1
+	        var day = ('0' + now.getDate()).slice(-2);
+	        var hours = ('0' + now.getHours()).slice(-2);
+	        var minutes = ('0' + now.getMinutes()).slice(-2);
+	
+	        return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes;
+	    };
+	
+	    // 변수 선언
 	    var userNo = ${sessionScope.loginUser.userNo}; // 세션에서 가져온 사용자 번호
 	    var userLevel = ${sessionScope.loginUser.userLevel}; // 세션에서 가져온 사용자 레벨
 	    var currentUserNo = userNo; // 현재 로그인한 유저 NO
 	    var selectedUserNo; // 상대방 유저 NO
 	    var chNo; // 채팅방 번호
-	    
-	 	// 드롭다운 아이템 클릭 시 : 이거로 채팅창 내역을 긁어올 예정!
-	    $(document).on('click', '.dropdown-item', function() {
-	        selectedUserNo = $(this).data('user-no'); // 상대방 유저 NO
-	        chNo = $(this).data('chat-room-no'); // 채팅방 NO
-	        console.log("선택된 유저 NO:", selectedUserNo); // 디버깅용
-	        console.log("선택된 채팅방 NO:", chNo); // 디버깅용
+	
+	    // 모달을 열고 메시지를 로드하는 함수
+	    function openChatModal(participantName, userNo, chatRoomNo) {
+	        selectedUserNo = userNo; // 상대방 유저 NO
+	        chNo = chatRoomNo; // 채팅방 NO
 	        
-	     // AJAX 요청
+	    	 // 디버깅을 위한 콘솔 로그 추가
+	        console.log('모달 열기 - 트레이너 이름:', participantName);
+	        console.log('모달 열기 - 유저 번호:', userNo);
+	        console.log('모달 열기 - 채팅방 번호:', chatRoomNo);
+	
+	        // 모달 제목 설정
+	        $('#chatModal .modal-title').text('"' + participantName + '" 님과의 채팅');
+	
+	        // AJAX 요청
 	        $.ajax({
 	            url: '/fitguardians/chat/messages/' + chNo, // 메시지를 가져오는 API 엔드포인트
 	            method: 'GET',
@@ -296,93 +304,151 @@
 	                } else {
 	                    console.warn("응답이 비어 있습니다."); // 경고 메시지 출력
 	                }
+	                
+	                // 모달 여는 코드 추가!
+	                $('#chatModal').modal('show');
 	            },
 	            error: function(xhr, status, error) {
 	                console.error("메시지 로드 오류:", error);
 	            }
 	        });
-	        
+	    }
+	
+	    // 드롭다운 아이템 클릭 시
+	    $(document).on('click', '.dropdown-item', function() {
+	        // 클릭한 참가자의 이름과 ID 가져오기
+	        var participantName = $(this).data('participant-name');
+	        var userNo = $(this).data('user-no'); // 상대방 유저 NO
+	        var chatRoomNo = $(this).data('chat-room-no'); // 채팅방 NO
+	
+	        // 모달 열기
+	        openChatModal(participantName, userNo, chatRoomNo);
 	    });
-	    
-	 	
-	    // 채팅 메시지를 업데이트하는 함수
+	
+	 	// 채팅 메시지를 업데이트하는 함수
 	    function updateChatMessages(messages) {
 	        var chatMessagesContainer = $('#chatMessages');
 	        chatMessagesContainer.empty(); // 기존 메시지 삭제
 
+	        var messagesToStatusUpdate = []; // 메시지들의 상태 업데이트를 담을 변수
+
 	        // 메시지 렌더링
 	        messages.forEach(function(message) {
 	            var messageElement;
-	         	// sendDate를 포맷팅
 	            var formattedDate = message.sendDate;
 
 	            if (message.senderNo == currentUserNo) {
 	                // 본인이 보낸 메시지
-	                messageElement = '<div class="d-flex mb-3">' +
-	                                 '<div class="bg-primary text-white p-2 rounded" style="max-width: 70%; margin-left: auto;">' +
-	                                 '<p class="mb-0">' + message.msgContent + '</p>' +
-	                                 '<small class="text-muted">You · ' + formattedDate + '</small>' +
-	                                 '</div></div>';
+	                messageElement = '<div class="d-flex mb-3" style="position: relative; align-items: flex-start;">' +
+	                    '<div class="bg-primary text-white p-2 rounded" style="max-width: 70%; margin-left: auto;">' +
+	                    '<p class="mb-0">' + message.msgContent + '</p>' +
+	                    '<small class="text-muted">당신 · ' + formattedDate + '</small>' +
+	                    '</div>';
+
+	                // 메시지 상태에 따른 표시
+	                if (message.msgStatus === "U") {
+	                    messageElement += '<span style="font-size: 0.8rem; margin-left: 5px; margin-top: auto;">1</span>'; // 오른쪽에 배치
+	                }
+
+	                messageElement += '</div>';
+
 	            } else {
 	                // 상대방이 보낸 메시지
 	                messageElement = '<div class="d-flex mb-3">' +
-	                                 '<div class="mr-2">' +
-	                                 '<img class="rounded-circle" src="' + message.profileImg + '" alt="' + message.senderName + '" style="width: 40px;">' +
-	                                 '</div>' +
-	                                 '<div class="bg-light p-2 rounded" style="max-width: 70%;">' +
-	                                 '<p class="mb-0">' + message.msgContent + '</p>' +
-	                                 '<small class="text-muted">' + message.senderName + ' · ' + formattedDate + '</small>' +
-	                                 '</div></div>';
+	                    '<div class="mr-2">' +
+	                    '<img class="rounded-circle" src="' + message.profileImg + '" alt="' + message.senderName + '" style="width: 40px;">' +
+	                    '</div>' +
+	                    '<div class="bg-light p-2 rounded" style="max-width: 70%;">' +
+	                    '<p class="mb-0">' + message.msgContent + '</p>' +
+	                    '<small class="text-muted">' + message.senderName + ' · ' + formattedDate + '</small>' +
+	                    '</div></div>';
+
+	                // 수신자일 경우 상태업데이트 배열에 값 담기
+	                if (message.msgStatus === "U" && message.receiverNo === currentUserNo) {
+	                    messagesToStatusUpdate.push({
+	                        msgNo: message.msgNo,        // 메시지 번호
+	                        chNo: chNo,           // 채팅방 번호
+	                        receiverNo: message.receiverNo, // 수신자 번호
+	                        msgStatus: message.msgStatus // 현재 상태
+	                    });
+	                }
 	            }
 
 	            chatMessagesContainer.append(messageElement); // 메시지를 컨테이너에 추가
 	        });
+
+	        // 상태 업데이트 호출 (배열이 비어있지 않을 때만)
+	        if (messagesToStatusUpdate.length > 0) {
+	            updateMessagesStatusToRead(messagesToStatusUpdate);
+	        }
 	    }
 
 	    
-	    
+	    function updateMessagesStatusToRead(messagesToStatusUpdate) {
+	    	console.log("업데이트할 메시지들:", messagesToStatusUpdate);
+
+	        $.ajax({
+	            url: '/fitguardians/chat/updateStatus', // 상태 업데이트 API 엔드포인트
+	            method: 'POST',
+	            contentType: 'application/json',
+	            data: JSON.stringify(messagesToStatusUpdate),
+	            success: function(updatedCount) {
+	                console.log(updatedCount + "개의 메시지 상태가 업데이트되었습니다.");
+	            },
+	            error: function(xhr, status, error) {
+	                console.error("메시지 상태 업데이트 오류:", error);
+	            }
+	        });
+	    }
+
 	
 	    // 메시지 전송 함수
 	    function sendMessage() {
-	    	
-	    	console.log('sendMessage 함수 호출됨'); // 함수 호출 확인
-	    	
+	        console.log('sendMessage 함수 호출됨'); // 함수 호출 확인
+	
 	        // 입력 필드에서 메시지 가져오기
-	        var messageContent = $('#messageInput').val();
+	        var messageContent = $('#messageInputTopBar').val();
 	        console.log('입력된 메시지:', messageContent); // 로그 출력
 	
 	        // 메시지가 비어있지 않은 경우에만 진행
 	        if (messageContent.trim() !== "") {
-	        	
-	        	// 전송할 데이터 확인을 위해 console.log 추가
+	            // 전송할 데이터 확인을 위해 console.log 추가
 	            var messageData = {
-	                content: messageContent,
-	                senderNo: currentUserNo,  // 현재 로그인한 유저 No
-	                receiverNo: selectedUserNo,  // 상대방 유저 No
-	                chNo: chNo  // 채팅방 번호
+	                msgContent: messageContent,
+	                senderNo: currentUserNo, // 현재 로그인한 유저 No
+	                receiverNo: selectedUserNo, // 상대방 유저 No
+	                chNo: chNo // 채팅방 번호
 	            };
 	            console.log('전송할 메시지 데이터:', JSON.stringify(messageData)); // 여기서 데이터 로그 출력
-	        		        	
+	
 	            // 메시지 전송을 위한 AJAX 요청
 	            $.ajax({
 	                url: '/fitguardians/chat/send', // 메시지 전송 엔드포인트
 	                method: 'POST',
 	                contentType: 'application/json',
-	                data: JSON.stringify({
-	                	msgContent: messageContent,
-	                    senderNo: currentUserNo,  // 현재 로그인한 유저 No
-	                    receiverNo: selectedUserNo,  // 상대방 유저 No
-	                    chNo: chNo  // 채팅방 번호
-	                }),
+	                data: JSON.stringify(messageData),
 	                success: function(response) {
-	                    // 메시지 전송 성공 시, 메시지 추가
-	                    var newMessage = '<div class="d-flex justify-content-end mb-3">' +
-	                        '<div class="bg-primary text-white p-2 rounded" style="max-width: 70%;">' +
-	                            '<p class="mb-0">' + messageContent + '</p>' +
-	                            '<small class="text-muted">당신 ·' + getCurrentTime() + '</small>' +
-	                        '</div>' +
-	                    '</div>';
-	                    $('#chatMessages').append(newMessage);
+	                	// 메시지 전송 성공 시, 메시지 추가
+	                	
+	                	var msgStatus = response.msgStatus; // 서버로부터 응답받은 메시지 상태
+	                	console.log(response.msgStatus);
+	                	
+	                	var newMessage = '<div class="d-flex justify-content-end mb-3" style="position: relative; align-items: flex-start;">' + // 오른쪽 정렬
+				                	    '<div class="bg-primary text-white p-2 rounded" style="max-width: 70%;">' +
+				                	    '<p class="mb-0">' + messageContent + '</p>' +
+				                	    '<small class="text-muted">당신 · ' + getCurrentTime() + '</small>' +
+				                	    '</div>'				                	    
+				        
+				                	    // 메시지를 읽지 않았을 경우 1을 추가
+				        if(msgStatus === "U"){
+				        	newMessage += '<span style="font-size: 0.8rem; margin-left: 5px; margin-top: auto;">1</span>';
+				        }
+				        
+				        newMessage += '</div>'; // div 닫음        	    
+
+	                	// 메시지를 컨테이너에 추가
+	                	$('#chatMessages').append(newMessage);
+
 	                    // 입력 필드 비우기
 	                    $('.input-group input[type="text"]').val('');
 	                    // 스크롤을 가장 아래로 내리기
@@ -398,8 +464,6 @@
 	    }
 	
 	    $(function() {
-	        
-	
 	        // 활성화 채팅 수 가져오기
 	        $.ajax({
 	            url: '/fitguardians/chat/activeChatCount/' + userNo,
@@ -413,35 +477,19 @@
 	            }
 	        });
 	
-	        if (userLevel === 2) { // 유저인 경우
-	            // 활성화된 채팅 참가자 가져오기 (회원 기준)
-	            $.ajax({
-	                url: '/fitguardians/chat/activeParticipants/user/' + userNo,
-	                type: 'GET',
-	                success: function(activeParticipants) {
-	                    console.log(activeParticipants); // AJAX로 받은 데이터 확인
+	        // 사용자 레벨에 따라 활성화된 참가자 가져오기
+	        var participantUrl = userLevel === 2 ? '/fitguardians/chat/activeParticipants/user/' : '/fitguardians/chat/activeParticipants/trainer/';
+	        $.ajax({
+	            url: participantUrl + userNo,
+	            type: 'GET',
+	            success: function(activeParticipants) {
+	                var participantList = $('#participantList');
+	                participantList.empty(); // 기존 내용 비우기
 	
-	                    // 활성화된 참가자가 있는지 확인
-	                    if (activeParticipants.length > 0) {
-	                        console.log("첫 번째 참가자:", activeParticipants[0]);
-	                    } else {
-	                        console.log("활성화된 참가자가 없습니다."); // 데이터가 없을 경우 메시지 출력
-	                        $('#participantList').append('<div class="dropdown-item text-center small text-gray-500">활성화된 채팅이 없습니다.</div>');
-	                        return; // 더 이상 진행하지 않도록 return
-	                    }
-	
-	                    var participantList = $('#participantList'); // 변수 이름 변경
-	                    participantList.empty(); // 기존 내용 비우기
-	
-	                    let items = ''; // 초기화
+	                if (activeParticipants.length > 0) {
+	                    let items = '';
 	
 	                    activeParticipants.forEach(participant => {
-	                        console.log("참가자 이미지:", participant.participantImage);
-	                        console.log("마지막 메시지:", participant.lastMessage);
-	                        console.log("참가자 이름:", participant.participantName);
-	                        console.log("마지막 활동:", participant.lastActive);
-	                        console.log("상태:", participant.participantStatus);
-	                        
 	                        const image = participant.participantImage || 'default-image.png';
 	                        const lastMessage = participant.lastMessage || '메시지가 없습니다.';
 	                        const participantName = participant.participantName || '참가자 없음';
@@ -449,101 +497,140 @@
 	                        const statusClass = participant.participantStatus === 'Y' ? 'bg-success' : 'bg-danger';
 	
 	                        // 문자열 연결 방식으로 아이템 생성
-	                        items += '<a class="dropdown-item d-flex align-items-center" href="#" data-toggle="modal" data-target="#chatModal" data-user-no="' + participant.participantNo + '" data-chat-room-no="' + participant.chatRoomNo + '">' +
-	                                    '<div class="dropdown-list-image mr-3">' +
-	                                        '<img class="rounded-circle" src="' + image + '" alt="...">' +
-	                                        '<div class="status-indicator ' + statusClass + '"></div>' +
-	                                    '</div>' +
-	                                    '<div class="font-weight-bold">' +
-	                                        '<div class="text-truncate">' + lastMessage + '</div>' +
-	                                        '<div class="small text-gray-500">' + participantName + ' · ' + lastActive + '</div>' +
-	                                    '</div>' +
-	                                '</a>';
+	                        items += '<a class="dropdown-item d-flex align-items-center" href="#" data-toggle="modal" data-target="#chatModal" data-user-no="' + participant.participantNo + '" data-chat-room-no="' + participant.chatRoomNo + '" data-participant-name="' + participant.participantName + '">' +
+	                            '<div class="dropdown-list-image mr-3">' +
+	                            '<img class="rounded-circle" src="' + image + '" alt="...">' +
+	                            '<div class="status-indicator ' + statusClass + '"></div>' +
+	                            '</div>' +
+	                            '<div class="font-weight-bold">' +
+	                            '<div class="text-truncate">' + lastMessage + '</div>' +
+	                            '<div class="small text-gray-500">' + participantName + ' · ' + lastActive + '</div>' +
+	                            '</div></a>';
 	                    });
 	
-	                    // 최종 items 확인
-	                    console.log("최종 아이템 HTML:", items);
-	                    participantList.append(items); // 요소 추가
-	                },
-	                error: function(xhr, status, error) {
-	                    console.error('회원용 활성화된 참가자를 가져오는 중 오류 발생:', error); // 에러 메시지 출력
+	                    participantList.append(items); // participantList에 아이템 추가
+	                } else {
+	                    participantList.append('<a class="dropdown-item text-center">활성화된 참가자가 없습니다.</a>');
 	                }
-	            });
-	        } else if (userLevel === 1) { // 트레이너인 경우
-	            // 활성화된 채팅 참가자 가져오기 (트레이너 기준)
-	            $.ajax({
-	                url: '/fitguardians/chat/activeParticipants/trainer/' + userNo,
-	                type: 'GET',
-	                success: function(activeParticipants) {
-	                    console.log(activeParticipants); // AJAX로 받은 데이터 확인
-	
-	                    // 활성화된 참가자가 있는지 확인
-	                    if (activeParticipants.length > 0) {
-	                        console.log("첫 번째 참가자:", activeParticipants[0]);
-	                    } else {
-	                        console.log("활성화된 참가자가 없습니다."); // 데이터가 없을 경우 메시지 출력
-	                        $('#participantList').append('<div class="dropdown-item text-center small text-gray-500">활성화된 채팅이 없습니다.</div>');
-	                        return; // 더 이상 진행하지 않도록 return
-	                    }
-	
-	                    var participantList = $('#participantList'); // 변수 이름 변경
-	                    participantList.empty(); // 기존 내용 비우기
-	
-	                    let items = ''; // 초기화
-	
-	                    activeParticipants.forEach(participant => {
-	                        console.log("참가자 이미지:", participant.participantImage);
-	                        console.log("마지막 메시지:", participant.lastMessage);
-	                        console.log("참가자 이름:", participant.participantName);
-	                        console.log("마지막 활동:", participant.lastActive);
-	                        console.log("상태:", participant.participantStatus);
-	                        
-	                        const image = participant.participantImage || 'default-image.png';
-	                        const lastMessage = participant.lastMessage || '메시지가 없습니다.';
-	                        const participantName = participant.participantName || '참가자 없음';
-	                        const lastActive = participant.lastActive || '활동 없음';
-	                        const statusClass = participant.participantStatus === 'Y' ? 'bg-success' : 'bg-danger';
-	
-	                        // 문자열 연결 방식으로 아이템 생성
-	                        items += '<a class="dropdown-item d-flex align-items-center" href="#" data-toggle="modal" data-target="#chatModal" data-user-no="' + participant.participantNo + '" data-chat-room-no="' + participant.chatRoomNo + '">' +
-	                                    '<div class="dropdown-list-image mr-3">' +
-	                                        '<img class="rounded-circle" src="' + image + '" alt="...">' +
-	                                        '<div class="status-indicator ' + statusClass + '"></div>' +
-	                                    '</div>' +
-	                                    '<div class="font-weight-bold">' +
-	                                        '<div class="text-truncate">' + lastMessage + '</div>' +
-	                                        '<div class="small text-gray-500">' + participantName + ' · ' + lastActive + '</div>' +
-	                                    '</div>' +
-	                                '</a>';
-	                    });
-	
-	                    // 최종 items 확인
-	                    console.log("최종 아이템 HTML:", items);
-	                    participantList.append(items); // 요소 추가
-	                },
-	                error: function(xhr, status, error) {
-	                    console.error('트레이너용 활성화된 참가자를 가져오는 중 오류 발생:', error); // 에러 메시지 출력
-	                }
-	            });
-	        }
-	
-	        	
-	        // '전송' 버튼 클릭 시 메시지 전송
+	            },
+	            error: function(xhr, status, error) {
+	                console.error('활성화된 참가자를 가져오는 중 오류 발생:', error);
+	            }
+	        });
+	        
+	     	// '전송' 버튼 클릭 시 메시지 전송
 	        $('#sendMessageButton').on('click', function() {
 	        	console.log('전송 버튼 클릭됨'); // 클릭 확인
 	            sendMessage();
 	        });
 	
 	        // Enter 키를 눌렀을 때 메시지 전송
-	        $('.input-group input[type="text"]').on('keypress', function(event) {
+	        $('#messageInputTopBar').on('keypress', function(event) {
 	            if (event.which === 13) { // Enter 키 코드
 	                sendMessage();
 	                event.preventDefault(); // Enter 키로 인해 폼이 제출되는 것을 방지
 	            }
 	        });
+
 	    });
 	</script>
-
+	<c:choose>
+	    <c:when test="${not empty loginUser && not empty loginUser.api}">
+	        <c:if test="${!hasAdditionalInfo}">
+	            <script>
+		            Swal.fire({
+	                    title: '서비스 개선을 위해 추가 정보 입력해주세요!',
+	                    icon: 'info',
+	                    html: `
+				            <input type="number" id="height" name="height" class="swal2-input" placeholder="키 (cm)">
+				            <input type="number" id="weight" name="weight" class="swal2-input" placeholder="몸무게 (kg)">
+							
+							<select id="disease" name="disease" class="custom-select">
+								<option value="" hidden selected disabled>기저질환</option>
+								<option value="없음">없음</option>
+								<option value="혈압조절장애">혈압조절장애(고혈압, 저혈압)</option>
+								<option value="고지혈증">고지혈증</option>
+								<option value="당뇨">당뇨</option>
+								<option value="대사증후군">대사증후군</option>
+								<option value="디스크">디스크(목, 허리)</option>
+								<option value="천식">천식</option>
+								<option value="심혈관_질환">심혈관 질환</option>
+								<option value="골다공증">골다공증</option>
+								<option value="관절염">관절염(류마티스 등)</option>
+								<option value="편두통_혹은_만성두통">편두통 혹은 만성두통</option>
+								<option value="갑상선_장애">디스크(목, 허리)</option>
+							</select>
+							<select id="goal" class="custom-select">
+								<option value="" hidden selected disabled>운동 목표</option>
+								<option value="체중_감량">체중 감량</option>
+								<option value="근력_증가">근력 증가</option>
+								<option value="수술_후_재활">수술 후 재활</option>
+								<option value="유연성_운동">유연성 운동</option>
+								<option value="균형_증가">균형 증가</option>
+								<option value="심혈관_기능증진">심혈관 기능증진</option>
+							</select>
+							<input type="hidden" id="memberInfo" name="memberInfo">
+				        `,
+				        confirmButtonText: '저장',
+				        preConfirm: () => {
+				            return {
+				                height: $("#height").val(),
+				                weight: $("#weight").val(),
+				                disease: $("#disease").val(),
+				                goal: $("#goal").val(),
+				            }
+				        },
+						showCancelButton: true,
+						cancelButtonText: '나중에 하기',
+						customClass: {
+							popup: 'custom-popup',    // 팝업 전체에 커스텀 스타일 적용
+							content: 'custom-content' // 컨텐츠에 대한 스타일 적용
+						},
+					}).then((result) => {
+				        if (result.isConfirmed) {
+				            let info = result.value;
+				            if (info.height && info.weight && info.disease && info.goal) {
+				            	console.log(JSON.stringify(info))
+				            	$.ajax({
+				            	    type: 'POST',
+				            	    url: 'addAdditionalInfo.me',
+				            	    data: JSON.stringify(info),  // JSON 데이터로 전송
+				            	    contentType: 'application/json',
+				            	    success: function(response) {
+				            	        if (response === "success") {
+				            	            Swal.fire('저장되었습니다!', '', 'success');
+				            	        } else {
+				            	            Swal.fire('저장에 실패했습니다.', '', 'error');
+				            	        }
+				            	    }
+				            	});
+				            } else {
+				                Swal.fire('모든 정보를 입력해 주세요', '', 'error');
+				            }
+				        }else if (result.dismiss === Swal.DismissReason.cancel) {
+		                       // '나중에 하기' 버튼 클릭 시 세션에 값을 저장
+		                       $.ajax({
+		                           type: 'POST',
+		                           url: 'delayAdditionalInfo.me',
+		                       });
+		                   }
+				    });
+	            </script>
+	        </c:if>
+	    </c:when>
+	    <c:otherwise>
+	    	<c:if test="${ not empty socialLoginError }">
+				<script>
+					Swal.fire({
+						icon: 'error',
+						title: '소셜 로그인 오류',
+						text: "${socialLoginError}",
+						confirmButtonText: '확인',
+					})
+				</script>
+			</c:if>
+	    </c:otherwise>
+	</c:choose>
 
 </body>
 </html>

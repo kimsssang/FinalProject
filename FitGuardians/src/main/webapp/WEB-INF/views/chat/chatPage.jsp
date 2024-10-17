@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html>
@@ -51,95 +50,100 @@
         </div>
     </div>
 
-    <!-- 채팅 모달 -->
-	<div class="modal fade" id="chatModal1" tabindex="-1" aria-labelledby="chatModalLabel1" aria-hidden="true">
-	    <div class="modal-dialog">
-	        <div class="modal-content">
-	            <div class="modal-header">
-	                <h5 class="modal-title" id="chatModalLabel1">채팅</h5>
-	                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-	            </div>
-	            <div class="modal-body">
-	                <!-- 채팅 메시지 영역 -->
-	                <div id="chatMessages" style="height: 300px; overflow-y: auto; border: 1px solid #ddd; padding: 10px;">
-	                    <!-- 더미 채팅 메시지 -->
-	                </div>
-	                <!-- 입력 영역 -->
-	                <div class="input-group mt-3">
-	                    <input type="text" id="messageInput" class="form-control" placeholder="메시지를 입력하세요." />
-	                    <button class="btn btn-primary" type="button" id="sendMessageBtn">전송</button>
-	                </div>
-	            </div>
-	        </div>
-	    </div>
-	</div>
-    <script>
-	    $(document).ready(function() {
-	        $('#trainerSearchBtn').on('click', function() {
-	            var keyword = $('#trainerSearchInput').val().trim(); // 검색어 가져오기
-	
-	            if (keyword) {
-	                $.ajax({
-	                    type: 'POST',
-	                    url: '/fitguardians/searchTrainers', // 기존 URL 유지
-	                    data: { keyword: keyword },
-	                    dataType: 'json',
-	                    success: function(response) {
-	                        $('#trainersContainer').empty(); // 이전 검색 결과 삭제
-	                        console.log(response);
-	
-	                        var trainersList = "";
-	                        response.forEach(function(trainer) {
-	                            trainersList += '<div class="trainer" data-userno="' + trainer.userNo + '" style="flex: 1 1 calc(25% - 10px); box-sizing: border-box;">' +
-	                                            '<p>User No: ' + trainer.userNo + '</p>' +
-	                                            '<p>User ID: ' + trainer.userId + '</p>' +
-	                                            '<p>Name: ' + trainer.userName + '</p>' +
-	                                            '<p>Email: ' + trainer.email + '</p>' +
-	                                            '<p>Phone: ' + trainer.phone + '</p>' +
-	                                            '<img src="' + trainer.profilePic + '" alt="' + trainer.userName + '" style="width: 100px; height: 100px;"/>' +
-	                                            '</div>';
-	                        });
-	                        $("#trainersContainer").html(trainersList);
-	                        
-	                        // AJAX 요청이 성공한 후에 클릭 이벤트 바인딩
-	                        $('#trainersContainer').on('click', '.trainer', function() {
-	                            var userNo = $(this).data('userno');
-	                            var trainerName = $(this).find('p').eq(2).text().split(': ')[1]; // 이름 가져오기
-	                            openChatModal(userNo, trainerName); // openChatModal 호출
-	                        });
-	                    },
-	                    error: function(xhr, status, error) {
-	                        console.error("검색 요청 실패:", error);
-	                    }
-	                });
-	            } else {
-	                alert("검색어를 입력하세요.");
-	            }
-	        });
-	
-	        // openChatModal 함수 정의
-	        function openChatModal(userNo, trainerName) {
-	            // 모달을 표시합니다
-	            $('#chatModal1').modal('show'); // 모달을 보여주도록 설정
-	
-	            // 트레이너의 이름을 설정
-	            $('#chatModalLabel1').text('채팅 - ' + trainerName);
-	            
-	            // 모달을 열 때 채팅 기록을 지우는 옵션 (선택 사항)
-	            $('#chatMessages').empty();
-	        }
-	
-	        
+    
 
+	<script>
+	$(document).ready(function() {
+	    $('#trainerSearchBtn').on('click', function() {
+	        var keyword = $('#trainerSearchInput').val().trim(); // 검색어 가져오기
 	
-	        function sendMessageToTrainer(message) {
-	            // 메시지를 전송하기 위한 AJAX 요청 (추가 구현 필요)
-	            console.log("트레이너에게 전송된 메시지:", message);
-	            // 채팅 기록에 전송한 메시지를 추가합니다
-	            $('#chatMessages').append('<div class="chat-message"><strong>나:</strong> ' + message + '</div>');
+	        if (keyword) {
+	            $.ajax({
+	                type: 'POST',
+	                url: '/fitguardians/searchTrainers',
+	                data: { keyword: keyword },
+	                dataType: 'json',
+	                success: function(response) {
+	                    $('#trainersContainer').empty(); // 이전 검색 결과 삭제
+	                    console.log(response);
+	
+	                    var trainersList = "";
+	                    response.forEach(function(trainer) {
+	                        trainersList += '<div class="trainer" data-userno="' + trainer.userNo + '" data-name="' + trainer.userName + '" style="flex: 1 1 calc(25% - 10px); box-sizing: border-box;">' +
+	                                        '<p>User No: ' + trainer.userNo + '</p>' +
+	                                        '<p>User ID: ' + trainer.userId + '</p>' +
+	                                        '<p>Name: ' + trainer.userName + '</p>' +
+	                                        '<p>Email: ' + trainer.email + '</p>' +
+	                                        '<p>Phone: ' + trainer.phone + '</p>' +
+	                                        '<img src="' + trainer.profilePic + '" alt="' + trainer.userName + '" style="width: 100px; height: 100px;"/>' +
+	                                        '</div>';
+	                    });
+	                    $("#trainersContainer").html(trainersList);
+	
+	                    // 트레이너 클릭 시 채팅방 존재 여부 확인 이벤트 리스너
+	                    $('.trainer').on('click', function() {
+	                        var trainerName = $(this).data('name'); // 트레이너 이름 가져오기
+	                        var userNo = $(this).data('userno'); // 트레이너 유저 번호 가져오기
+	
+	                        // 채팅방 존재 여부 확인
+	                        $.ajax({
+	                            url: '/fitguardians/chat/exists', // 채팅방 존재 여부 확인 API 호출
+	                            method: 'GET',
+	                            data: {
+	                                senderNo: currentUserNo,
+	                                receiverNo: userNo
+	                            },
+	                            success: function(response) {
+	                                if (response.exists) {
+	                                    // 채팅방이 존재하면 모달 열기 및 메시지 로드
+	                                    openChatModal(trainerName, userNo, response.chatRoomNo); // chatRoomNo 전달
+	                                } else {
+	                                    // 채팅방이 존재하지 않으면 새로 생성
+	                                    $.ajax({
+	                                        url: '/fitguardians/chat/create', // 채팅방 생성 API 호출
+	                                        method: 'POST',
+	                                        data: {
+	                                            senderNo: currentUserNo,
+	                                            receiverNo: userNo
+	                                        },
+	                                        success: function(chatRoomNo) {
+	                                            // 생성된 채팅방 번호로 모달 열기
+	                                            openChatModal(trainerName, userNo, chatRoomNo);
+	                                        },
+	                                        error: function(xhr, status, error) {
+	                                            console.error("채팅방 생성 오류:", error);
+	                                        }
+	                                    });
+	                                }
+	                            },
+	                            error: function(xhr, status, error) {
+	                                console.error("채팅방 존재 여부 확인 실패:", error);
+	                            }
+	                        });
+	                    });
+	                },
+	                error: function(xhr, status, error) {
+	                    console.error("검색 요청 실패:", error);
+	                }
+	            });
+	        } else {
+	            alert("검색어를 입력하세요.");
 	        }
 	    });
+	
+	    // 엔터 키 이벤트 추가
+	    $('#trainerSearchInput').on('keypress', function(event) {
+	        if (event.which === 13) { // Enter 키 코드
+	            $('#trainerSearchBtn').click(); // 버튼 클릭 이벤트 트리거
+	            event.preventDefault(); // Enter 키로 인해 폼이 제출되는 것을 방지
+	        }
+	    });
+	});
+	</script>
 
-    </script>
+
+
+
+
 </body>
 </html>

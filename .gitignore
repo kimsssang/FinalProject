@@ -2,6 +2,10 @@
 /Servers/
 /TripVibe/
 FitGuardians/target/
-FitGuardians/.settings/
-FitGuardians/.classpath/
+FitGuardians/.settings
+FitGuardians/.classpath
+FitGuardians/.project
+FitGuardians/bin/
+FitGuardians/WebContent/
 /RemoteSystemsTempFiles/
+FitGuardians/src/main/resources/apiProperties.properties

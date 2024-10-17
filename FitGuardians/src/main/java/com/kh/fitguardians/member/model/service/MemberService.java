@@ -85,5 +85,20 @@ public interface MemberService {
 	public TrainerInfo selectTrainerInfo(int userNo);
 	
 	public int updateTrainerInfo(TrainerInfo trInfo);
+	
+	
+	// 소셜 회원 정보 조회
+	public Member selectMemberBySocialIdKey(String api);
+	
+	// 소셜 회원가입
+	public int insertSocialMember(Member newUser);
+	
+	// 소셜 회원(추가 정보 존재 유무확인)
+	public boolean checkAdditionalInfo(int userNo);
+	
+	// 소셜 회원(추가 정보 입력)
+	public int addAdditionalInfo(MemberInfo addAdditionalInfo);
+	
+	
 
 }

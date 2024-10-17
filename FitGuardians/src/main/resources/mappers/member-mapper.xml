@@ -15,6 +15,7 @@
 		<result column="enroll_date" property="enrollDate"/>
 		<result column="user_level" property="userLevel"/>
 		<result column="pt" property="pt"/>
+		<result column="api" property="api"/>
 		<result column="qr" property="qr"/>
 		<result column="profile_pic" property="profilePic"/>
 		<result column="membership" property="membership"/>
@@ -519,5 +520,66 @@
 		 where user_no = #{userNo}
 	</update>
 	
+	<select id="selectMemberBySocialIdKey" resultMap="memberResultset">
+		select user_no
+		     , user_id
+		     , user_pwd
+		     , user_name
+		     , email
+		     , phone
+		     , gender
+		     , age
+		     , address
+		     , enroll_date
+		     , user_level
+		     , pt
+		     , api
+		     , qr
+		     , profile_pic
+		     , membership
+		  from member
+		 where status = 'Y'
+		   and api = #{api}
+	</select>
+	
+	<insert id="insertSocialMember">
+		insert
+		  into member
+		     ( 
+		       user_no
+		     , user_id
+		     , user_pwd
+		     , user_name
+		     , email
+		     , phone
+		     , gender
+		     , age
+		     , user_level
+		     , api
+		     , qr
+		     , profile_pic
+		     )
+		values
+		     (
+		       seq_mno.nextval
+		     , #{userId}
+		     , #{userPwd}
+     		 , #{userName}
+		     , #{email}
+		     , #{phone}
+		     , #{gender}
+		     , #{age}
+		     , 2 			  -- 일반 회원만 소셜 로그인 가능하게함 
+		     , #{api}
+		     , #{qr}
+		     , #{profilePic}
+		     )
+	</insert>
+	<select id="checkAdditionalInfo" resultType="int">
+		SELECT 
+		       COUNT(*)
+		  FROM MEMBER_INFO 
+		 WHERE USER_NO = #{userNo}
+	</select>
 	
 </mapper>

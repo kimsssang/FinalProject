@@ -195,7 +195,26 @@ public class MemberServiceImpl implements MemberService{
 		return mDao.updateTrainerInfo(sqlSession, trInfo);
 	}
 
+	@Override
+	public Member selectMemberBySocialIdKey(String api) {
+		return mDao.selectMemberBySocialIdKey(sqlSession, api);
+	}
 
+	@Override
+	public int insertSocialMember(Member newUser) {
+		return mDao.insertSocialMember(sqlSession, newUser);
+	}
+
+	@Override
+	public boolean checkAdditionalInfo(int userNo) {
+		return mDao.checkAdditionalInfo(sqlSession, userNo);
+	}
+
+	@Override
+	public int addAdditionalInfo(MemberInfo addAdditionalInfo) {
+		// mDao 재사용
+		return mDao.insertMemberInfo(sqlSession, addAdditionalInfo); // MEMBER_INFO에 데이터 삽입;
+	}
 	
 
 	

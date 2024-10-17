@@ -79,9 +79,9 @@ pageEncoding="UTF-8"%>
 
       <!-- Nav Item - Dashboard -->
       <li class="nav-item active">
-        <a class="nav-link" href="dashboard.me">
+        <a class="nav-link" href="index.html">
           <i class="fas fa-fw fa-tachometer-alt"></i>
-          <span>메인화면</span></a
+          <span>대시보드</span></a
         >
       </li>
 
@@ -173,6 +173,7 @@ pageEncoding="UTF-8"%>
           data-parent="#accordionSidebar"
         >
           <div class="bg-white py-2 collapse-inner rounded">
+<<<<<<< HEAD
             <a class="collapse-item" href="traineeExercisePlanner.tn"
               >운동 관리</a
             >
@@ -197,6 +198,10 @@ pageEncoding="UTF-8"%>
                 >받은 식단 확인</a
               >
             </div>
+=======
+            <a class="collapse-item" href="login.html">운동 관리</a>
+            <a class="collapse-item" href="register.html">식단 관리</a>
+>>>>>>> 714d128b0d02d43e941265a4ebe548feecebb20f
           </div>
         </div>
       </li>

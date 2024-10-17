@@ -21,6 +21,8 @@
 		<typeAlias type="com.kh.fitguardians.member.model.vo.BodyInfo" alias="BodyInfo"/>
 		<typeAlias type="com.kh.fitguardians.exercise.model.vo.TnWorkout" alias="TnWorkout"/>
 		<typeAlias type="com.kh.fitguardians.member.model.vo.TrainerInfo" alias="TrainerInfo"/>
+		<typeAlias alias="MealPlan" type="com.kh.fitguardians.mealplan.model.vo.MealPlan"/>
+		<typeAlias alias="trainermatching" type="com.kh.fitguardians.trainermatching.model.vo.trainermatching"/>
 	</typeAliases>
 	
 	<typeHandlers>
@@ -32,6 +34,8 @@
 		<mapper resource="/mappers/member-mapper.xml"/>
 		<mapper resource="/mappers/chat-mapper.xml"/>
 		<mapper resource="/mappers/exercise-mapper.xml"/>
+		<mapper resource="/mappers/mealplan-mapper.xml"/>
+		<mapper resource="/mappers/trainermatching-mapper.xml"/>
 
 	</mappers>
 

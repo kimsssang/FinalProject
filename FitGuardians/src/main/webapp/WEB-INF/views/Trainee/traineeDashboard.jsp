@@ -229,12 +229,31 @@
                                                                 </tbody>
                                                             </table>
                                                         <b>오늘의 식단</b>
-                                                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Itaque ex omnis totam, ipsum fugiat doloremque impedit sit temporibus quasi fugit maiores quas laboriosam in, necessitatibus tempore quam esse quisquam. Accusantium.</p>
+                                                        	<table id="mealtable" class="table table-bordered"  style="border: 1px solid black;  margin-top: 20px; background-color: white;"> 
+																<thead > 
+																	<tr style="background-color: rgb(251,251,251);"> 
+																		<th >번호</th> 
+																		<th  >음식명</th>
+											                           	<th >칼로리(kcal)</th>
+											                           	<th > 당(g)</th>
+											                           	<th >탄수화물(g)</th>
+											                           	<th >단백질(g)</th>
+											                           	<th >지방(g)</th>
+																	</tr>
+																</thead>
+															
+																	<tbody>
+																	
+																	</tbody>
+																	
+															</table>
                                                     </div>
                                                     
+
+                                                    
                                                     <script>
+                                                    
                                                     $(document).ready(function() {
-                                                    	
                                                     	let userId = '${loginUser.userId}';
 
                                                         //console.log("userId:", userId);
@@ -347,6 +366,56 @@
                                                         })
                                                   
                                                       </script>
+                                                                                 				    <script >
+                                                      // 그날 보낸 식단 확인용 스크립트
+                                                      	console.log("여기가 먼저222?")
+                                                      //오늘날짜 확인
+													    let today = new Date();
+                                                      //날짜 형식 변경 함수
+                                                      			
+													    function formatDate(date) {
+													        // yyyy-MM-dd 형식으로 변환
+													        let fomartday = date.getFullYear() + "-" + ((date.getMonth() + 1).toString().padStart(2, '0')) + "-" + (date.getDate().toString().padStart(2, '0'));
+													        return fomartday;
+													   			 }
+                                                      //지금날짜 변경된거(day)
+                                                       let day = formatDate(today);
+															//ajax로 파일 가져오기
+															$.ajax({
+																 url: 'traineesendmealmainplanlist.bo',
+														            data: { day: day, getUserId : $('.trainerId').text() },
+														            success: function(data) {
+														            	   let value = "";
+														            	 if (data == ""){
+														            		 value = "<h2>${loginUser.userName} 님이 " + 오늘 + " 보낸 식단이 없습니다</h2>";
+														            		 $('#mealtable').html(value);
+														            	 }
+														            	 else{
+														            		 
+													                    for (let i in data) {
+													                        let num = parseInt(i) + 1;
+													                        value += "<tr>" +
+													                                 "<td>" + num + "</td>" + 
+													                                 "<td>" + data[i].foodName + "</td>" + 
+													                                 "<td>" + data[i].kcal + "</td>" + 
+													                                 "<td>" + data[i].sugar + "</td>" + 
+													                                 "<td>" + data[i].carbs + "</td>" + 
+													                                 "<td>" + data[i].protein + "</td>" + 
+													                                 "<td>" + data[i].fat + "</td>" + 
+													                                 "</tr>";
+													                    }
+													                    
+													                    $('#mealtable tbody').html(value);
+														            	 }
+														            },
+														            error : function(){
+														            	console.log("식단 ajax오류")
+														            }
+															})
+                                                
+                                                      
+                                                      </script>
+
                     
                                                 </div>
                                            </div>

@@ -197,9 +197,6 @@ pageEncoding="UTF-8"%>
                 >받은 식단 확인</a
               >
             </div>
-
-            <a class="collapse-item" href="login.html">운동 관리</a>
-            <a class="collapse-item" href="register.html">식단 관리</a>
           </div>
         </div>
       </li>

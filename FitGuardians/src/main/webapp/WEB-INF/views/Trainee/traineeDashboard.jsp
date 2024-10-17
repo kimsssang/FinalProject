@@ -368,7 +368,7 @@
                                                       </script>
                                                                                  				    <script >
                                                       // 그날 보낸 식단 확인용 스크립트
-                                                      	console.log("여기가 먼저222?")
+                                                      
                                                       //오늘날짜 확인
 													    let today = new Date();
                                                       //날짜 형식 변경 함수
@@ -385,13 +385,14 @@
 																 url: 'traineesendmealmainplanlist.bo',
 														            data: { day: day, getUserId : $('.trainerId').text() },
 														            success: function(data) {
+														            	
 														            	   let value = "";
 														            	 if (data == ""){
-														            		 value = "<h2>${loginUser.userName} 님이 " + 오늘 + " 보낸 식단이 없습니다</h2>";
+														            		 value = "<tr><td>${loginUser.userName} 님이 " + '오늘' + " 보낸 식단이 없습니다<td></tr>";
 														            		 $('#mealtable').html(value);
 														            	 }
 														            	 else{
-														            		 
+														            		
 													                    for (let i in data) {
 													                        let num = parseInt(i) + 1;
 													                        value += "<tr>" +

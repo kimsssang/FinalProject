@@ -28,7 +28,7 @@
     left: 500px; /* 왼쪽에서부터 50px 떨어짐 */
     width: 50%;
     height: 50%;
-    background-color: rgba(255, 255, 255, 1); /* 반투명 빨간색 */
+    background-color: rgba(255, 255, 255, 1); 
     z-index: 4; /* z-index 설정 */
     display: none;
     }
@@ -40,6 +40,23 @@
  	z-index: 3;
  	display: none;
  	
+ }
+ .topdiv div{
+ 	border: 1px solid black;
+ }
+ .membershiplistdiv{
+     display: flex; /* 플렉스 레이아웃 적용 */
+    flex-direction: row;
+ width:100%;
+ height: 80%;
+
+ }
+ .membershiplistdiv div{
+ width: 25%;
+ height: 100%;
+ }
+ .buydiv{
+ height: 20%
  }
     
  </style>
@@ -67,7 +84,46 @@
                 	 -->
                   <div class="row container-fluid">
               
-		         	<div class="topdiv"></div>
+		         	<div class="topdiv">
+		         		<div class="membershiplistdiv">
+			         		<div class="3pt ptcheck">pt3회권</div>
+			         		<div class="5pt ptcheck">pt5회권</div>
+			         		<div class="10p ptcheck">pt10회권</div>
+			         		<div class="20p ptcheck">pt20회권</div>
+		         		</div>
+		         		<div class="buydiv">구매버튼 예정</div>
+		         	</div>
+		         	<script >
+		         	let isSelected = false;
+
+		         // .ptcheck 클릭 시 배경색 변경
+		         $('.ptcheck').on('click', function() {
+		             // 모든 ptcheck 요소의 배경색을 하얗게 초기화
+		             $('.ptcheck').css('background-color', 'white');
+		             
+		             // 클릭된 요소의 배경색을 변경
+		             $(this).css('background-color', 'rgb(230,230,230)');
+		             
+		             // 클릭할 때마다 isSelected 상태 업데이트
+		             isSelected = false; // 초기화
+		             $('.ptcheck').each(function() {
+		                 if ($(this).css('background-color') === 'rgb(230,230,230)') {
+		                     isSelected = true; // 하나라도 선택된 경우
+		                 }
+		             });
+		         });
+
+		         // .buydiv 클릭 시 동작
+		         $('.buydiv').on('click', function() {
+		             if (isSelected) {
+		                 alert("회원권 있음");
+		                 window.open('shop.do', '_blank', 'width=800,height=600');
+		             } else {
+		                 alert("회원권을 선택해주세요");
+		             }
+		         });
+
+		         	</script>
 				        
 				    
 				             <c:forEach var="t" items="${list}" > 
@@ -168,6 +224,7 @@
 $('.ptchosebtn').on('click', function() {
     $('.topdiv').fadeIn(500); // 0.5초 동안 천천히 나타남
     $('.backdiv').fadeIn(500);
+    $('topdiv').css('display','flex');
 });
 
 $('.backdiv').on('click', function() {

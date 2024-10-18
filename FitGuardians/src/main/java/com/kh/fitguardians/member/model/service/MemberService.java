@@ -98,6 +98,9 @@ public interface MemberService {
 	
 	// 소셜 회원(추가 정보 입력)
 	public int addAdditionalInfo(MemberInfo addAdditionalInfo);
+
+	// 회원가입시 자동으로 bodyInfo 추가
+	int addBodyInfo(BodyInfo bi);
 	
 	
 

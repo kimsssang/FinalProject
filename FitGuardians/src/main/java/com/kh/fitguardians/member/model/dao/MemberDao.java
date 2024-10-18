@@ -150,4 +150,8 @@ public class MemberDao {
 		}
 	}
 
+	public int addBodyInfo(SqlSessionTemplate sqlSession, BodyInfo bi) {
+		return sqlSession.insert("memberMapper.addBodyInfo", bi);
+	}
+
 }

@@ -23,9 +23,7 @@
 
     <!-- 외부 자바스크립트 파일 : 캘린더 -->
     <script defer src ="./resources/js/exerciseCalendar.js"></script>
-    <!-- 외부 자바스크립트 파일 : 차트 -->
-    <script defer src ="./resources/js/traineeDetailInfo.js"></script>
-
+   
 
 </head>
 
@@ -343,13 +341,30 @@
                             <form id="delteForm">
                                 <div class="bodyResult">
                                   <c:forEach var="b" items="${bi}">
-									    <div class="btn btn-light" style="display:flex;">
-									        <p style="font-weight:600;">측정일 <br /> <fmt:formatDate value="${b.measureDate}" pattern="yy/MM/dd" /></p> <br />
-									        <p>골격근량  ${b.smm}</p><br />
-									        <p>체질량지수(BMI)  ${b.bmi}</p><br />
-									        <p>체지방량  ${b.fat}</p>
-									        <div class="btn btn-danger btn-circle btn-sm deleteButton" data-body-info-no="${b.bodyInfoNo}"><i class="fas fa-trash"></i></div>
-									    </div>
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>측정일</th>
+                                                    <th>골격근량</th>
+                                                    <th style="width:100px;">체질량<br />지수(BMI)</th>
+                                                    <th>체지방량</th>
+                                                    <th> </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td><fmt:formatDate value="${b.measureDate}" pattern="yy/MM/dd" /></td>
+                                                    <td><fmt:formatNumber value="${b.smm}" maxFractionDigits="1" /></td>
+                                                    <td><fmt:formatNumber value="${b.bmi}" maxFractionDigits="1" /></td>
+                                                    <td><fmt:formatNumber value="${b.fat}" maxFractionDigits="1" /></td>
+                                                    <td>
+                                                        <div class="btn btn-danger btn-circle btn-sm deleteButton" data-body-info-no="${b.bodyInfoNo}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
 									    <br />
 									</c:forEach>
                                 </div>

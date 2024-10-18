@@ -584,4 +584,30 @@
 		 WHERE USER_NO = #{userNo}
 	</select>
 	
+	<insert id="addBodyInfo">
+	     insert
+       into body_info
+          (
+            body_info_no
+          , user_id
+          , measure_date
+          , bmi
+          , fat 
+          , smm
+          , bi_status
+          )
+     values
+         (
+           seq_bf_no.nextval
+         , #{userId}
+         , sysdate
+         , #{bmi}
+         , #{fat}
+         , #{smm}
+         , 'Y'
+         )
+	
+	</insert>
+	
+	
 </mapper>

@@ -79,7 +79,7 @@ pageEncoding="UTF-8"%>
       <!-- Sidebar - Brand -->
       <a
         class="sidebar-brand d-flex align-items-center justify-content-center"
-        href="main.co"
+        href="main.tr"
       >
         <div class="sidebar-brand-icon rotate-n-15">
           <i class="fas fa-laugh-wink"></i>

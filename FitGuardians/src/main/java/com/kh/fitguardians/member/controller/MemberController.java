@@ -120,7 +120,7 @@ public class MemberController {
 	
 	
 	@RequestMapping(value = "enroll.me", produces = "text/html; charset=UTF-8")
-	public String memberEnroll(Member m, String memberInfo, HttpServletRequest request) throws IOException {
+	public ModelAndView memberEnroll(Member m, String memberInfo, HttpServletRequest request, ModelAndView mv) throws IOException {
 		String encPwd = bcryptPasswordEncoder.encode(m.getUserPwd());
 		m.setUserPwd(encPwd);
 		
@@ -164,7 +164,7 @@ public class MemberController {
         
         
 		// 회원 추가 정보가 있는지 확인
-        if (memberInfo != null && !memberInfo.isEmpty()) {
+        if (memberInfo != null && !memberInfo.isEmpty()) { // 회원 추가정보가 있다면
             // 추가 정보가 있으면 추가 정보 저장
             MemberInfo info = new Gson().fromJson(memberInfo, MemberInfo.class);
             
@@ -175,18 +175,86 @@ public class MemberController {
             
             int result = mService.insertMemberWithInfo(m, info);
             int result2 = mService.insertQrInfo(qr);
-            if (result > 0 && result2 > 0) {
+            if (result > 0 && result2 > 0) { // 성공적으로 회원가입을 한 경우
                 request.getSession().setAttribute("alertMsg", "회원가입이 완료되었습니다. 환영합니다!");
-                return "Trainee/traineeDashboard";
+                
+            	Member mem = mService.getTraineeDetails(m.getUserId());
+            	ArrayList<BodyInfo> bi = mService.getTraineeBodyInfo(m.getUserId());
+            	MemberInfo mi = mService.getTraineeInfo(m.getUserNo());
+            	// 최근 6개 데이터 조회문
+            	ArrayList<BodyInfo> recentBi = mService.getRecentInfo(m.getUserId());
+            	
+            	// 가장 최근 1개 데이터 조회문
+            	BodyInfo lastBodyInfo = null;
+            	
+            	for (BodyInfo bodyInfo : bi) {
+            	    lastBodyInfo = bodyInfo;
+            	}
+            	double lastSmm = lastBodyInfo.getSmm();
+            	double lastFat = lastBodyInfo.getFat();
+            	double lastBmi = lastBodyInfo.getBmi();
+            	
+            	mv.addObject("m" , mem);
+            	mv.addObject("bi" , bi);
+            	mv.addObject("mi", mi);
+            	mv.addObject("lastSmm", String.format("%.1f", lastSmm));
+            	mv.addObject("lastFat", String.format("%.1f", lastFat));
+            	mv.addObject("lastBmi", String.format("%.1f", lastBmi));
+            	mv.addObject("recentBi", recentBi);
+                
+            	mv.setViewName("Trainer/traineeDetailInfo");
+            	
+                return mv;
             }
-        } else {
+            
+            // BodyInfo테이블 하나 자동으로 생성하기 - 추가정보 입력한 경우
+            BodyInfo bi = new BodyInfo();
+            
+            if(m.getGender() == "M") { // 성별이 남성인 경우
+
+            	double mAge = Double.parseDouble(m.getAge());
+            	double mBmi = info.getWeight() / Math.pow(info.getHeight(), 2);
+            	double mSmm = 0.407 * info.getWeight() + 0.267 * info.getHeight() - 19.2;
+            	double mFat = 1.20 * mBmi + 0.23 * mAge - 16.2;
+            	
+            	bi.setUserId(m.getUserId());
+            	bi.setBmi(mBmi);
+            	bi.setSmm(mSmm);
+            	bi.setFat(mFat);
+            	int biResult1 = mService.addBodyInfo(bi);
+            	
+            }else { // 성별이 여성인 경우
+            	
+            	double fAge = Double.parseDouble(m.getAge());
+            	double fBmi = info.getWeight() / Math.pow(info.getHeight(), 2);
+            	double fSmm = 0.252 * info.getWeight() + 0.473 * info.getHeight() -48.3;
+            	double fFat = 1.20 * fBmi + 0.23 * fAge - 5.4;
+            	
+            	bi.setUserId(m.getUserId());
+            	bi.setBmi(fBmi);
+            	bi.setSmm(fSmm);
+            	bi.setFat(fFat);
+            	int biResult2 = mService.addBodyInfo(bi);
+            	
+            }
+        } else { // 회원 추가정보가 없다면
             // 추가 정보가 없으면 기존 방식대로 회원가입 처리
+        	// MemberInfo가  0 or null
 			MemberInfo info = new MemberInfo();
 			info.setUserNo(m.getUserNo());
 			info.setHeight(0);
 			info.setWeight(0);
 			info.setDisease(null);
 			info.setGoal("");
+            
+            // BodyInfo테이블 하나 자동으로 생성하기 - 추가정보 입력 안한 경우 (BodyInfo가 0 혹은 null)
+            BodyInfo bi = new BodyInfo();
+            bi.setUserId(m.getUserId());
+            bi.setBmi(0);
+            bi.setSmm(0);
+            bi.setFat(0);
+            int biResult3 = mService.addBodyInfo(bi);
+            
             int result = mService.insertMemberWithInfo(m, info);
             int result2 = mService.insertQrInfo(qr);
             // 트레이너일때 기본 트레이너 정보 입력
@@ -203,11 +271,13 @@ public class MemberController {
             
             if (result > 0 && result2 > 0) {
                 request.getSession().setAttribute("alertMsg", "회원가입이 완료되었습니다. 환영합니다!");
-                return "Trainee/traineeDashboard";
+                mv.setViewName("common/loginForm");
+                return mv;
             }
         }
         request.getSession().setAttribute("errorMsg", "회원가입에 실패했습니다.");
-        return "common/loginForm";
+        mv.setViewName("common/loginForm");
+        return mv;
 	}
 	
 	@RequestMapping("login.me")

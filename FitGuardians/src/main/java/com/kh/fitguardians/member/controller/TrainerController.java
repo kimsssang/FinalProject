@@ -61,5 +61,11 @@ public class TrainerController {
 		}
 		
 	}
+	
+	// 메인으로 가는 메소드
+	@RequestMapping("main.tr")
+	public String goTrainerMain() {
+		return "Trainer/traineeManagement";
+	}
 
 }

@@ -346,7 +346,7 @@
 			$("#additionalInfoBtn").click(function() {
 				var traineeCheck = $("#trainee").prop("checked");
 				if(traineeCheck){
-					console.log("aaa");
+					//console.log("aaa");
 					
 					Swal.fire({
 					title: '추가 정보 입력',

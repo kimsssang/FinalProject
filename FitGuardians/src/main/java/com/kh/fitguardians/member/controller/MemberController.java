@@ -162,17 +162,7 @@ public class MemberController {
             m.getProfilePic();
         m.setProfilePic(profile);
         
-        // 트레이너일때 기본 트레이너 정보 입력
-        if(m.getUserLevel().equals("1")) {
-			TrainerInfo trInfo = new TrainerInfo();
-			trInfo.setUserNo(m.getUserNo());
-			trInfo.setTrCareer("");
-			trInfo.setTrCerti("");
-			trInfo.setTrDescript("");
-			trInfo.setTrProfile("resources/trProfile/blank-profile-picture.webp");
-			int result3 = mService.insertTrainerInfo(trInfo); 
-		
-        }
+        
 		// 회원 추가 정보가 있는지 확인
         if (memberInfo != null && !memberInfo.isEmpty()) {
             // 추가 정보가 있으면 추가 정보 저장
@@ -199,6 +189,18 @@ public class MemberController {
 			info.setGoal("");
             int result = mService.insertMemberWithInfo(m, info);
             int result2 = mService.insertQrInfo(qr);
+            // 트레이너일때 기본 트레이너 정보 입력
+            if(m.getUserLevel().equals("1")) {
+    			TrainerInfo trInfo = new TrainerInfo();
+    			trInfo.setUserNo(m.getUserNo());
+    			trInfo.setTrCareer("");
+    			trInfo.setTrCerti("");
+    			trInfo.setTrDescript("");
+    			trInfo.setTrProfile("resources/trProfile/blank-profile-picture.webp");
+    			int result3 = mService.insertTrainerInfo(trInfo); 
+    		
+            }
+            
             if (result > 0 && result2 > 0) {
                 request.getSession().setAttribute("alertMsg", "회원가입이 완료되었습니다. 환영합니다!");
                 return "Trainee/traineeDashboard";

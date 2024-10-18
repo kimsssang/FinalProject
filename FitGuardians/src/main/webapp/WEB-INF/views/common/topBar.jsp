@@ -275,11 +275,15 @@
 	    var currentUserNo = userNo; // 현재 로그인한 유저 NO
 	    var selectedUserNo; // 상대방 유저 NO
 	    var chNo; // 채팅방 번호
+	    var lastMsgNo; // 전역 변수로 가장 큰 msgNo 저장
+	    var intervalId; // 새로운 채팅을 불러오기 위한 인터벌
+	    var chatMessagesContainer; // 채팅창을 자동으로 맨 아래로 내려오게 하기 위한 변수
 	
 	    // 모달을 열고 메시지를 로드하는 함수
 	    function openChatModal(participantName, userNo, chatRoomNo) {
 	        selectedUserNo = userNo; // 상대방 유저 NO
 	        chNo = chatRoomNo; // 채팅방 NO
+	        chatMessagesContainer = $('#chatMessages');
 	        
 	    	 // 디버깅을 위한 콘솔 로그 추가
 	        console.log('모달 열기 - 트레이너 이름:', participantName);
@@ -307,12 +311,63 @@
 	                
 	                // 모달 여는 코드 추가!
 	                $('#chatModal').modal('show');
+	                
+	             	// 이전의 setInterval 정리
+	                if (intervalId) {
+	                    clearInterval(intervalId);
+	                }
+
+	                // 2초마다 새로운 메시지 가져오기 시작
+	                intervalId = setInterval(() => {
+	                    fetchNewMessages(lastMsgNo);
+	                }, 2000);
+
 	            },
 	            error: function(xhr, status, error) {
 	                console.error("메시지 로드 오류:", error);
 	            }
 	        });
 	    }
+	    
+	 	// 모달이 열렸을 때 스크롤을 아래로 내리기
+	    $('#chatModal').on('shown.bs.modal', function() {
+	        chatMessagesContainer.scrollTop(chatMessagesContainer[0].scrollHeight);
+	    });
+	    
+	 	// 닫기 버튼 클릭 시 인터벌 해제
+	    $('.btn-close').on('click', function () {
+	        clearInterval(intervalId);
+	    });
+	    
+		// 채팅모달 닫을 시 인터벌 해제(잘 안되는것 같음)
+	    $('#chatModal').on('hidden.bs.modal', function () {
+	        clearInterval(intervalId);
+	    });
+
+	    
+	    // 새 메시지를 가져오는 함수
+	    function fetchNewMessages(lastMsgNo){
+	    	$.ajax({
+	    		
+	    		url: '/fitguardians/chat/newMessages/' + chNo,
+	    		method: 'GET',
+	    		data: {
+	    			senderNo: currentUserNo, // 로그인 유저 넘버임!
+	    			receiverNo: selectedUserNo, // 상대방 유저 넘버임!
+	    			lastMsgNo: lastMsgNo // 가장 큰 msgNo 전송
+	    		},
+	    		success: function(response) {
+	    			if(response && response.length > 0){
+	    				updateChatMessages(response); // 새 메시지 업데이트
+	    			}
+	    		},
+	    		error: function(xhr, status, error){
+	    			console.log("세 메시지 로드 오류", error);
+	    		}
+	    	})
+	    }
+	    
+	    
 	
 	    // 드롭다운 아이템 클릭 시
 	    $(document).on('click', '.dropdown-item', function() {
@@ -328,7 +383,7 @@
 	 	// 채팅 메시지를 업데이트하는 함수
 	    function updateChatMessages(messages) {
 	        var chatMessagesContainer = $('#chatMessages');
-	        chatMessagesContainer.empty(); // 기존 메시지 삭제
+	        //chatMessagesContainer.empty(); // 기존 메시지 삭제
 
 	        var messagesToStatusUpdate = []; // 메시지들의 상태 업데이트를 담을 변수
 
@@ -375,7 +430,17 @@
 	            }
 
 	            chatMessagesContainer.append(messageElement); // 메시지를 컨테이너에 추가
+	            
+				
 	        });
+	        
+	    	// 스크롤을 맨 아래로 내리기
+	        chatMessagesContainer.scrollTop(chatMessagesContainer[0].scrollHeight);
+	        
+	     	// 가장 큰 msgNo 찾기
+            if (messages.length > 0) {
+                lastMsgNo = Math.max(...messages.map(msg => msg.msgNo));
+            }
 
 	        // 상태 업데이트 호출 (배열이 비어있지 않을 때만)
 	        if (messagesToStatusUpdate.length > 0) {
@@ -534,6 +599,11 @@
 
 	    });
 	</script>
+	
+	
+	
+	
+	
 	<c:choose>
 	    <c:when test="${not empty loginUser && not empty loginUser.api}">
 	        <c:if test="${!hasAdditionalInfo}">

@@ -9,7 +9,6 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller; // 변경
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import com.kh.fitguardians.chat.model.service.ChatService;
@@ -29,10 +28,6 @@ public class ChatController {
     @ResponseBody
     public ResponseEntity<?> sendMessage(@RequestBody Message message) {
         try {
-            // 채팅방 번호와 발신자, 수신자 출력
-            System.out.println("채팅방 번호: " + message.getChNo());
-            System.out.println("발신자 번호: " + message.getSenderNo());
-            System.out.println("수신자 번호: " + message.getReceiverNo());
 
             // 메시지 전송
             Message sentMessage = chatService.sendMessage(message); // 메시지 객체 반환
@@ -83,28 +78,31 @@ public class ChatController {
     @ResponseBody // JSON 형태로 응답
     public ArrayList<Message> getMessages(@PathVariable int chNo, @RequestParam int senderNo, @RequestParam int receiverNo) {
     	
-    	System.out.println("채팅방 번호 : " + chNo);
-    	System.out.println("발신자 번호 : " + senderNo);
-    	System.out.println("수신자 번호 : " + receiverNo);
-    	
     	ArrayList<Message> messages = chatService.getMessage(chNo, senderNo, receiverNo);
-        System.out.println("조회된 메시지 수: " + messages.size()); // 조회된 메시지 수 출력
-        for (Message message : messages) {
-            //System.out.println("메시지: " + message); // 각 메시지 출력
-        }
         
         return messages;
     }
     
+    // 새 메시지 조회
+    @GetMapping("/newMessages/{chNo}")
+    @ResponseBody
+    public ArrayList<Message> getNewMessages(
+            @PathVariable("chNo") int chNo,
+            @RequestParam("senderNo") int senderNo,
+            @RequestParam("receiverNo") int receiverNo,
+            @RequestParam("lastMsgNo") int lastMsgNo) {
+        
+        // 새로운 메시지를 가져오는 서비스 메서드 호출
+        ArrayList<Message> newMessages = chatService.fetchNewMessages(chNo, senderNo, receiverNo, lastMsgNo);
+        
+        return newMessages; // 새로운 메시지 객체 리스트 반환
+    }
+    
+    
     // 메시지 상태 업데이트
     @PostMapping("/updateStatus")
     public ResponseEntity<Integer> updateMessageStatus(@RequestBody ArrayList<Message> messagesToUpdate) {
-    	System.out.println("받은 메시지 리스트: " + messagesToUpdate);
     	
-    	for (Message message : messagesToUpdate) {
-    	    System.out.println("채팅방 번호: " + message.getChNo());
-    	}
-
         int updatedCount = chatService.updateMessageStatus(messagesToUpdate);
         return ResponseEntity.ok(updatedCount); // HTTP 200과 함께 업데이트된 메시지 수 반환
     }

@@ -1,7 +1,6 @@
 package com.kh.fitguardians.chat.model.service;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,17 +53,24 @@ public class ChatServiceImpl implements ChatService {
 	    return null; // 채팅방이 존재하지 않으면 null 반환
 	}
 
-
+	// 특정 채팅방 메시지 조회
 	@Override
 	public ArrayList<Message> getMessage(int chNo, int senderNo, int receiverNo) {
 		
 		return chatDao.getMessages(sqlSession, chNo, senderNo, receiverNo);
 	}
 	
+	
+	// 특정 채팅방 새 메시지 조회
+	@Override
+	public ArrayList<Message> fetchNewMessages(int chNo, int senderNo, int receiverNo, int lastMsgNo) {
+		
+		return chatDao.fetchNewMessages(sqlSession, chNo, senderNo, receiverNo, lastMsgNo);
+	}
+	
 	// 메시지 상태 업데이트
 	@Override
 	public int updateMessageStatus(ArrayList<Message> messagesToUpdate) {
-		System.out.println("서비스에서 상태 업데이트 : " + messagesToUpdate);				
 		return chatDao.updateMessageStatus(sqlSession, messagesToUpdate);
 	}
 
@@ -94,6 +100,8 @@ public class ChatServiceImpl implements ChatService {
 	public ArrayList<Member> searchTrainers(String keyword) {
 		return chatDao.searchTrainers(sqlSession, keyword);
 	}
+
+	
 
 	
 	

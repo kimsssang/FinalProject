@@ -111,7 +111,7 @@
 	
 	
 	
-	
+	<!-- 특정 채팅방 메시지 조회 -->
 	<select id="getMessages" parameterType="map" resultMap="messageResult">
 	    SELECT 
 		    m.PROFILE_PIC,
@@ -135,6 +135,31 @@
 		    msg.SEND_DATE ASC
 
 	</select>
+	
+	<!-- 특정 채팅방 새 메시지 조회 -->
+	<select id="fetchNewMessages" parameterType="map" resultMap="messageResult">
+	    SELECT 
+	        m.PROFILE_PIC,
+	        m.USER_NAME,
+	        msg.MSG_NO,
+	        msg.MSG_CONTENT,
+	        TO_CHAR(msg.SEND_DATE, 'YYYY-MM-DD HH24:MI') AS "sendDate",
+	        msg.CH_NO,
+	        msg.SENDER_NO,
+	        msg.RECEIVER_NO,
+	        msg.MSG_STATUS
+	    FROM 
+	        MESSAGE msg
+	    JOIN 
+	        MEMBER m ON m.USER_NO = msg.SENDER_NO
+	    WHERE 
+	        msg.CH_NO = #{chNo} 
+	        AND msg.SENDER_NO = #{receiverNo}  <!-- 상대방이 보낸 메시지만 조회 -->
+	        AND msg.MSG_NO > #{lastMsgNo}  <!-- lastMsgNo보다 큰 메시지만 조회 -->
+	    ORDER BY 
+	        msg.SEND_DATE ASC
+	</select>
+	
 
 
 

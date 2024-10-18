@@ -57,7 +57,6 @@ public class ChatDao {
 
     // 특정 채팅방의 메시지 조회
     public ArrayList<Message> getMessages(SqlSessionTemplate session, int chNo, int senderNo, int receiverNo) {
-        System.out.println("Received parameters - chNo: " + chNo + ", senderNo: " + senderNo + ", receiverNo: " + receiverNo);
         // SQL 쿼리를 사용하여 메시지를 조회
         Map<String, Object> params = new HashMap<>();
         params.put("chNo", chNo);
@@ -67,11 +66,27 @@ public class ChatDao {
         // 메시지를 조회
         ArrayList<Message> messages = (ArrayList)session.selectList("ChatMapper.getMessages", params);
 
-        // 쿼리 결과 로그 출력
-        System.out.println("조회된 메시지: " + messages);
         
         return messages;
     }
+    
+    // 특정 채팅방 새 메시지 조회
+    public ArrayList<Message> fetchNewMessages(SqlSessionTemplate session, int chNo, int senderNo, int receiverNo, int lastMsgNo) {
+        
+        // SQL 쿼리를 사용하여 새 메시지를 조회
+        Map<String, Object> params = new HashMap<>();
+        params.put("chNo", chNo);
+        params.put("senderNo", senderNo);
+        params.put("receiverNo", receiverNo);
+        params.put("lastMsgNo", lastMsgNo);
+        
+        // 새 메시지를 조회
+        ArrayList<Message> newMessageNos = (ArrayList) session.selectList("ChatMapper.fetchNewMessages", params);
+        
+        return newMessageNos;
+    }
+
+    
 
     
     // 메시지 상태 업데이트 (추가 기능)
@@ -79,15 +94,9 @@ public class ChatDao {
         int totalUpdated = 0;
 
         for (Message message : messagesToUpdate) {
-            // 메시지 정보를 출력하여 디버깅
-            System.out.println("업데이트할 메시지 번호: " + message.getMsgNo());
-            System.out.println("업데이트할 채팅방 번호: " + message.getChNo());
-            System.out.println("업데이트할 수신자 번호: " + message.getReceiverNo());
-            System.out.println("업데이트할 상태: " + message.getMsgStatus());
 
             totalUpdated += session.update("ChatMapper.updateMessageStatus", message); // XML 매퍼에 정의된 SQL 쿼리 호출
         }
-        System.out.println("DAO에서 상태 업데이트 된 메시지 수 : " + totalUpdated);
 
         return totalUpdated; // 업데이트된 메시지 수 반환
     }
@@ -105,13 +114,11 @@ public class ChatDao {
 
     // 활성화된 채팅 상대 조회 (트레이너용)
     public ArrayList<MessageParticipantDTO> getActiveParticipantsForTrainer(SqlSessionTemplate sqlSession, int userNo) {
-    	System.out.println("Fetching active participants for trainer with userNo: " + userNo);
         return (ArrayList) sqlSession.selectList("ChatMapper.getActiveParticipantsForTrainer", userNo);
     }
     
     // 트레이너 검색
     public ArrayList<Member> searchTrainers(SqlSessionTemplate sqlSession, String keyword) {
-    	System.out.println("Searching for trainers with keyword: " + keyword);
         ArrayList<Member> trainers = (ArrayList)sqlSession.selectList("ChatMapper.searchTrainers", keyword);
         return trainers;
     }

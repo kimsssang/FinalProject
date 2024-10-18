@@ -154,4 +154,12 @@ public class MemberDao {
 		return sqlSession.insert("memberMapper.addBodyInfo", bi);
 	}
 
+	public Member selectMemberByUserId(SqlSessionTemplate sqlSession, String userId) {
+		return sqlSession.selectOne("memberMapper.selectMemberByUserId", userId);
+	}
+
+	public int defaultMemberInfoInsert(SqlSessionTemplate sqlSession, MemberInfo mi) {
+		return sqlSession.insert("memberMapper.defaultMemberInfoInsert", mi);
+	}
+
 }

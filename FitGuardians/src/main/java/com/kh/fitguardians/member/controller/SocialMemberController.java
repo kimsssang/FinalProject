@@ -40,6 +40,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.kh.fitguardians.common.model.vo.QrInfo;
 import com.kh.fitguardians.member.model.service.MemberServiceImpl;
+import com.kh.fitguardians.member.model.vo.BodyInfo;
 import com.kh.fitguardians.member.model.vo.Member;
 import com.kh.fitguardians.member.model.vo.MemberInfo;
 
@@ -140,6 +141,12 @@ public class SocialMemberController {
 	    	int userNo = ((Member)session.getAttribute("loginUser")).getUserNo();
 	    	boolean hasAdditionalInfo = mService.checkAdditionalInfo(userNo);
 	    	
+	    	// 추가정보가 있다면 적용
+	    	if(hasAdditionalInfo) {
+	    		MemberInfo mi = mService.getMemberInfo(userNo);
+    			session.setAttribute("mi", mi);
+	    	}
+	    	
 	    	// 세션에 추가 정보 입력 후 저장
 	    	session.setAttribute("hasAdditionalInfo", hasAdditionalInfo);
 	    	
@@ -198,7 +205,7 @@ public class SocialMemberController {
 	                : null;
 	        String normGender = normalizeGender(gender);
 	        
-	        // 휴대폰 번호 (기본 형식 : +82 10-0000-0000)(수정된 형식 : 010-0000-0000)
+	        // 휴대폰 번호 (기본 형식 : +82 10-0000-0000)(수정된 형식 : 01000000000)
 			String phoneNumber = kakaoAccount.has("phone_number")
 			                ? kakaoAccount.get("phone_number")
 			                		.getAsString()
@@ -226,6 +233,12 @@ public class SocialMemberController {
             // 프로필 이미지 다운로드 및 저장
             if (profileImage != null) {
             	savedProfileImage = downloadAndRenamePic(profileImage);  // 이미지 다운로드 및 파일명 수정
+            }else {
+            	if(normGender.equals("F")) {
+            		savedProfileImage = "resources/profilePic/gymW.png";
+            	}else {
+            		savedProfileImage = "resources/profilePic/gymM.png";
+            	}
             }
             
             if(name == null || email == null || api == null) {
@@ -253,11 +266,17 @@ public class SocialMemberController {
             	newUser.setQr(qrPath);
             	
             	// DB에 새로운 사용자 저장하기
-            	int result1 = mService.insertSocialMember(newUser);
+            	int result = mService.insertSocialMember(newUser);
             	
-            	if(result1 > 0) {
+            	if(result > 0) {
+            		// 등록되고난 후에 해당 사용자의 모든 데이터 가져오고 기본 추가정보 적용
+            		Member m = mService.selectMemberByUserId(kakaoRandomId);
+            		MemberInfo mi = defaultMemberInfoInsert(m.getUserNo());
+            		
             		// 등록된 사용자 정보 세션에 저장
-            		session.setAttribute("loginUser", newUser);
+            		session.setAttribute("loginUser", m);
+            		session.setAttribute("mi", mi);
+            		
             		return "redirect:dashboard.me";
             	}else {
             		// 등록 실패, 기존 로그인 창으로 리다이랙트
@@ -345,6 +364,12 @@ public class SocialMemberController {
 	    	int userNo = ((Member)session.getAttribute("loginUser")).getUserNo();
 	    	boolean hasAdditionalInfo = mService.checkAdditionalInfo(userNo);
 	    	
+	    	// 추가정보가 있다면 적용
+	    	if(hasAdditionalInfo) {
+	    		MemberInfo mi = mService.getMemberInfo(userNo);
+    			session.setAttribute("mi", mi);
+	    	}
+	    	
 	    	// 세션에 추가 정보 입력 후 저장
 	    	session.setAttribute("hasAdditionalInfo", hasAdditionalInfo);
 	    	
@@ -418,8 +443,14 @@ public class SocialMemberController {
 	        
     		String savedProfileImage = null;
     		// 프로필 이미지 다운로드 및 저장
-            if (profileImage == null) {
+            if (profileImage != null) {
             	savedProfileImage = downloadAndRenamePic(profileImage);  // 이미지 다운로드 및 파일명 수정
+            }else {
+            	if(gender.equals("F")) {
+            		savedProfileImage = "resources/profilePic/gymW.png";
+            	}else {
+            		savedProfileImage = "resources/profilePic/gymM.png";
+            	}
             }
             
             if(name == null || email == null || api == null) {
@@ -447,8 +478,14 @@ public class SocialMemberController {
             	
             	int result = mService.insertSocialMember(newUser);
             	if(result > 0) {
+            		// 등록되고난 후에 해당 사용자의 모든 데이터 가져오고 기본 추가정보 적용
+            		Member m = mService.selectMemberByUserId(naverRandomId);
+            		MemberInfo mi = defaultMemberInfoInsert(m.getUserNo());
+            		
             		// 등록된 사용자 정보 세션에 저장
-            		session.setAttribute("loginUser", newUser);
+            		session.setAttribute("loginUser", m);
+            		session.setAttribute("mi", mi);
+            		
             		return "redirect:dashboard.me";
             	}else {
             		// 등록 실패, 기존 로그인 창으로 리다이랙트
@@ -549,6 +586,12 @@ public class SocialMemberController {
 	    	// 추가정보 확인하기
 	    	int userNo = ((Member)session.getAttribute("loginUser")).getUserNo();
 	    	boolean hasAdditionalInfo = mService.checkAdditionalInfo(userNo);
+	    	
+	    	// 추가정보가 있다면 적용
+	    	if(hasAdditionalInfo) {
+	    		MemberInfo mi = mService.getMemberInfo(userNo);
+    			session.setAttribute("mi", mi);
+	    	}
 	    	
 	    	// 세션에 추가 정보 입력 후 저장
 	    	session.setAttribute("hasAdditionalInfo", hasAdditionalInfo);
@@ -665,13 +708,22 @@ public class SocialMemberController {
             	newUser.setPhone(phoneNumber);
             	newUser.setApi(api);
             	
+            	String defPic = normGender.equals("F") ? "resources/profilePic/gymW.png" : "resources/profilePic/gymM.png";
+            	newUser.setProfilePic(defPic);
+            	
             	String qrPath = qrCreater(newUser);
             	newUser.setQr(qrPath);
             	
             	int result = mService.insertSocialMember(newUser);
             	if(result > 0) {
+            		// 등록되고난 후에 해당 사용자의 모든 데이터 가져오고 기본 추가정보 적용
+            		Member m = mService.selectMemberByUserId(googleRandomId);
+            		MemberInfo mi = defaultMemberInfoInsert(m.getUserNo());
+            		
             		// 등록된 사용자 정보 세션에 저장
-            		session.setAttribute("loginUser", newUser);
+            		session.setAttribute("loginUser", m);
+            		session.setAttribute("mi", mi);
+            		
             		return "redirect:dashboard.me";
             	}else {
             		// 등록 실패, 기존 로그인 창으로 리다이랙트
@@ -804,7 +856,7 @@ public class SocialMemberController {
 		return password.toString();
 	}
 	
-	// 모달 창에서 '나중에 하기'를 눌렀을 경우
+	// 모달 창에서 '나중에 하기'를 눌렀을 경우, 임시적으로 모달 창을 비활성화 하게함
 	@ResponseBody
 	@RequestMapping("delayAdditionalInfo.me")
 	public void delayAdditionalInfo(HttpSession session) {
@@ -824,13 +876,16 @@ public class SocialMemberController {
 	    int result = mService.addAdditionalInfo(memberInfo);
 	    
 	    if(result > 0) {
+	    	// 세션에 입력하는 갱신된 추가정보 넣기
+	    	MemberInfo mi = mService.getMemberInfo(loginMember.getUserNo());
+	    	session.setAttribute("mi", mi);
 	        return "success";
 	    } else {
 	        return "error";
 	    }
 	}
 	
-	// 기존 회원가입에서 가져와서 사용
+	// 기존 회원가입에서 가져와서 사용한 QR추가 기능
 	public String qrCreater(Member newUser) throws IOException {
 		QrInfo qr = new QrInfo();
 		String filePath = "";
@@ -867,5 +922,22 @@ public class SocialMemberController {
 			}
 		}
 		return filePath;
+	}
+	
+	// 사용자 추가 정보를 기본값으로 추가하기 위한 메소드
+	public MemberInfo defaultMemberInfoInsert(int userNo) {
+		MemberInfo mi = new MemberInfo();
+		mi.setUserNo(userNo);
+		mi.setHeight(0);
+		mi.setWeight(0);
+		mi.setDisease(null);
+		mi.setGoal("");
+		
+		int result = mService.defaultMemberInfoInsert(mi);
+		if(result > 0) {
+			return mi;
+		}else {
+			return null;
+		}
 	}
 }

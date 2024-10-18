@@ -610,7 +610,7 @@
 	
 	<c:choose>
 	    <c:when test="${not empty loginUser && not empty loginUser.api}">
-	        <c:if test="${!hasAdditionalInfo}">
+	        <c:if test="${not hasAdditionalInfo}">
 	            <script>
 					$(function(){
 						Swal.fire({

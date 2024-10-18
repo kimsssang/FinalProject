@@ -28,7 +28,7 @@ public class ChatPageController {
     @PostMapping("searchTrainers")
     @ResponseBody
     public ArrayList<Member> searchTrainers(@RequestParam String keyword) {
-    	ArrayList<Member> trainers = chatService.searchTrainers(keyword);
+    	ArrayList<Member> trainers = chatService.searchTrainers("%" + keyword + "%");
         return trainers;
     }
 

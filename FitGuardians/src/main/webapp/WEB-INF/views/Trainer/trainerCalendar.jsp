@@ -65,8 +65,6 @@
 										end:"${s.endDate}",
 										backColor:"${s.backColor}"
 									});
-									
-									
 								</script>
 							</c:forEach>
 								<script>

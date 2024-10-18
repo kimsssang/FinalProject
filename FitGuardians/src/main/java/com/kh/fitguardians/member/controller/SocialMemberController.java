@@ -133,8 +133,8 @@ public class SocialMemberController {
 	    	JsonObject jsonRes = new Gson().fromJson(response.toString(), JsonObject.class);
 	    	String accessToken = jsonRes.get("access_token").getAsString();
 	    	
-	    	// 사용자 정보 추출 
-	    	getKakaoUserProfile(accessToken, session, request);
+	    	// 사용자 정보 추출 및 리다이렉트 
+	    	String redirect = getKakaoUserProfile(accessToken, session, request);
 	    	
 	    	// 추가정보 확인하기
 	    	int userNo = ((Member)session.getAttribute("loginUser")).getUserNo();
@@ -143,7 +143,7 @@ public class SocialMemberController {
 	    	// 세션에 추가 정보 입력 후 저장
 	    	session.setAttribute("hasAdditionalInfo", hasAdditionalInfo);
 	    	
-	    	return "redirect:/";
+	    	return redirect;
 	    }else {
 	    	throw new IOException("토큰에 접근하는데에 실패하였습니다, 응답 코드 : " + responseCode);
 	    }
@@ -198,13 +198,14 @@ public class SocialMemberController {
 	                : null;
 	        String normGender = normalizeGender(gender);
 	        
-	        // 휴대폰 번호 (기본 형식 : +82 10-0000-0000, 조정완료)
+	        // 휴대폰 번호 (기본 형식 : +82 10-0000-0000)(수정된 형식 : 010-0000-0000)
 			String phoneNumber = kakaoAccount.has("phone_number")
 			                ? kakaoAccount.get("phone_number")
 			                		.getAsString()
 			                : null;
 			if(phoneNumber.startsWith("+82")) {
-				phoneNumber = phoneNumber.replace("+82 ", "0"); // +82를 0으로 변환(외국인이 회원가입하려고하면 어떡하지)
+				phoneNumber = phoneNumber.replace("+82 ", "0") // '+82 '를 0으로 변환(외국인이 회원가입하려고하면 어떡하지)
+							.replaceAll("-", ""); 			   // '-'를 제거
 			}
 			
 			// 출생연도(나이로 만들기)
@@ -257,7 +258,7 @@ public class SocialMemberController {
             	if(result1 > 0) {
             		// 등록된 사용자 정보 세션에 저장
             		session.setAttribute("loginUser", newUser);
-            		return "redirect:/";
+            		return "redirect:dashboard.me";
             	}else {
             		// 등록 실패, 기존 로그인 창으로 리다이랙트
             		session.setAttribute("errorMsg", "로그인 실패");
@@ -267,7 +268,7 @@ public class SocialMemberController {
             }else {
             	// 기존 사용자 정보가 있을 경우 세션에 저장
             	session.setAttribute("loginUser", existingUser);
-            	return "redirect:/";
+            	return "redirect:dashboard.me";
             }
 		}else {
 			session.setAttribute("errorMsg", "사용자 정보 데이터를 가져올 수 없습니다.");
@@ -337,8 +338,8 @@ public class SocialMemberController {
 
 	        JsonObject jsonResponse = new Gson().fromJson(response.toString(), JsonObject.class);
 	        String accessToken = jsonResponse.get("access_token").getAsString();
-	        // 사용자 정보 추출 
-			getNaverUserProfile(accessToken, session, request);
+	        // 사용자 정보 추출 및 리다이렉트
+			String redirect = getNaverUserProfile(accessToken, session, request);
 	    	
 			// 추가정보 확인하기
 	    	int userNo = ((Member)session.getAttribute("loginUser")).getUserNo();
@@ -347,7 +348,7 @@ public class SocialMemberController {
 	    	// 세션에 추가 정보 입력 후 저장
 	    	session.setAttribute("hasAdditionalInfo", hasAdditionalInfo);
 	    	
-	    	return "redirect:/"; 
+	    	return redirect; 
 	    } else {
 	    	throw new IOException("토큰에 접근하는데에 실패하였습니다, 응답 코드 : " + responseCode); 
 	    }
@@ -406,10 +407,11 @@ public class SocialMemberController {
 	        		? responseObj.get("gender").getAsString() 
 	        		: null;
 	        		
-	        // 휴대폰 번호(형식 : 010-0000-0000)
+	        // 휴대폰 번호(형식 : 010-0000-0000)(수정된 형식 : 01000000000)
 	        String mobile = responseObj.has("mobile") 
 	        		? responseObj.get("mobile").getAsString() 
 	        		: null;
+    		mobile = mobile.replaceAll("-", ""); 	// '-'를 제거
 	        
 	        // 네이버 고유 ID(DB의 API속성에 넣을 것임)
 	        String api = responseObj.get("id").getAsString();
@@ -447,7 +449,7 @@ public class SocialMemberController {
             	if(result > 0) {
             		// 등록된 사용자 정보 세션에 저장
             		session.setAttribute("loginUser", newUser);
-            		return "redirect:/";
+            		return "redirect:dashboard.me";
             	}else {
             		// 등록 실패, 기존 로그인 창으로 리다이랙트
             		session.setAttribute("errorMsg", "로그인 실패");
@@ -456,7 +458,7 @@ public class SocialMemberController {
             }else{
             	// 기존 사용자 정보가 있을 경우 세션에 저장
             	session.setAttribute("loginUser", existingUser);
-            	return "redirect:/";
+            	return "redirect:dashboard.me";
             }
 	    }else {
 	    	session.setAttribute("errorMsg", "사용자 정보 데이터를 가져올 수 없습니다.");
@@ -541,8 +543,8 @@ public class SocialMemberController {
 	    	
 	    	JsonObject jsonRes = new Gson().fromJson(response.toString(), JsonObject.class);
 	    	String accessToken = jsonRes.get("access_token").getAsString();
-	    	// 사용자 정보 추출 
-	    	getGoogleUserProfile(accessToken, session, request);
+	    	// 사용자 정보 추출 및 리다이렉트 
+	    	String redirect = getGoogleUserProfile(accessToken, session, request);
 	    	
 	    	// 추가정보 확인하기
 	    	int userNo = ((Member)session.getAttribute("loginUser")).getUserNo();
@@ -551,7 +553,7 @@ public class SocialMemberController {
 	    	// 세션에 추가 정보 입력 후 저장
 	    	session.setAttribute("hasAdditionalInfo", hasAdditionalInfo);
 	    	
-	    	return "redirect:/"; 
+	    	return redirect; 
 	    }else {
 	    	throw new IOException("토큰에 접근하는데에 실패하였습니다, 응답 코드 : " + responseCode);
 	    }
@@ -624,7 +626,7 @@ public class SocialMemberController {
 	        // 구글 고유 ID(DB의 API속성에 넣을 것임)
 	        String api = userProfile.get("resourceName").getAsString();
 	        
-	        // 휴대폰 번호
+	        // 휴대폰 번호 (형식 : 010-0000-0000)(수정된 형식 : 01000000000)
             String phoneNumber = userProfile.has("phoneNumbers") 
             		? userProfile.get("phoneNumbers")
             				.getAsJsonArray()
@@ -633,6 +635,7 @@ public class SocialMemberController {
             				.get("value")
             				.getAsString() 
             		: null;
+            phoneNumber = phoneNumber.replaceAll("-", "");
             // 주소 (사용자가 임의로 문자를 직접 입력하는 양식으로부터 가져오는 데이터라서, 우편번호까지 가져오는 것은 불가능함, 주석처리)
 //            String address = userProfile.has("addresses") 
 //            		? userProfile.get("addresses")
@@ -669,7 +672,7 @@ public class SocialMemberController {
             	if(result > 0) {
             		// 등록된 사용자 정보 세션에 저장
             		session.setAttribute("loginUser", newUser);
-            		return "redirect:/";
+            		return "redirect:dashboard.me";
             	}else {
             		// 등록 실패, 기존 로그인 창으로 리다이랙트
             		session.setAttribute("errorMsg", "로그인 실패");
@@ -678,7 +681,7 @@ public class SocialMemberController {
             }else{
             	// 기존 사용자 정보가 있을 경우 세션에 저장
             	session.setAttribute("loginUser", existingUser);
-            	return "redirect:/";
+            	return "redirect:dashboard.me";
             }
 	    }else {
 	    	session.setAttribute("errorMsg", "사용자 정보 데이터를 가져올 수 없습니다.");

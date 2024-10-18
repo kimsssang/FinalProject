@@ -96,9 +96,6 @@ select qr_no
            and to_timestamp('2024-10-08T17:10:10.776433', 'YYYY-MM-DD"T"HH24:MI:SS.FF') between
            to_timestamp('2024-10-08T17:10:10.776433', 'YYYY-MM-DD"T"HH24:MI:SS.FF') and
            to_timestamp('2025-10-08T16:40:43.6191067', 'YYYY-MM-DD"T"HH24:MI:SS.FF') 
-<<<<<<< HEAD
-           ;
-=======
            ;
            
 insert 
@@ -122,4 +119,51 @@ values
      )
      ;
      
->>>>>>> 0a7998ddf659c2159ef1594c24f904508cb294a9
+insert 
+  into schedule
+     (
+       schedule_no
+     , user_no
+     , schedule_title
+     , start_date
+     , end_date
+     , back_color
+     , pt_user
+     )
+values
+     (
+       seq_cno.nextval
+     , '4'
+     , '회원 스케줄 테스트22'
+     , '2024-10-22T08:16:00.000Z'
+     , '2024-10-23T08:17:00.000Z'
+     , 'red'
+     , 'noinfo'
+     )     
+;
+
+	select schedule_no
+		     , schedule_title
+		     , start_date
+		     , end_date
+		     , back_color
+		  from schedule
+		 where user_no = 4
+		   and pt_user = 'noinfo'
+           ;
+           
+           select schedule_no
+		     , schedule_title
+		     , start_date
+		     , end_date
+		     , back_color
+             , pt_user
+		  from schedule
+		 where user_no = 4
+		   and pt_user is null
+           ;
+select count(schedule_no)
+		  from schedule
+		 where schedule_title = #{scheduleTitle}
+		   and start_date = #{startDate}
+		   and user_no = #{userNo}

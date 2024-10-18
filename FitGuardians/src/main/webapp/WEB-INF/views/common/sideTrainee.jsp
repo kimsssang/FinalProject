@@ -206,9 +206,9 @@ pageEncoding="UTF-8"%>
 
       <!-- Nav Item - Charts -->
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)">
+        <a class="nav-link" href="calendar.me">
           <i class="fas fa-fw fa-chart-area"></i>
-          <span>스케쥴러</span></a
+          <span>스케줄러</span></a
         >
       </li>
 

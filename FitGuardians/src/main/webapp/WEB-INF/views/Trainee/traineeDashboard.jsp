@@ -360,13 +360,13 @@
                                                         document.addEventListener('DOMContentLoaded', function() {
                                                           const calendarEl = document.getElementById('calendar')
                                                           const calendar = new FullCalendar.Calendar(calendarEl, {
-                                                            initialView: 'dayGridMonth'
+                                                            initialView: 'dayGridMonth'	
                                                           })
                                                           calendar.render()
                                                         })
                                                   
                                                       </script>
-                                                                                 				    <script >
+                                    				  <script >
                                                       // 그날 보낸 식단 확인용 스크립트
                                                       	console.log("여기가 먼저222?")
                                                       //오늘날짜 확인

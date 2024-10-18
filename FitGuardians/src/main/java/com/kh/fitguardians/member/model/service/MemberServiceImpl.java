@@ -215,6 +215,8 @@ public class MemberServiceImpl implements MemberService{
 		// mDao 재사용
 		return mDao.insertMemberInfo(sqlSession, addAdditionalInfo); // MEMBER_INFO에 데이터 삽입;
 	}
+
+	
 	
 
 	

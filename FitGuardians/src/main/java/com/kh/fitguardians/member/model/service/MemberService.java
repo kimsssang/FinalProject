@@ -86,7 +86,6 @@ public interface MemberService {
 	
 	public int updateTrainerInfo(TrainerInfo trInfo);
 	
-	
 	// 소셜 회원 정보 조회
 	public Member selectMemberBySocialIdKey(String api);
 	

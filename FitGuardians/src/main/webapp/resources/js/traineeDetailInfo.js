@@ -23,7 +23,7 @@ $(document).ready(function(){
             bmi = weight / (heightMeter ** 2);
             // fat - 체지방량
             fat = 1.20 * bmi + 0.23 * traineeAge - 5.4;
-            
+                
             let value = traineeName + "의 측정 결과입니다. <br />"
                         + "<span class='result' style='margin:10px'> · 골격근량 : </span> <span>" + smm.toFixed(1) + " </span> <br/> "
                         + "<span class='result' style='margin:10px'> · BMI(체질량지수) : </span> <span>" + bmi.toFixed(1) + " </span> <br/>"
@@ -32,7 +32,7 @@ $(document).ready(function(){
             $('.bodyResult').attr('id', 'bodyResult');
             $('#bodyResult').html(value);
             $('#saveButton').text('저장하기');
-       
+
         }else{ // 남자 측정
             // smm - 골격근량
            smm = 0.407 * weight + 0.267 * height - 19.2;
@@ -56,7 +56,7 @@ $(document).ready(function(){
         // 데이터 DB에 저장하는 ajax
         if($(this).text()==='저장하기'){
             $(this).click(function(){
-             saveBodyInfo(traineeId, smm, bmi, fat);
+                saveBodyInfo(traineeId, smm, bmi, fat);
             })
         }
 

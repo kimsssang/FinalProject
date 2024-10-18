@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -36,6 +37,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.kh.fitguardians.common.model.vo.QrInfo;
+import com.kh.fitguardians.exercise.model.service.ExerciseServiceImpl;
 import com.kh.fitguardians.member.model.service.MemberServiceImpl;
 import com.kh.fitguardians.member.model.vo.BodyInfo;
 import com.kh.fitguardians.member.model.vo.Member;
@@ -48,6 +50,8 @@ public class MemberController {
 	
 	@Autowired
 	private MemberServiceImpl mService = new MemberServiceImpl();
+	@Autowired
+	private ExerciseServiceImpl eService = new ExerciseServiceImpl();
 	@Autowired
 	private BCryptPasswordEncoder bcryptPasswordEncoder; 
 	@Autowired
@@ -361,8 +365,10 @@ public class MemberController {
 			MemberInfo mInfo = mService.selectMemberInfo(m.getUserNo());
 			Gson gson = new Gson();
 			String diseaseJson = gson.toJson(mInfo.getDisease());
+			BodyInfo bodyInfo = mService.getBodyInfo(m.getUserId());
 			request.setAttribute("memberInfo", mInfo);
 			request.setAttribute("disease", diseaseJson);
+			request.setAttribute("bodyInfo", bodyInfo);
 		}else {
 			TrainerInfo trInfo = mService.selectTrainerInfo(m.getUserNo());
 			request.setAttribute("trInfo", trInfo);
@@ -375,6 +381,7 @@ public class MemberController {
 	public String updateDisease(MemberInfo mInfo) {
 		
 		int result = mService.updateDisease(mInfo);
+		
 		if(result > 0) {
 			return "DDDY";
 		}else {
@@ -441,12 +448,15 @@ public class MemberController {
 	}
 	
 	@RequestMapping(value="calendar.pt", produces="application/json")
-	public String trainerCalender(HttpSession session, HttpServletRequest request) {
-		Member loginUser = (Member) session.getAttribute("loginUser");
+	public ModelAndView PtCalednar(HttpSession session, ModelAndView mv) {
+		String userId = ((Member)session.getAttribute("loginUser")).getUserId();
 		
-		ArrayList<Schedule> schedule = mService.selectSchedule(loginUser.getUserNo());
-		request.setAttribute("schedule", schedule);
-		return "Trainer/trainerCalendar";
+		ArrayList<Member> list = eService.getTrainee(userId);
+		
+		mv.addObject("list", list).setViewName("Trainer/PtCalendar");;
+		
+		return mv;
+	
 	}
 	
 	@RequestMapping(value="calendar.me", produces="application/json")
@@ -455,7 +465,7 @@ public class MemberController {
 		
 		ArrayList<Schedule> schedule = mService.selectSchedule(loginUser.getUserNo());
 		request.setAttribute("schedule", schedule);
-		return "Trainer/trainerCalendar";
+		return "Trainee/TraineeCalendar";
 	}
 	
 	@RequestMapping("changePicture.me")
@@ -516,6 +526,8 @@ public class MemberController {
 		return result > 0 ? "YYTR" : "NNTR";
 	}
 
+	
+	
 	
 	/**첨부파일 서버 폴더에 저장하는 역할
 	 * @param upfile

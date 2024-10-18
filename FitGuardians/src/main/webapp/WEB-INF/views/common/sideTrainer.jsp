@@ -68,6 +68,29 @@ pageEncoding="UTF-8"%>
         font-size: 13.6px;
         padding-left: 10px;
       }
+      
+     .mealpagesp::after{
+          width: 1rem;
+    text-align: center;
+    float: right;
+    vertical-align: 0;
+    border: 0;
+    font-weight: 900;
+    content: '\f107';
+    font-family: 'Font Awesome 5 Free';
+    
+    }
+    .mealpagespv::after{
+          width: 1rem;
+    text-align: center;
+    float: right;
+    vertical-align: 0;
+    border: 0;
+    font-weight: 900;
+    content: '\f102';
+    font-family: 'Font Awesome 5 Free';
+    
+    }
     </style>
   </head>
   <body id="page-top">
@@ -160,7 +183,7 @@ pageEncoding="UTF-8"%>
       <li class="nav-item">
         <div class="nav-link">
           <i class="fas fa-fw fa-table mealpage"></i>
-          <span class="mealpage">식단 프로그램</span>
+          <span class="mealpagesp mealpage" >식단 프로그램</span>
           <div class="collapse-item mealpagediv">
             <div class="astylediv">
               <a class="collapse-item" href="trainermealplan.bo">식단 보내기</a>
@@ -191,8 +214,13 @@ pageEncoding="UTF-8"%>
       $(".mealpage").on("click", function () {
         if ($(".mealpagediv").css("display") === "block") {
           $(".mealpagediv").slideUp();
+          $(".mealpagesp").addClass("mealpagespv");
+          $(".mealpagespv").removeClass("mealpagesp");
+          
         } else {
           $(".mealpagediv").slideDown();
+          $(".mealpagespv").addClass("mealpagesp");
+          $(".mealpagesp").removeClass("mealpagespv");
         }
       });
     </script>

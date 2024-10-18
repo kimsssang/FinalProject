@@ -44,13 +44,15 @@ pageEncoding="UTF-8"%>
       src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_APP_KEY&libraries=services,clusterer,drawing"
     ></script>
     <style>
-      .mealpage:hover {
+      .mealpagea:hover {
         cursor: pointer;
-        background-color: white;
+        background-color: red;
       }
       .mealpage a {
         display: none;
       }
+      .mealpage:hover{
+      cursor: pointer;}
 
       .mealpagea {
         background-color: white;
@@ -179,20 +181,20 @@ pageEncoding="UTF-8"%>
             <div class="collapse-item mealpage">
               식단관리
               <a
-                class="collapse-item "
-                style="display: none"
+                class="collapse-item mealpagea"
+               
                 href="traineesnedMealplan.bo"
                 >식단 보내기</a
               >
               <a
-                class="collapse-item "
-                style="display: none"
+                class="collapse-item mealpagea"
+               
                 href="traineesendMealPlanList.bo"
                 >보낸 식단 확인</a
               >
               <a
-                class="collapse-item "
-                style="display: none"
+                class="collapse-item mealpagea"
+              
                 href="traineemealplan.bo"
                 >받은 식단 확인</a
               >

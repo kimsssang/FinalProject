@@ -58,7 +58,9 @@
  .buydiv{
  height: 20%
  }
-    
+ .selected {
+    background-color: rgb(230,230,230);
+}
  </style>
 </head>
 <body>
@@ -96,18 +98,18 @@
 		         	<script >
 		         	let isSelected = false;
 
-		         // .ptcheck 클릭 시 배경색 변경
+		         // .ptcheck 클릭 시 클래스 추가/제거로 선택 상태 업데이트
 		         $('.ptcheck').on('click', function() {
-		             // 모든 ptcheck 요소의 배경색을 하얗게 초기화
-		             $('.ptcheck').css('background-color', 'white');
+		             // 모든 ptcheck 요소의 선택 클래스를 제거
+		             $('.ptcheck').removeClass('selected');
 		             
-		             // 클릭된 요소의 배경색을 변경
-		             $(this).css('background-color', 'rgb(230,230,230)');
+		             // 클릭된 요소에만 선택 클래스 추가
+		             $(this).addClass('selected');
 		             
-		             // 클릭할 때마다 isSelected 상태 업데이트
+		             // isSelected 상태 업데이트
 		             isSelected = false; // 초기화
 		             $('.ptcheck').each(function() {
-		                 if ($(this).css('background-color') === 'rgb(230,230,230)') {
+		                 if ($(this).hasClass('selected')) {
 		                     isSelected = true; // 하나라도 선택된 경우
 		                 }
 		             });
@@ -116,7 +118,7 @@
 		         // .buydiv 클릭 시 동작
 		         $('.buydiv').on('click', function() {
 		             if (isSelected) {
-		                 alert("회원권 있음");
+		               
 		                 window.open('shop.do', '_blank', 'width=800,height=600');
 		             } else {
 		                 alert("회원권을 선택해주세요");

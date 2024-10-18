@@ -41,6 +41,11 @@ public class TrainerMatchingController {
 		return "trainermatching/trainermatchinglist";
 				
 	}
+	@RequestMapping("shop.do")
+	public String tosspay() {
+		System.out.println(123);
+		return "trainermatching/tosspay";
+	}
 
 }
 

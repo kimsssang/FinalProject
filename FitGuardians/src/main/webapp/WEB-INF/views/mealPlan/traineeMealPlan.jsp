@@ -45,6 +45,24 @@
 .rightbutton button{
 	margin-left: 8px;
 }
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* 전체 페이지에 스크롤이 발생하지 않도록 설정 */
+}
+
+#wrapper {
+    height: 100vh; /* 뷰포트의 높이에 맞게 설정 */
+    overflow: auto; /* 콘텐츠가 넘칠 경우에만 스크롤 발생 */
+}
+
+#content-wrapper {
+    height: 100%; /* 컨텐츠 래퍼에 높이를 명확하게 설정 */
+    display: flex;
+    flex-direction: column; /* 요소들이 세로로 배치되도록 설정 */
+}
+
 </style>
 </head>
 <body>
@@ -56,7 +74,7 @@
          <!-- Main Content -->
                   <div id="content">
                  <jsp:include page="../common/topBar.jsp"/>
-				 <div class="card shadow mb-4" style="width: 95%; height: 95%;" align="center">
+				 <div class="card shadow mb-4" style="width: 98%; height: 95%;" align="center">
 
 					<div class="plantitle card-header py-3" style="display: flex; " >
 						

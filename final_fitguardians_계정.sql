@@ -167,3 +167,17 @@ select count(schedule_no)
 		 where schedule_title = #{scheduleTitle}
 		   and start_date = #{startDate}
 		   and user_no = #{userNo}
+           ;
+           
+SELECT *FROM MEMBER m
+		JOIN BODY_INFO b ON m.USER_ID = b.USER_ID
+		JOIN MEMBER_INFO mi ON m.USER_NO = mi.USER_NO
+		WHERE m.STATUS = 'Y'
+			AND b.BI_STATUS = 'Y'
+			AND m.PT = 'jang10'
+			AND b.MEASURE_DATE = (
+				SELECT MAX(MEASURE_DATE)
+				FROM BODY_INFO
+				WHERE USER_ID = m.USER_ID
+				AND BI_STATUS = 'Y'
+			)           

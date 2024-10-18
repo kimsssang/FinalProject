@@ -129,7 +129,6 @@
 								        
 								        </div>
 								
-								        <a class="dropdown-item text-center small text-gray-500" href="#">View All Chats</a>
 								    </div>
 								</li>
 
@@ -374,7 +373,7 @@
 	    
 	
 	    // 드롭다운 아이템 클릭 시
-	    $(document).on('click', '.dropdown-item', function() {
+	    $(document).on('click', '.chat-participant', function() {
 	        // 클릭한 참가자의 이름과 ID 가져오기
 	        var participantName = $(this).data('participant-name');
 	        var userNo = $(this).data('user-no'); // 상대방 유저 NO
@@ -566,7 +565,7 @@
 	                        const statusClass = participant.participantStatus === 'Y' ? 'bg-success' : 'bg-danger';
 	
 	                        // 문자열 연결 방식으로 아이템 생성
-	                        items += '<a class="dropdown-item d-flex align-items-center" href="#" data-toggle="modal" data-target="#chatModal" data-user-no="' + participant.participantNo + '" data-chat-room-no="' + participant.chatRoomNo + '" data-participant-name="' + participant.participantName + '">' +
+	                        items += '<a class="dropdown-item chat-participant d-flex align-items-center" href="#" data-toggle="modal" data-target="#chatModal" data-user-no="' + participant.participantNo + '" data-chat-room-no="' + participant.chatRoomNo + '" data-participant-name="' + participant.participantName + '">' +
 	                            '<div class="dropdown-list-image mr-3">' +
 	                            '<img class="rounded-circle" src="' + image + '" alt="...">' +
 	                            '<div class="status-indicator ' + statusClass + '"></div>' +
@@ -579,7 +578,7 @@
 	
 	                    participantList.append(items); // participantList에 아이템 추가
 	                } else {
-	                    participantList.append('<a class="dropdown-item text-center">활성화된 참가자가 없습니다.</a>');
+	                    participantList.append('<a class="dropdown-item chat-participant text-center">활성화된 참가자가 없습니다.</a>');
 	                }
 	            },
 	            error: function(xhr, status, error) {

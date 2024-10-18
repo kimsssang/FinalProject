@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd" >
+<mapper namespace="mealplanMapper">
+	
+	<resultMap type="Member" id="memberResultset">
+		<result column="user_no" property="userNo"/>
+		<result column="user_id" property="userId"/>
+		<result column="user_name" property="userName"/>
+
+	</resultMap>
+	<resultMap type="MealPlan" id="mealplanResultset">
+		<result property="sendUserId" column="send_id" />
+		<result property="getUserId" column="get_id" />
+		<result property="foodCode" column="food_code" />
+		<result property="foodName" column="food_name" />
+		<result property="carbs" column="carbs" />
+		<result property="fat" column="fat" />
+		<result property="protein" column="protein" />
+		<result property="kcal" column="kcal" />
+		<result property="sugar" column="sugar" />
+		<result property="mealDate" column="meal_date" />
+		<result property="mealMsg" column="meal_msg" />
+		<result property="mealRemsg" column="meal_remsg" />
+	</resultMap>
+	
+	
+	<select id="getTraineList" resultMap="memberResultset">
+	select user_no,user_Id,user_name
+	from member
+	where pt = #{userId}
+	and status = 'Y'
+	</select>
+	
+	<select id="searchtrainer" resultMap="memberResultset">
+	select b.user_name ,b.user_Id
+	from member a
+	join member b on (a.pt = b.user_id)
+	where a.user_id =#{userId}
+	and b.status = 'Y'
+	</select>
+	
+	<insert id="insertMealPlan" >
+	 insert into mealplan(send_id, get_id, food_code,food_name, carbs,fat,protein,kcal,sugar,meal_date,meal_msg,msg_type) values(
+	 #{sendUserId},#{getUserId},#{foodCode},#{foodName},#{carbs},#{fat},#{protein},#{kcal},#{sugar},#{mealDate},#{mealMsg},'T'
+	 )
+	</insert>
+	
+	<select id="selectMealPlanList" resultMap ="mealplanResultset" >
+	select user_name as send_id, get_id, food_code, food_name, carbs, fat, protein, kcal, sugar, meal_date,meal_msg,meal_remsg
+	from mealplan
+	JOIN  member on(send_id = user_id)
+	where get_id = #{getUserId}
+	and meal_date = #{mealDate}
+	and msg_type = 'T'
+	</select>
+	<select id="selecttraineemealplanlist" resultMap ="mealplanResultset" >
+	
+	SELECT 
+    m1.user_name AS send_id,  
+    m2.user_name AS get_id, 
+    mealplan.get_id, 
+    mealplan.send_id, 
+    mealplan.food_code, 
+    mealplan.food_name, 
+    mealplan.carbs, 
+    mealplan.fat, 
+    mealplan.protein, 
+    mealplan.kcal, 
+    mealplan.sugar, 
+    mealplan.meal_date,
+    mealplan.meal_msg,
+    mealplan.meal_remsg
+FROM 
+    mealplan
+JOIN 
+    member m1 ON mealplan.send_id = m1.user_id 
+JOIN 
+    member m2 ON mealplan.get_id = m2.user_id  
+	where get_id = #{getUserId}
+	and send_id = #{sendUserId}
+	and meal_date = #{mealDate}
+	and msg_type = 'T'
+	</select>
+	
+	<update id="updatesendReMsg">
+		update mealplan 
+			set  meal_ReMsg =   #{mealRemsg}
+		where get_id = #{getUserId}
+			and  meal_date = #{mealDate}
+			and msg_type = 'T'
+	</update>
+	
+	<update id="updatetrainersendReMsg">
+		update mealplan 
+			set  meal_ReMsg =   #{mealRemsg}
+		where get_id = #{getUserId}
+			and send_id = #{sendUserId}
+			and  meal_date = #{mealDate}
+			and msg_type = 'S'
+	</update>
+	
+	<insert id="insertMealtraineePlan" >
+	 insert into mealplan(send_id, get_id, food_code,food_name, carbs,fat,protein,kcal,sugar,meal_date,meal_msg,msg_type) values(
+	 #{sendUserId},#{getUserId},#{foodCode},#{foodName},#{carbs},#{fat},#{protein},#{kcal},#{sugar},#{mealDate},#{mealMsg},'S'
+	 )
+	</insert>
+	
+	<select id="selectMealPlantrainerList" resultMap ="mealplanResultset" >
+
+	SELECT 
+    m1.user_name AS send_id,  
+    m2.user_name AS get_id, 
+    mealplan.get_id, 
+    mealplan.send_id, 
+    mealplan.food_code, 
+    mealplan.food_name, 
+    mealplan.carbs, 
+    mealplan.fat, 
+    mealplan.protein, 
+    mealplan.kcal, 
+    mealplan.sugar, 
+    mealplan.meal_date,
+    mealplan.meal_msg,
+    mealplan.meal_remsg
+FROM 
+    mealplan
+JOIN 
+    member m1 ON mealplan.send_id = m1.user_id 
+JOIN 
+    member m2 ON mealplan.get_id = m2.user_id  
+	where get_id = #{getUserId}
+	and send_id = #{sendUserId}
+	and meal_date = #{mealDate}
+	and msg_type = 'S'
+	</select>
+	
+	<select id="selectMealmainPlantrainerList" resultMap ="mealplanResultset" >
+
+	SELECT 
+    m1.user_name AS send_id,  
+    m2.user_name AS get_id, 
+    mealplan.get_id, 
+    mealplan.send_id, 
+    mealplan.food_code, 
+    mealplan.food_name, 
+    mealplan.carbs, 
+    mealplan.fat, 
+    mealplan.protein, 
+    mealplan.kcal, 
+    mealplan.sugar, 
+    mealplan.meal_date,
+    mealplan.meal_msg,
+    mealplan.meal_remsg
+FROM 
+    mealplan
+JOIN 
+    member m1 ON mealplan.send_id = m1.user_id 
+JOIN 
+    member m2 ON mealplan.get_id = m2.user_id  
+	where send_id = #{sendUserId}
+	and meal_date = #{mealDate}
+	and msg_type = 'S'
+	</select>
+	<select id="checkmealPlan" resultMap ="mealplanResultset" >
+	
+	SELECT 
+    m1.user_name AS send_id,  
+    m2.user_name AS get_id, 
+    mealplan.get_id, 
+    mealplan.send_id, 
+    mealplan.food_code, 
+    mealplan.food_name, 
+    mealplan.carbs, 
+    mealplan.fat, 
+    mealplan.protein, 
+    mealplan.kcal, 
+    mealplan.sugar, 
+    mealplan.meal_date,
+    mealplan.meal_msg,
+    mealplan.meal_remsg
+FROM 
+    mealplan
+JOIN 
+    member m1 ON mealplan.send_id = m1.user_id 
+JOIN 
+    member m2 ON mealplan.get_id = m2.user_id  
+	where get_id = #{getUserId}
+	and send_id = #{sendUserId}
+	and meal_date = #{mealDate}
+	and msg_type = 'S'
+	</select>
+	<select id="trainercheckmealPlan" resultMap ="mealplanResultset" >
+	
+	SELECT 
+    m1.user_name AS send_id,  
+    m2.user_name AS get_id, 
+    mealplan.get_id, 
+    mealplan.send_id, 
+    mealplan.food_code, 
+    mealplan.food_name, 
+    mealplan.carbs, 
+    mealplan.fat, 
+    mealplan.protein, 
+    mealplan.kcal, 
+    mealplan.sugar, 
+    mealplan.meal_date,
+    mealplan.meal_msg,
+    mealplan.meal_remsg
+FROM 
+    mealplan
+JOIN 
+    member m1 ON mealplan.send_id = m1.user_id 
+JOIN 
+    member m2 ON mealplan.get_id = m2.user_id  
+	where get_id = #{getUserId}
+	and send_id = #{sendUserId}
+	and meal_date = #{mealDate}
+	and msg_type = 'T'
+	</select>
+
+	<delete id="traineedleltemealPlan">
+	delete mealplan
+		where get_id = #{getUserId}
+		and send_id = #{sendUserId}
+		and meal_date = #{mealDate}
+		and msg_type = 'S'
+	</delete>
+	<delete id="trainerdleltemealPlan">
+	delete mealplan
+		where get_id = #{getUserId}
+		and send_id = #{sendUserId}
+		and meal_date = #{mealDate}
+		and msg_type = 'T'
+	</delete>
+
+</mapper>

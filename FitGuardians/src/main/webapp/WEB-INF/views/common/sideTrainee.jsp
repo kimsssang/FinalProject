@@ -38,8 +38,24 @@ pageEncoding="UTF-8"%>
     <!-- Page level custom scripts -->
     <script src="./resources/templates/js/demo/chart-area-demo.js"></script>
     <script src="./resources/templates/js/demo/chart-pie-demo.js"></script>
-    
-    <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_APP_KEY&libraries=services,clusterer,drawing"></script>
+
+    <script
+      type="text/javascript"
+      src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_APP_KEY&libraries=services,clusterer,drawing"
+    ></script>
+    <style>
+      .mealpage:hover {
+        cursor: pointer;
+        background-color: white;
+      }
+      .mealpage a {
+        display: none;
+      }
+
+      .mealpagea {
+        background-color: white;
+      }
+    </style>
   </head>
   <body id="page-top">
     <!-- Sidebar -->
@@ -48,7 +64,10 @@ pageEncoding="UTF-8"%>
       id="accordionSidebar"
     >
       <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+      <a
+        class="sidebar-brand d-flex align-items-center justify-content-center"
+        href="index.html"
+      >
         <div class="sidebar-brand-icon rotate-n-15">
           <i class="fas fa-laugh-wink"></i>
         </div>
@@ -92,7 +111,7 @@ pageEncoding="UTF-8"%>
           data-parent="#accordionSidebar"
         >
           <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="buttons.html">회원권 신청</a>
+            <a class="collapse-item" href="trainermatching.bo">회원권 신청</a>
             <a class="collapse-item" href="cards.html">트레이너 조회</a>
           </div>
         </div>
@@ -154,6 +173,31 @@ pageEncoding="UTF-8"%>
           data-parent="#accordionSidebar"
         >
           <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item" href="traineeExercisePlanner.tn"
+              >운동 관리</a
+            >
+            <div class="collapse-item mealpage">
+              식단관리
+              <a
+                class="collapse-item mealpagea"
+                style="display: none"
+                href="traineesnedMealplan.bo"
+                >식단 보내기</a
+              >
+              <a
+                class="collapse-item mealpagea"
+                style="display: none"
+                href="traineesendMealPlanList.bo"
+                >보낸 식단 확인</a
+              >
+              <a
+                class="collapse-item mealpagea"
+                style="display: none"
+                href="traineemealplan.bo"
+                >받은 식단 확인</a
+              >
+            </div>
+
             <a class="collapse-item" href="login.html">운동 관리</a>
             <a class="collapse-item" href="register.html">식단 관리</a>
           </div>
@@ -167,7 +211,7 @@ pageEncoding="UTF-8"%>
           <span>스케쥴러</span></a
         >
       </li>
-      
+
       <hr class="sidebar-divider" />
       <div class="sidebar-heading">헬스장</div>
       <li class="nav-item">
@@ -176,24 +220,19 @@ pageEncoding="UTF-8"%>
           <span>헬스장 찾기</span></a
         >
       </li>
-	  
-	  <hr class="sidebar-divider" />
-		
-	  <!-- Heading -->
-	  <div class="sidebar-heading">채팅</div>
-		
-	  <!-- Nav Item - 1:1 Chat -->
-	  <li class="nav-item">
-	      <a class="nav-link" href="chatPage.cp">
-	          <i class="fas fa-comments"></i>
-	          <span>1:1 채팅</span>
-	      </a>
-	  </li>
 
+      <hr class="sidebar-divider" />
 
-      
-      
-      
+      <!-- Heading -->
+      <div class="sidebar-heading">채팅</div>
+
+      <!-- Nav Item - 1:1 Chat -->
+      <li class="nav-item">
+        <a class="nav-link" href="chatPage.cp">
+          <i class="fas fa-comments"></i>
+          <span>1:1 채팅</span>
+        </a>
+      </li>
 
       <!-- Divider -->
       <hr class="sidebar-divider d-none d-md-block" />
@@ -202,9 +241,17 @@ pageEncoding="UTF-8"%>
       <div class="text-center d-none d-md-inline">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
       </div>
-
-      
     </ul>
+    <script>
+      $(".mealpage").on("click", function () {
+        if ($(".mealpage a").css("display") === "block") {
+          $(".mealpage a").slideUp();
+        } else {
+          $(".mealpage a").slideDown();
+        }
+      });
+    </script>
+
     <!-- End of Sidebar -->
   </body>
 </html>

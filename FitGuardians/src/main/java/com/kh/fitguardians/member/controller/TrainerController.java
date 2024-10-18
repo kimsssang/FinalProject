@@ -27,6 +27,8 @@ public class TrainerController {
 		
 		ArrayList<Schedule> schedule = tService.selectSchedule(loginUser.getUserNo());
 		request.setAttribute("schedule", schedule);
+		
+		System.out.println(schedule);
 		return "Trainer/trainerCalendar";
 	}
 	

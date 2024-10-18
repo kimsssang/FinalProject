@@ -236,7 +236,8 @@
                profile_pic, 
                membership 
           FROM member 
-         WHERE user_level = 1 AND user_name LIKE '%' || #{keyword} || '%'
+         WHERE user_level = 1 
+           AND user_name LIKE #{keyword}
     </select>
 	
 

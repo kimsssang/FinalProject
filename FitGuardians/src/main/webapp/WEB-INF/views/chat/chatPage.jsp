@@ -57,7 +57,7 @@
 	    $('#trainerSearchBtn').on('click', function() {
 	        var keyword = $('#trainerSearchInput').val().trim(); // 검색어 가져오기
 	
-	        if (keyword) {
+	        //if (keyword) {
 	            $.ajax({
 	                type: 'POST',
 	                url: '/fitguardians/searchTrainers',
@@ -126,9 +126,9 @@
 	                    console.error("검색 요청 실패:", error);
 	                }
 	            });
-	        } else {
-	            alert("검색어를 입력하세요.");
-	        }
+	        //} else {
+	          //  alert("검색어를 입력하세요.");
+	        //}
 	    });
 	
 	    // 엔터 키 이벤트 추가

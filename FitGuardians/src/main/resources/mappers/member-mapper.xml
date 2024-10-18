@@ -56,10 +56,12 @@
 	<resultMap type="Schedule" id="scheduleResult">
 		<result column="schedule_no" property="scheduleNo"/>
 		<result column="user_no" property="userNo"/>
-		<result column="height" property="height"/>
-		<result column="weight" property="weight"/>
-		<result column="disease" property="disease" typeHandler="com.kh.fitguardians.common.StringArrayTypeHandler"/>
-		<result column="goal" property="goal"/>
+		<result column="schedule_title" property="scheduleTitle"/>
+		<result column="schedule_des" property="scheduleDes"/>
+		<result column="start_date" property="startDate"/>
+		<result column="end_date" property="endDate"/>
+		<result column="dow" property="dow"/>
+		<result column="back_color" property="backColor"/>
 	</resultMap>
 	
 	<resultMap type="QrInfo" id="qrInfoResult">
@@ -485,7 +487,7 @@
 		insert 
 		  into trainerinfo
 		     (
-		     , user_no
+		       user_no
 		     , tr_career
 		     , tr_certi
 		     , tr_profile

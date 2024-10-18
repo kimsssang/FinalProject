@@ -255,6 +255,7 @@
 						// 플래너 삭제버튼 구현
 						function deleteExPlan(){
 							let exerciseNo = $('#modalExerciseNo').text();
+							console.log(exerciseNo);
 							$.ajax({
 								url : "deleteTraineeExPlan.tn",
 								method : "post",

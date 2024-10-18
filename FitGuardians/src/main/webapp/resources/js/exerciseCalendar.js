@@ -103,7 +103,6 @@
                 success: function(response){
         
                     showWorkouts(response);
-                    setWorkoutPlan(response);
                     
                 },
                 error : function(){

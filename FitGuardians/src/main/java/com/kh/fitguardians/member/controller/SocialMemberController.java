@@ -257,7 +257,7 @@ public class SocialMemberController {
             	if(result1 > 0) {
             		// 등록된 사용자 정보 세션에 저장
             		session.setAttribute("loginUser", newUser);
-            		return "redirect:/";
+            		return "Trainee/traineeDashboard";
             	}else {
             		// 등록 실패, 기존 로그인 창으로 리다이랙트
             		session.setAttribute("errorMsg", "로그인 실패");
@@ -267,7 +267,7 @@ public class SocialMemberController {
             }else {
             	// 기존 사용자 정보가 있을 경우 세션에 저장
             	session.setAttribute("loginUser", existingUser);
-            	return "redirect:/";
+            	return "Trainee/traineeDashboard";
             }
 		}else {
 			session.setAttribute("errorMsg", "사용자 정보 데이터를 가져올 수 없습니다.");

@@ -335,41 +335,59 @@
                                                     </script>
                                                 </div>
                     
+                                                <!-- 트레이너가 설정한 스케줄 화면 -->
                                                 <div class="card shadow mb-4" style="width:40%; left:1%;">
-                                                    <!-- Card Header - Dropdown -->
                                                     <div
                                                         class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                                        <h6 class="m-0 font-weight-bold text-primary">스케줄</h6>
-                                                        <div class="dropdown no-arrow">
-                                                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                                            </a>
-                                                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                                                aria-labelledby="dropdownMenuLink">
-                                                                <a class="dropdown-item" href="#">스케줄 전체보기</a>
-                                                            </div>
-                                                        </div>
+                                                        <h6 class="m-0 font-weight-bold text-primary">${loginUser.userName}님의 스케줄</h6>
                                                     </div>
-                                                    <!-- Card Body -->
                                                     <div class="card-body" id='calendar'>
                                                     </div>
-                    
+
+                                                    <!-- 모달 - 스케줄 세부사항 -->
+                                                    <div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="eventModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="eventModalLabel">운동 세부일정표</h5>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <p id="modalExerciseNo" style="display:none;"></p>
+                                                                    <p id="modalWorkoutTitle"></p>
+                                                                    <p id="modalWorkoutCategory"></p>
+                                                                    <p id="modalDifficulty"></p>
+                                                                    <p id="modalDescription"></p>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+                                                                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="deleteExercise();">삭제</button>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>        
+                                                    
                                                     <script>
-                    
-                                                        document.addEventListener('DOMContentLoaded', function() {
-                                                          const calendarEl = document.getElementById('calendar')
-                                                          const calendar = new FullCalendar.Calendar(calendarEl, {
-                                                            initialView: 'dayGridMonth'
-                                                          })
-                                                          calendar.render()
+                                                        let memId = '${loginUser.userId}';
+
+                                                        document.addEventListener('DOMContentLoaded', function(){
+                                                            $.ajax({
+                                                                url:"selectWorkout.ex",
+                                                                method:"post",
+                                                                data:{userId:memId},
+                                                                success:function(response){
+                                                                    showWorkouts(response);
+                                                            },
+                                                                error:function(){},
+                                                            })
                                                         })
-                                                  
-                                                      </script>
-                                                                                 				    <script >
+                                                    </script>
+
+                                                      <script >
                                                       // 그날 보낸 식단 확인용 스크립트
-                                                      	console.log("여기가 먼저222?")
-                                                      //오늘날짜 확인
+                                                      // 오늘날짜 확인
 													    let today = new Date();
                                                       //날짜 형식 변경 함수
                                                       			

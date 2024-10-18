@@ -66,7 +66,7 @@ pageEncoding="UTF-8"%>
       <!-- Sidebar - Brand -->
       <a
         class="sidebar-brand d-flex align-items-center justify-content-center"
-        href="index.html"
+        href="main.tn"
       >
         <div class="sidebar-brand-icon rotate-n-15">
           <i class="fas fa-laugh-wink"></i>
@@ -79,7 +79,7 @@ pageEncoding="UTF-8"%>
 
       <!-- Nav Item - Dashboard -->
       <li class="nav-item active">
-        <a class="nav-link" href="index.html">
+        <a class="nav-link" href="main.tn">
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>대시보드</span></a
         >
@@ -198,8 +198,6 @@ pageEncoding="UTF-8"%>
               >
             </div>
 
-            <a class="collapse-item" href="login.html">운동 관리</a>
-            <a class="collapse-item" href="register.html">식단 관리</a>
           </div>
         </div>
       </li>

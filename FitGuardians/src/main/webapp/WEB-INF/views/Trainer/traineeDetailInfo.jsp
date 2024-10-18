@@ -204,7 +204,7 @@
                    <div class="col-lg-6" style="display:inline;">
                        <div class="card shadow mb-4">
                            <div class="card-header py-3">
-                               <h6 class="m-0 font-weight-bold text-primary">${m.userName}님의 운동 일정 조회하기</h6>
+                               <h6 class="m-0 font-weight-bold text-primary">${m.userName}님이 기록한 운동 일정</h6>
                            </div>
                            <div class="card-body detail-view" id='calendar'>
                               
@@ -248,7 +248,7 @@
                         let userId = '${m.userId}';
                         if (userId) {
                             $.ajax({
-                                url: "selectWorkout.ex",
+                                url: "selectTraineeWorkoutList.ex",
                                 method: "post",
                                 data: { userId: userId },
                                 success: function(response) {

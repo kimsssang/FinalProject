@@ -15,6 +15,19 @@
  	<result column="workout_status" property="workoutStatus"/>
  </resultMap>
  
+ <!-- 회원 플랜 -->
+  <resultMap type="TnWorkout" id="tnWorkoutResultset">
+  	<result column="ex_no" property="exerciseNo"/>
+ 	<result column="user_id" property="userId"/>
+ 	<result column="workout_title" property="workoutTitle"/>
+ 	<result column="workout_date" property="workoutDate"/>
+ 	<result column="workout_target" property="workoutTarget"/>
+ 	<result column="difficulty" property="difficulty"/>
+ 	<result column="description" property="description"/>
+ 	<result column="workout_status" property="workoutStatus"/>
+ </resultMap>
+ 
+ 
  <insert id="addExercise">
 	INSERT 
 	  INTO WORKOUT 
@@ -62,5 +75,19 @@
  	 where ex_no = #{exerciseNo}    
  </update>
  
+ 
+ <select id="selectTraineeWorkoutList" resultMap="tnWorkoutResultset">
+ 	select 
+	       ex_no
+	     , user_id
+	     , workout_title
+	     , workout_date
+	     , workout_target
+	     , difficulty
+	     , description
+	  from tn_workout
+	 where user_id = #{userId}
+	   and workout_status = 'Y'
+ </select>
  
 </mapper>

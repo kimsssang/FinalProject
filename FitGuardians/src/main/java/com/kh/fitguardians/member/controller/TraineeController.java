@@ -22,6 +22,11 @@ public class TraineeController {
 	@Autowired
 	private TraineeServiceImpl tnService;
 	
+	@RequestMapping("main.tn")
+	public String traineeMain() {
+		return "Trainee/traineeDashboard";
+	}
+	
 	@RequestMapping("traineeExercisePlanner.tn")
 	public String traineeExercisePlanner(HttpSession session, Model model) {
 		// 여기서 넘어갈 때 addTraineeExPlan들의 ArrayList를 가지고 와야 한다.
@@ -49,8 +54,9 @@ public class TraineeController {
 	@ResponseBody
 	@RequestMapping(value ="deleteTraineeExPlan.tn")
 	public int deleteTraineeExPlan(int exerciseNo) {
-		//System.out.println("exerciseNo값 잘 나오는지 : " + exerciseNo);
+		System.out.println("exerciseNo값 잘 나오는지 : " + exerciseNo);
 		int result = tnService.deleteTraineeExPlan(exerciseNo);
+		System.out.println(result);
 		return result;
 	}
 	

@@ -132,7 +132,7 @@ public class SocialMemberController {
 	    	
 	    	JsonObject jsonRes = new Gson().fromJson(response.toString(), JsonObject.class);
 	    	String accessToken = jsonRes.get("access_token").getAsString();
-	    	
+	    	session.setAttribute("accessToken", accessToken);
 	    	// 사용자 정보 추출 및 리다이렉트 
 	    	String redirect = getKakaoUserProfile(accessToken, session, request);
 	    	

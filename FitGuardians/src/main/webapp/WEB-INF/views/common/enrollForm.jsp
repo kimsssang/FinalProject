@@ -59,7 +59,7 @@
                 </div>
                 <!-- 이메일 확인 -->
                 <div class="input-group mb-3 ml-4">
-                    <input type="text" placeholder="인증번호입력" class="form-control" id="checkEmail" name="checkEmail"/>
+                    <input type="text" placeholder="인증번호입력" class="form-control" id="checkEmail" name="checkEmail" required/>
                 </div>
                 <!-- 비밀번호 -->
                 <div class="input-group mb-3 ml-4">

@@ -17,6 +17,8 @@
 	<link rel="stylesheet" href="resources/css/sumoselect.css">
 	<script defer src="resources/js/jquery.sumoselect.js"></script>
 	
+	<script src="resources/js/kakao.min.js"></script>
+	
 	<link rel="stylesheet" href="resources/css/topBar.css">
 </c:if>
 </head>
@@ -206,17 +208,18 @@
 		                            <!-- Dropdown - User Information -->
 		                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
 		                                aria-labelledby="userDropdown">
-		                                <a class="dropdown-item" href="#">
+		                                <a class="dropdown-item" href="mypage.me">
 		                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-		                                    Profile
+		                                    My Page
 		                                </a>
-		                                <a class="dropdown-item" href="#">
+		                                <a class="dropdown-item" onclick="uploadImg();">
 		                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
 		                                    Settings
+											<a id="qr" href="${loginUser.qr}"></a>
 		                                </a>
-		                                <a class="dropdown-item" href="#">
+		                                <a class="dropdown-item" href="sendQr.me">
 		                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-		                                    Activity Log
+		                                    QR코드 전송
 		                                </a>
 		                                <div class="dropdown-divider"></div>
 		                                <a class="dropdown-item" href="logout.me" data-toggle="modal" data-target="#logoutModal">
@@ -707,6 +710,25 @@
 			</c:if>
 	    </c:otherwise>
 	</c:choose>
+
+	<script>
+		Kakao.init('d0ed792d96e8cc84626daac537a04d4d')
+		console.log(Kakao.isInitialized());
+
+		var files = document.getElementById('qr').files;
+
+		Kakao.Share.uploadImage({
+			file: files,
+		})
+			.then(function(response){
+				console.log(response.infos.original.url);
+			})
+			.catch(function(error) {
+				console.log(error);
+			});
+
+	</script>
+
 
 </body>
 </html>

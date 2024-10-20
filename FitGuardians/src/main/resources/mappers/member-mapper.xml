@@ -577,13 +577,6 @@
 		     , #{profilePic}
 		     )
 	</insert>
-	<select id="checkAdditionalInfo" resultType="int">
-		SELECT 
-		       COUNT(*)
-		  FROM MEMBER_INFO 
-		 WHERE USER_NO = #{userNo}
-	</select>
-	
 	<insert id="addBodyInfo">
 	     insert
        into body_info
@@ -607,6 +600,41 @@
          , 'Y'
          )
 	
+	</insert>
+	<select id="checkAdditionalInfo" resultType="int">
+		SELECT 
+		       COUNT(*)
+		  FROM MEMBER_INFO 
+		 WHERE USER_NO = #{userNo}
+		   AND HEIGHT ^= 0
+   		   AND WEIGHT ^= 0
+   		   AND DISEASE IS NOT NULL
+   		   AND GOAL IS NOT NULL
+	</select>
+	<select id="selectMemberByUserId" resultMap="memberResultset">
+		SELECT 
+		       *
+		  FROM MEMBER
+		 WHERE USER_ID = #{userId}
+	</select>
+	<insert id="defaultMemberInfoInsert">
+		insert
+		  into member_info
+		     ( 
+		       user_no
+		     , height
+		     , weight
+		     , disease
+		     , goal
+		     )
+		values
+		     (
+		       #{userNo}
+		     , #{height}
+		     , #{weight}
+		     , #{disease}
+		     , #{goal}
+		     )
 	</insert>
 	
 	

@@ -101,7 +101,11 @@ public interface MemberService {
 
 	// 회원가입시 자동으로 bodyInfo 추가
 	int addBodyInfo(BodyInfo bi);
-	
-	
+
+	// id를 통해서 userNo 값 가져오기
+	public Member selectMemberByUserId(String userId);
+
+	// 기본 추가 정보 넣기
+	public int defaultMemberInfoInsert(MemberInfo mi);
 
 }

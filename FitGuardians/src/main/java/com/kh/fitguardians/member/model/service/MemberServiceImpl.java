@@ -221,7 +221,15 @@ public class MemberServiceImpl implements MemberService{
 		return mDao.addBodyInfo(sqlSession, bi);
 	}
 	
+	@Override
+	public Member selectMemberByUserId(String userId) {
+		return mDao.selectMemberByUserId(sqlSession, userId);
+	}
 
+	@Override
+	public int defaultMemberInfoInsert(MemberInfo mi) {
+		return mDao.defaultMemberInfoInsert(sqlSession, mi);
+	}
 	
 	
 

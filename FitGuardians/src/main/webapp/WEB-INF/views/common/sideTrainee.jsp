@@ -206,7 +206,14 @@ pageEncoding="UTF-8"%>
       <li class="nav-item">
         <a class="nav-link" href="javascript:void(0)">
           <i class="fas fa-fw fa-chart-area"></i>
-          <span>스케쥴러</span></a
+          <span>스케줄러</span></a
+        >
+      </li>
+      <li class="nav-item">
+        <!-- <a class="nav-link" href="calendar.kt"> -->
+        <a class="nav-link" href="createCalendar.kt">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>스케줄러테스트</span></a
         >
       </li>
 

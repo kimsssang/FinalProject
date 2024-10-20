@@ -38,7 +38,7 @@
             </ul>
 
             <!-- 입력 폼 -->
-            <form action="enroll.me" method="post">
+            <form action="enroll.me" method="post"  onsubmit="return validateForm();">
             	<div class="form-check-inline mb-3 ml-4">
                     <label class="form-check-label" for="trainer">회원분류 : 트레이너
                         <input class="form-check-input" type="radio" name="userLevel" id="trainer" value="1"/>
@@ -413,6 +413,20 @@
 					placeholder: "Select options",
 				});
 			})
+			
+			function validateForm() {
+			    const genderRadios = document.getElementsByName('gender');
+			    const isGenderChecked = Array.from(genderRadios).some(radio => radio.checked);
+			
+			    if (!isGenderChecked) {
+			        Swal.fire({
+			        	icon:"warning", title:"성별을 선택해주세요."
+			        });
+			        return false; // 폼 제출 중지
+			    }
+			
+			    return true; // 모든 검사를 통과하면 폼 제출 허용
+			}
 		</script>
 		
         <footer>

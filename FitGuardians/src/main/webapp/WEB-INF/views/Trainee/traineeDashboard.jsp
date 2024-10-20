@@ -405,7 +405,7 @@
 														            success: function(data) {
 														            	   let value = "";
 														            	 if (data == ""){
-														            		 value = "<h2>${loginUser.userName} 님이 " + 오늘 + " 보낸 식단이 없습니다</h2>";
+														            		 value = "<h2>${loginUser.userName} 님이 " + "오늘 보낸 식단이 없습니다</h2>";
 														            		 $('#mealtable').html(value);
 														            	 }
 														            	 else{

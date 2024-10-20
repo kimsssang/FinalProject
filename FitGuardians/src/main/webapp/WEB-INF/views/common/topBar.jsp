@@ -711,23 +711,7 @@
 	    </c:otherwise>
 	</c:choose>
 
-	<script>
-		Kakao.init('d0ed792d96e8cc84626daac537a04d4d')
-		console.log(Kakao.isInitialized());
 
-		var files = document.getElementById('qr').files;
-
-		Kakao.Share.uploadImage({
-			file: files,
-		})
-			.then(function(response){
-				console.log(response.infos.original.url);
-			})
-			.catch(function(error) {
-				console.log(error);
-			});
-
-	</script>
 
 
 </body>

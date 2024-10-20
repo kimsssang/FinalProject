@@ -9,14 +9,14 @@ $(document).ready(function(){
         let traineeAge = traineeData.age;
         
         let height = $("#height").val();
-        let heightMeter = height/100;
+        let heightMeter = height/100; // cm를 m로 변환
         let weight = $("#weight").val();
 
         let smm;
         let bmi;
         let fat;
         
-        if(traineeGender == 'F'){ // 여자 측정
+        if(traineeGender === 'F'){ // 여자 측정
             // smm - 골격근량
             smm = 0.252 * weight + 0.473 * height - 48.3;
             // bmi - 체질량지수
@@ -37,7 +37,7 @@ $(document).ready(function(){
             // smm - 골격근량
            smm = 0.407 * weight + 0.267 * height - 19.2;
             // bmi - 체질량지수
-           bmi = weight / (height ** 2);
+           bmi = weight / (heightMeter ** 2);
             // fat - 체지방량
            fat = 1.20 * bmi + 0.23 * traineeAge - 16.2;
 
@@ -77,7 +77,7 @@ $(document).ready(function(){
                 bmi : bmi,
             },
             success : function(result){
-                console.log(result);
+                // console.log(result);
                 alert("성공적으로 저장하였습니다.");
                 
                 // 값 초기화

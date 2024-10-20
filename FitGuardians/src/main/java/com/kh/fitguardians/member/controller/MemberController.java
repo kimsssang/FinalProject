@@ -58,6 +58,7 @@ public class MemberController {
 		return "Trainee/traineeDashboard";
 	}
 	
+	// 회원 상세정보 조회
     @RequestMapping("traineeDetail.me")
     public ModelAndView memberDetailView(@RequestParam("userId") String userId, ModelAndView mv) {
 
@@ -70,19 +71,34 @@ public class MemberController {
     	// 가장 최근 1개 데이터 조회문
     	BodyInfo lastBodyInfo = null;
     	
-    	for (BodyInfo bodyInfo : bi) {
-    	    lastBodyInfo = bodyInfo;
+    	// 가장 최근에 측정한 BodyInfo의 값을 가져옴
+    	for (BodyInfo bodyInfo : recentBi) {
+    		if(lastBodyInfo == null || bodyInfo.getMeasureDate().after(lastBodyInfo.getMeasureDate())) {
+    			lastBodyInfo = bodyInfo;
+    		}
     	}
-    	double lastSmm = lastBodyInfo.getSmm();
-    	double lastFat = lastBodyInfo.getFat();
-    	double lastBmi = lastBodyInfo.getBmi();
+    	
+    	// lastBodyInfo에 값이 없으면 NullPointerException이 발생할 수 있다.
+    	if(lastBodyInfo != null) {
+    		double lastSmm = lastBodyInfo.getSmm();
+    		double lastFat = lastBodyInfo.getFat();
+    		double lastBmi = lastBodyInfo.getBmi();
+    		
+    		mv.addObject("lastSmm", String.format("%.1f", lastSmm));
+    		mv.addObject("lastFat", String.format("%.1f", lastFat));
+    		mv.addObject("lastBmi", String.format("%.1f", lastBmi));
+    		
+    	}else { // lastBodyInfo가 없을 때 예외처리
+
+    		mv.addObject("lastSmm", 0.0);
+    		mv.addObject("lastFat", 0.0);
+    		mv.addObject("lastBmi", 0.0);
+    		
+    	}
     	
     	mv.addObject("m" , m);
     	mv.addObject("bi" , bi);
     	mv.addObject("mi", mi);
-    	mv.addObject("lastSmm", String.format("%.1f", lastSmm));
-    	mv.addObject("lastFat", String.format("%.1f", lastFat));
-    	mv.addObject("lastBmi", String.format("%.1f", lastBmi));
     	mv.addObject("recentBi", recentBi);
     	
     	mv.setViewName("Trainer/traineeDetailInfo");
@@ -215,7 +231,8 @@ public class MemberController {
             	double mAge = Double.parseDouble(m.getAge());
             	double mBmi = info.getWeight() / Math.pow(info.getHeight(), 2);
             	double mSmm = 0.407 * info.getWeight() + 0.267 * info.getHeight() - 19.2;
-            	double mFat = 1.20 * mBmi + 0.23 * mAge - 16.2;
+            	double mBfp = 1.20 * mBmi + 0.23 * mAge - 16.2;
+            	double mFat = info.getWeight() * (mBfp / 100);
             	
             	bi.setUserId(m.getUserId());
             	bi.setBmi(mBmi);
@@ -227,8 +244,9 @@ public class MemberController {
             	
             	double fAge = Double.parseDouble(m.getAge());
             	double fBmi = info.getWeight() / Math.pow(info.getHeight(), 2);
-            	double fSmm = 0.252 * info.getWeight() + 0.473 * info.getHeight() -48.3;
-            	double fFat = 1.20 * fBmi + 0.23 * fAge - 5.4;
+            	double fSmm = 0.252 * info.getWeight() + 0.473 * info.getHeight() - 48.3;
+            	double fBfp = 1.20 * fBmi + 0.23 * fAge - 5.4;
+            	double fFat = info.getWeight() * (fBfp / 100);
             	
             	bi.setUserId(m.getUserId());
             	bi.setBmi(fBmi);

@@ -6,12 +6,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>회원 정보</title>
-<!-- Custom fonts for this template-->
+<title>회원 정보 조회</title>
+    <!-- Custom fonts for this template-->
     <link href="resources/templates/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
+    href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+    rel="stylesheet">
 
     <!-- FullCalendar cdn -->
     <script src="
@@ -23,7 +23,10 @@
 
     <!-- 외부 자바스크립트 파일 : 캘린더 -->
     <script defer src ="./resources/js/exerciseCalendar.js"></script>
-   
+
+    <!-- sweetalert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.min.css" rel="stylesheet">
 
 </head>
 
@@ -91,12 +94,12 @@
                                     </table>
                                 </div>
                                 <script>
-                                    $(document).ready(function() {
-                                        
-                                        let userId = '${m.userId}';
+                                    window.isLevel = "${loginUser.userLevel}"; // 전역 변수로 정의 
+                                                                               // $(document).ready 밖에 작성해야 한다!
 
-                                        console.log(userId);
-            
+                                    $(document).ready(function() {
+                                        let userId = '${m.userId}';
+                                        console.log(window.isLevel);
                                         $.ajax({
                                             url : "selectTodayWorkoutforTrainer.ex",
                                             data : {

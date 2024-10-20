@@ -7,7 +7,7 @@
 <html>
     <head>
 	<meta charset="UTF-8">
-		<title>Trainer Calendar</title>
+		<title>Trainee Calendar</title>
 		<!-- calendar -->
 		<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 		<!-- bootstrap	
@@ -137,7 +137,6 @@
 						<script>
 							
 							$("#addCalendar").on("click", function() {
-								
 							
 							// 로그인한 회원의 아이디로 데이터를 저장할 것이므로..
 							let userId = '${loginUser.userId}';
@@ -194,11 +193,25 @@
 										 // 너무 안되서 그냥 1 받는걸로 했다.
 										if(response === 1){
 											
-										Swal.fire({
-											title: "플랜이 성공적으로 추가되었습니다.",
-											icon: "success",
-											});
-											
+											Swal.fire({
+												title: "플랜이 성공적으로 추가되었습니다.",
+												icon: "success",
+												});
+
+											// 새 일정 객체 생성
+											let newEvent = {
+											title: title,
+											start: new Date(date), // 새로운 날짜 객체 생성
+											extendedProps: {
+												difficulty: difficulty,
+												target: selectTarget,
+												description: description,
+												}
+											};
+
+											// 새 일정 추가
+											calendar.addEvent(newEvent);
+
 											// 값 초기화
 											$("#calendarModal").modal("hide");
 											$("#calendar_title").val("");
@@ -252,31 +265,50 @@
 						</div>
 					</div>
 					<script>
-						// 플래너 삭제버튼 구현
-						function deleteExPlan(){
-							let exerciseNo = $('#modalExerciseNo').text();
-							console.log(exerciseNo);
-							$.ajax({
-								url : "deleteTraineeExPlan.tn",
-								method : "post",
-								data : {
-									exerciseNo : exerciseNo,
-								},
-								success : function(result){
-									if(result == 1){
-										Swal.fire({
-											title: "플랜이 성공적으로 삭제되었습니다.",
-											icon: "success",
+					function deleteExPlan() {
+						let exerciseNo = $('#modalExerciseNo').text();
+						console.log(exerciseNo);
+						
+						// 삭제 확인 창 추가
+						Swal.fire({
+							title: "정말로 삭제하시겠습니까?",
+							text: "이 작업은 되돌릴 수 없습니다!",
+							icon: "warning",
+							showCancelButton: true,
+							confirmButtonColor: "#d33",
+							cancelButtonColor: "#3085d6",
+							confirmButtonText: "삭제",
+							cancelButtonText: "취소"
+						}).then((result) => {
+							if (result.isConfirmed) {
+								// 사용자가 삭제를 확인했을 때 AJAX 호출
+								$.ajax({
+									url: "deleteTraineeExPlan.tn",
+									method: "post",
+									data: {
+										exerciseNo: exerciseNo,
+									},
+									success: function(result) {
+										if (result == 1) {
+
+											Swal.fire({
+												title: "플랜이 성공적으로 삭제되었습니다.",
+												icon: "success",
 											});
-									}
-								},
-								error : function(){
-									
-								},
-							})
-						}
+											
+										}
+									},
+									error: function() {
+										Swal.fire({
+											title: "삭제 중 오류가 발생했습니다.",
+											icon: "error",
+										});
+									},
+								});
+							}
+						});
+					}
 					</script>
-				</>
 			</div>
 		</div>
 	</body>

@@ -6,6 +6,21 @@
     // 캘린더 설정화면	
     const calendarEl = document.getElementById('calendar');
     const isDetailView = document.querySelector('.detail-view') !== null;
+
+    // jsp화면에서 로그인한 회원의 레벨 판별
+
+    // 1. customButtons를 먼저 초기화
+    let customButtons = {};
+
+    // 2. 트레이너면 버튼이 보이도록 설정
+    if(isLevel === '1'){
+        customButtons.addEventButton = {
+            text : '일정 추가',
+            click : function(){
+                $("#calendarModal").modal("show");
+            },
+        }
+    }
         calendar = new FullCalendar.Calendar(calendarEl, {
         themeSystem: 'bootstrap5',
         height: '600px',
@@ -20,18 +35,11 @@
         headerToolbar: {
             start: 'dayGridMonth,dayGridWeek,dayGridDay',
             center: 'title',
-            end: 'today prev,next'+(isDetailView?'': ',addEventButton')
+            end: 'today prev,next'+ (isDetailView ? '' : (isLevel ? ',addEventButton' : ''))
         },
         locale: 'ko',
         events: [], // 조회 시 추가됨
-        customButtons: {
-            addEventButton: {
-                text: '일정 추가',
-                click: function() {
-                    $("#calendarModal").modal("show");
-                }
-            }
-        },
+        customButtons: customButtons , // 3. 조건문을 반영
         eventClick: function(info) {
             
             let plan = info.event;
@@ -188,6 +196,21 @@
 						  title: "운동 계획이 성공적으로 추가되었습니다.",
 						  icon: "success",
 						});
+
+                        // 추가된 일정을 캘린더에 추가
+                        let newEvent = {
+                            title : title,
+                            start : date,
+                            extendedProps : {
+                                difficulty : difficulty,
+                                workoutTarget : selectTarget,
+                                description : description,
+                                exerciseNo : response.exerciseNo,
+                            }
+                        };
+
+                        // 새 일정 추가
+                        calendar.addEvent(newEvent);
                         
                         // 값 초기화
                         $("#calendarModal").modal("hide");

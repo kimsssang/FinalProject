@@ -206,8 +206,8 @@
                                                             </a>
                                                             <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
                                                                 aria-labelledby="dropdownMenuLink">
-                                                                <a class="dropdown-item" href="#">운동 플랜 보러가기</a>
-                                                                <a class="dropdown-item" href="#">식단 플랜 보러가기</a>
+                                                                <a class="dropdown-item" href="traineeExercisePlanner.tn">운동 플랜 입력하기</a>
+                                                                <a class="dropdown-item" href="traineesnedMealplan.bo">식단 플랜 입력하기</a>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -343,6 +343,13 @@
                                                     </div>
                                                     <div class="card-body" id='calendar'>
                                                     </div>
+                                                    
+                                                    <script>
+                                                        document.addEventListener('DOMContentLoaded', function() {
+                                                            window.isLevel = "${loginUser.userLevel}"; // 캘린더의 '일정추가' 버튼이 회원 jsp에선 보이면 안된다 - 사용자의 level을 외부 자바스크립트로 보냄(회원 === 2)
+                                                            // console.log("회원 화면", isLevel);
+                                                        });
+                                                    </script>
 
                                                     <!-- 모달 - 스케줄 세부사항 -->
                                                     <div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="eventModalLabel" aria-hidden="true">
@@ -360,10 +367,6 @@
                                                                     <p id="modalWorkoutCategory"></p>
                                                                     <p id="modalDifficulty"></p>
                                                                     <p id="modalDescription"></p>
-                                                                </div>
-                                                                <div class="modal-footer">
-                                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
-                                                                    <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="deleteExercise();">삭제</button>
                                                                 </div>
                                                             </div>
                                                         </div>

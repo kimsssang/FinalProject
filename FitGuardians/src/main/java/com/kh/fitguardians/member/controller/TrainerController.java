@@ -28,7 +28,7 @@ public class TrainerController {
 		ArrayList<Schedule> schedule = tService.selectSchedule(loginUser.getUserNo());
 		request.setAttribute("schedule", schedule);
 		
-		System.out.println(schedule);
+		//System.out.println(schedule);
 		return "Trainer/trainerCalendar";
 	}
 	
@@ -61,11 +61,6 @@ public class TrainerController {
 		}
 		
 	}
-	
-	// 메인으로 가는 메소드
-	@RequestMapping("main.tr")
-	public String goTrainerMain() {
-		return "Trainer/traineeManagement";
-	}
+
 
 }

@@ -54,23 +54,23 @@ public class TraineeController {
 	@ResponseBody
 	@RequestMapping(value ="deleteTraineeExPlan.tn")
 	public int deleteTraineeExPlan(int exerciseNo) {
-		System.out.println("exerciseNo값 잘 나오는지 : " + exerciseNo);
+		// System.out.println("exerciseNo값 잘 나오는지 : " + exerciseNo);
 		int result = tnService.deleteTraineeExPlan(exerciseNo);
-		System.out.println(result);
+		// System.out.println(result);
 		return result;
 	}
 	
 	@RequestMapping("sendDatatoTrainer.tn")
 	public String sendDatatoTrainer(@RequestBody TnWorkout tn, HttpSession session, Model model) {
 		
-		System.out.println("tn 넘어오나 : " + tn);
+		// System.out.println("tn 넘어오나 : " + tn);
 		// user의 값을 여기서 얻는다.
 		String userId = ((Member)session.getAttribute("loginUser")).getUserId();
 		tn.setUserId(userId);
 		
 		model.addAttribute("data", tn);
 		
-		System.out.println("tn 세팅 후 어떻냐 : " + tn);
+		// System.out.println("tn 세팅 후 어떻냐 : " + tn);
 		
 		return "Trainer/traineeDetailInfo";
 	}

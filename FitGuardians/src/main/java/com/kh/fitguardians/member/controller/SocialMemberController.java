@@ -17,6 +17,7 @@ import java.security.SecureRandom;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Properties;
 
@@ -90,7 +91,7 @@ public class SocialMemberController {
 		return reqUrl;
 	}
 	
-	// 카카오 콜백 URI
+	// 카카오 콜백 URI == 
 	@RequestMapping("/kakaoLoginCallback")
 	public String kakaoCallback(String code, HttpSession session, HttpServletRequest request) throws IOException {
 		
@@ -300,6 +301,28 @@ public class SocialMemberController {
             }else {
             	// 기존 사용자 정보가 있을 경우 세션에 저장
             	session.setAttribute("loginUser", existingUser);
+            	// 회원 추가정보 가져오기
+				MemberInfo mi = mService.getMemberInfo(existingUser.getUserNo());
+				
+				// 회원 신체정보 가져오기
+				BodyInfo bi = mService.getBodyInfo(existingUser.getUserId());
+				
+				// 회원 최근 6개 신체정보 가져오기
+		    	ArrayList<BodyInfo> recentBi = mService.getRecentInfo(existingUser.getUserId());
+		    	System.out.println("로그인 유저의 아이디 : " + existingUser.getUserId());
+				
+		    	// 트레이너 정보 알아오기
+		    	String trainerId = existingUser.getPt();
+				Member trainer = mService.getTrainerInfo(trainerId);
+		    	
+				// 회원
+				session.setAttribute("trainer", trainer);
+				session.setAttribute("mi", mi);
+				session.setAttribute("bi", bi);
+				session.setAttribute("recentBi", recentBi);
+				
+				System.out.println("회원의 recentBi : " + recentBi);
+            	
             	return "redirect:dashboard.me";
             }
 		}else {
@@ -521,6 +544,28 @@ public class SocialMemberController {
             }else{
             	// 기존 사용자 정보가 있을 경우 세션에 저장
             	session.setAttribute("loginUser", existingUser);
+            	// 회원 추가정보 가져오기
+            	MemberInfo mi = mService.getMemberInfo(existingUser.getUserNo());
+            	
+            	// 회원 신체정보 가져오기
+            	BodyInfo bi = mService.getBodyInfo(existingUser.getUserId());
+            	
+            	// 회원 최근 6개 신체정보 가져오기
+            	ArrayList<BodyInfo> recentBi = mService.getRecentInfo(existingUser.getUserId());
+            	System.out.println("로그인 유저의 아이디 : " + existingUser.getUserId());
+            	
+            	// 트레이너 정보 알아오기
+            	String trainerId = existingUser.getPt();
+            	Member trainer = mService.getTrainerInfo(trainerId);
+            	
+            	// 회원
+            	session.setAttribute("trainer", trainer);
+            	session.setAttribute("mi", mi);
+            	session.setAttribute("bi", bi);
+            	session.setAttribute("recentBi", recentBi);
+            	
+            	System.out.println("회원의 recentBi : " + recentBi);
+            	
             	return "redirect:dashboard.me";
             }
 	    }else {
@@ -771,6 +816,28 @@ public class SocialMemberController {
             }else{
             	// 기존 사용자 정보가 있을 경우 세션에 저장
             	session.setAttribute("loginUser", existingUser);
+            	// 회원 추가정보 가져오기
+            	MemberInfo mi = mService.getMemberInfo(existingUser.getUserNo());
+            	
+            	// 회원 신체정보 가져오기
+            	BodyInfo bi = mService.getBodyInfo(existingUser.getUserId());
+            	
+            	// 회원 최근 6개 신체정보 가져오기
+            	ArrayList<BodyInfo> recentBi = mService.getRecentInfo(existingUser.getUserId());
+            	System.out.println("로그인 유저의 아이디 : " + existingUser.getUserId());
+            	
+            	// 트레이너 정보 알아오기
+            	String trainerId = existingUser.getPt();
+            	Member trainer = mService.getTrainerInfo(trainerId);
+            	
+            	// 회원
+            	session.setAttribute("trainer", trainer);
+            	session.setAttribute("mi", mi);
+            	session.setAttribute("bi", bi);
+            	session.setAttribute("recentBi", recentBi);
+            	
+            	System.out.println("회원의 recentBi : " + recentBi);
+            	
             	return "redirect:dashboard.me";
             }
 	    }else {

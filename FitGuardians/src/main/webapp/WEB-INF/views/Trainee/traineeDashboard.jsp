@@ -424,12 +424,12 @@
 
                                                       <script >
                                                       // 그날 보낸 식단 확인용 스크립트
-<<<<<<< HEAD
+
                                                       
                                                       //오늘날짜 확인
-=======
+
                                                       // 오늘날짜 확인
->>>>>>> fd7b46c6c0b8d32935f09a1b1da097cfe21013bf
+
 													    let today = new Date();
                                                       //날짜 형식 변경 함수
                                                       			
@@ -448,11 +448,11 @@
 														            	
 														            	   let value = "";
 														            	 if (data == ""){
-<<<<<<< HEAD
+
 														            		 value = "<tr><td>${loginUser.userName} 님이 " + '오늘' + " 보낸 식단이 없습니다<td></tr>";
-=======
+
 														            		 value = "<h2>${loginUser.userName} 님이 " + "오늘 보낸 식단이 없습니다</h2>";
->>>>>>> fd7b46c6c0b8d32935f09a1b1da097cfe21013bf
+
 														            		 $('#mealtable').html(value);
 														            	 }
 														            	 else{

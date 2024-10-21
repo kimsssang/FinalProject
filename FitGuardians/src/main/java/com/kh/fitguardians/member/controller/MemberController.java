@@ -578,10 +578,10 @@ public class MemberController {
 			Member updateMember = mService.loginMember(m);
 			session.setAttribute("loginUser", updateMember);
 			session.setAttribute("alertMsg", "프로필사진이 변경 되었습니다!");
-			return "redirect:/";
+			return "redirect:dashboard.me";
 		}else {
 			session.setAttribute("errorMsg", "프로필사진 변경 실패");
-			return "redirect:/";
+			return "redirect:dashboard.me";
 		}
 		
 	}

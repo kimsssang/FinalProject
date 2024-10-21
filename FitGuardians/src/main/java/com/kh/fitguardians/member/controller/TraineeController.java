@@ -13,17 +13,45 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.gson.Gson;
 import com.kh.fitguardians.exercise.model.vo.TnWorkout;
+import com.kh.fitguardians.member.model.service.MemberServiceImpl;
 import com.kh.fitguardians.member.model.service.TraineeServiceImpl;
+import com.kh.fitguardians.member.model.vo.BodyInfo;
 import com.kh.fitguardians.member.model.vo.Member;
+import com.kh.fitguardians.member.model.vo.MemberInfo;
 
 @Controller
 public class TraineeController {
 	
 	@Autowired
 	private TraineeServiceImpl tnService;
+	@Autowired
+	private MemberServiceImpl mService;
 	
 	@RequestMapping("main.tn")
-	public String traineeMain() {
+	public String traineeMain(HttpSession session) {
+		// 기존 사용자 정보가 있을 경우 세션에 저장
+		Member loginUser = (Member)session.getAttribute("loginUser");
+		// 회원 추가정보 가져오기
+		MemberInfo mi = mService.getMemberInfo(loginUser.getUserNo());
+
+		// 회원 신체정보 가져오기
+		BodyInfo bi = mService.getBodyInfo(loginUser.getUserId());
+
+		// 회원 최근 6개 신체정보 가져오기
+		ArrayList<BodyInfo> recentBi = mService.getRecentInfo(loginUser.getUserId());
+		//System.out.println("로그인 유저의 아이디 : " + loginUser.getUserId());
+
+		// 트레이너 정보 알아오기
+		String trainerId = loginUser.getPt();
+		Member trainer = mService.getTrainerInfo(trainerId);
+
+		// 회원
+		session.setAttribute("trainer", trainer);
+		session.setAttribute("mi", mi);
+		session.setAttribute("bi", bi);
+		session.setAttribute("recentBi", recentBi);
+
+		//System.out.println("회원의 recentBi : " + recentBi);
 		return "Trainee/traineeDashboard";
 	}
 	

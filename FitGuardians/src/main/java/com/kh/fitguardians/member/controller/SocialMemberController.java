@@ -291,7 +291,7 @@ public class SocialMemberController {
             		session.setAttribute("mi", mi);
             		session.setAttribute("bi", bi);
             		
-            		return "redirect:dashboard.me";
+            		return "Trainee/traineeDashboard";
             	}else {
             		// 등록 실패, 기존 로그인 창으로 리다이랙트
             		session.setAttribute("errorMsg", "로그인 실패");
@@ -321,9 +321,9 @@ public class SocialMemberController {
 				session.setAttribute("bi", bi);
 				session.setAttribute("recentBi", recentBi);
 				
-				System.out.println("회원의 recentBi : " + recentBi);
+				//System.out.println("회원의 recentBi : " + recentBi);
             	
-            	return "redirect:dashboard.me";
+				return "Trainee/traineeDashboard";
             }
 		}else {
 			session.setAttribute("errorMsg", "사용자 정보 데이터를 가져올 수 없습니다.");
@@ -535,7 +535,7 @@ public class SocialMemberController {
             		session.setAttribute("mi", mi);
             		session.setAttribute("bi", bi);
             		
-            		return "redirect:dashboard.me";
+            		return "Trainee/traineeDashboard";
             	}else {
             		// 등록 실패, 기존 로그인 창으로 리다이랙트
             		session.setAttribute("errorMsg", "로그인 실패");
@@ -564,9 +564,9 @@ public class SocialMemberController {
             	session.setAttribute("bi", bi);
             	session.setAttribute("recentBi", recentBi);
             	
-            	System.out.println("회원의 recentBi : " + recentBi);
+            	//System.out.println("회원의 recentBi : " + recentBi);
             	
-            	return "redirect:dashboard.me";
+            	return "Trainee/traineeDashboard";
             }
 	    }else {
 	    	session.setAttribute("errorMsg", "사용자 정보 데이터를 가져올 수 없습니다.");
@@ -807,7 +807,7 @@ public class SocialMemberController {
             		session.setAttribute("mi", mi);
             		session.setAttribute("bi", bi);
             		
-            		return "redirect:dashboard.me";
+            		return "Trainee/traineeDashboard";
             	}else {
             		// 등록 실패, 기존 로그인 창으로 리다이랙트
             		session.setAttribute("errorMsg", "로그인 실패");
@@ -824,7 +824,7 @@ public class SocialMemberController {
             	
             	// 회원 최근 6개 신체정보 가져오기
             	ArrayList<BodyInfo> recentBi = mService.getRecentInfo(existingUser.getUserId());
-            	System.out.println("로그인 유저의 아이디 : " + existingUser.getUserId());
+            	//System.out.println("로그인 유저의 아이디 : " + existingUser.getUserId());
             	
             	// 트레이너 정보 알아오기
             	String trainerId = existingUser.getPt();
@@ -836,9 +836,9 @@ public class SocialMemberController {
             	session.setAttribute("bi", bi);
             	session.setAttribute("recentBi", recentBi);
             	
-            	System.out.println("회원의 recentBi : " + recentBi);
+            	//System.out.println("회원의 recentBi : " + recentBi);
             	
-            	return "redirect:dashboard.me";
+            	return "Trainee/traineeDashboard";
             }
 	    }else {
 	    	session.setAttribute("errorMsg", "사용자 정보 데이터를 가져올 수 없습니다.");

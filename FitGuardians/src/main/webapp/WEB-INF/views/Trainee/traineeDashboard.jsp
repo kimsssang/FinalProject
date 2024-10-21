@@ -219,8 +219,8 @@
                                         <script>
                                         let userId = "${loginUser.userId}";
                                         window.recentBi = "${recentBi}";
-                                        console.log("회원 아이디 : "  + userId);
-                                        console.log(recentBi);
+                                        //console.log("회원 아이디 : "  + userId);
+                                        //console.log(recentBi);
                                         </script>
                                         <script src="resources/js/traineeDetailInfo.js"></script>
                     

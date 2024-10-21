@@ -312,13 +312,13 @@ public class MemberController {
 			if(bcryptPasswordEncoder.matches(m.getUserPwd(), loginUser.getUserPwd())) {
 				
 				session.setAttribute("loginUser", loginUser);
-<<<<<<< HEAD
+
 			
-=======
+
 				System.out.println("회원 아이디 : " + loginUser.getUserId());
 				System.out.println("회원 정보 : " + loginUser);
 				
->>>>>>> fd7b46c6c0b8d32935f09a1b1da097cfe21013bf
+
 				// 트레이너 정보 알아오기
 				String trainerId = loginUser.getPt();
 			

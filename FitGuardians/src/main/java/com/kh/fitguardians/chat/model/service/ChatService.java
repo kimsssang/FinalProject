@@ -2,6 +2,10 @@ package com.kh.fitguardians.chat.model.service;
 
 import java.util.ArrayList;
 
+import javax.servlet.http.HttpSession;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import com.kh.fitguardians.chat.model.vo.Message;
 import com.kh.fitguardians.chat.model.vo.MessageParticipantDTO;
 import com.kh.fitguardians.member.model.vo.Member;
@@ -37,6 +41,9 @@ public interface ChatService {
     
     // 트레이너 검색
     ArrayList<Member> searchTrainers(String keyword);
+    
+    // 파일 업로드
+    int uploadFile(String fileName, String filePath, int userNo);
 
 
 

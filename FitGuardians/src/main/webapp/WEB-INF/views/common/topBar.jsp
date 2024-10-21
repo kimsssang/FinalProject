@@ -19,6 +19,20 @@
 	
 	<link rel="stylesheet" href="resources/css/topBar.css">
 </c:if>
+
+<style>
+	/* 파일 링크 스타일 */
+	.file-link {
+	    color: black; /* 텍스트 색상 (기본 메시지 색상과 동일) */
+	    text-decoration: underline; /* 링크 밑줄 */
+	    cursor: pointer; /* 포인터 커서 */
+	}
+	
+	/* 링크 호버 효과 (선택적) */
+	.file-link:hover {
+	    color: #FFD700; /* 호버 시 색상 변경 (금색) */
+	}
+</style>
 </head>
 <body>
 <!-- Topbar -->
@@ -179,6 +193,16 @@
 						                    </c:forEach>
 						                </div>
 						                <!-- 입력 영역 -->
+						                
+						                <!-- 파일 전송 아이콘 추가 -->
+					                    <button id="fileUploadIcon" class="btn btn-outline-secondary" type="button">
+					                        <img src="/fitguardians/resources/images/fileTransfer.png" alt="파일 전송" />
+					                    </button>
+					
+					                    <!-- 숨겨진 파일 입력창 -->
+					                    <input type="file" id="fileInput" style="display:none;" multiple />
+					                    
+						                
 						                <div class="input-group mt-3">
 						                    <input type="text" class="form-control" id="messageInputTopBar" placeholder="메시지를 입력하세요..." />
 						                    <button id="sendMessageButton" class="btn btn-primary" type="button">Send</button>
@@ -471,11 +495,12 @@
 
 	
 	    // 메시지 전송 함수
-	    function sendMessage() {
+	    function sendMessage(messageContent) {
 	        console.log('sendMessage 함수 호출됨'); // 함수 호출 확인
-	
-	        // 입력 필드에서 메시지 가져오기
-	        var messageContent = $('#messageInputTopBar').val();
+	        
+	        if(!messageContent) {
+	        	messageContent = $('#messageInputTopBar').val();
+	        }	
 	        console.log('입력된 메시지:', messageContent); // 로그 출력
 	
 	        // 메시지가 비어있지 않은 경우에만 진행
@@ -563,6 +588,9 @@
 	                        const participantName = participant.participantName || '참가자 없음';
 	                        const lastActive = participant.lastActive || '활동 없음';
 	                        const statusClass = participant.participantStatus === 'Y' ? 'bg-success' : 'bg-danger';
+	                        const messageToDisplay = lastMessage.includes('href=') ? '파일이 포함되었습니다.' : lastMessage;
+	                        
+	                     	
 	
 	                        // 문자열 연결 방식으로 아이템 생성
 	                        items += '<a class="dropdown-item chat-participant d-flex align-items-center" href="#" data-toggle="modal" data-target="#chatModal" data-user-no="' + participant.participantNo + '" data-chat-room-no="' + participant.chatRoomNo + '" data-participant-name="' + participant.participantName + '">' +
@@ -571,7 +599,7 @@
 	                            '<div class="status-indicator ' + statusClass + '"></div>' +
 	                            '</div>' +
 	                            '<div class="font-weight-bold">' +
-	                            '<div class="text-truncate">' + lastMessage + '</div>' +
+	                            '<div class="text-truncate">' + messageToDisplay + '</div>' +
 	                            '<div class="small text-gray-500">' + participantName + ' · ' + lastActive + '</div>' +
 	                            '</div></a>';
 	                    });
@@ -601,6 +629,79 @@
 	        });
 
 	    });
+	    
+	    
+	    // 되면 좋고 아님 말고 파일 업로드 기능 ㄱㄱ
+		$('#fileUploadIcon').on('click', function() {
+		    $('#fileInput').click(); // 파일 선택 창 열기
+		});
+		
+		$('#fileInput').on('change', function(event) {
+		    const files = event.target.files; // 선택된 파일들
+		    console.log('Selected files:', files); // 선택된 파일들 콘솔 출력
+		    
+		    // 파일이 선택되었는지 확인
+		    if (files.length === 0) {
+		        console.log('No files selected.'); // 파일이 선택되지 않았을 경우 로그 출력
+		        return; // 선택된 파일이 없으므로 이후 처리 중지
+		    }
+		
+		    for (let i = 0; i < files.length; i++) {
+		        console.log('Added file: ' + files[i].name + ', Size: ' + files[i].size + ', Type: ' + files[i].type);
+		    }
+		
+		    if (files.length > 0) {
+		        // FormData에 여러 파일 담기
+		        const formData = new FormData();
+		        formData.append('userNo', userNo); // 유저 넘버 추가
+		        for (let i = 0; i < files.length; i++) {
+		            formData.append('files', files[i]); // 여러 파일 추가
+		            console.log(`Added file: ${files[i].name}`); // 각 파일 이름 출력
+		        }
+		        
+		        formData.forEach((value, key) => {
+		            console.log(`${key}: ${value}`);
+		        });
+		        console.log('User No:', userNo); // userNo 값 확인
+		
+		        // AJAX로 서버에 파일 전송
+		        $.ajax({
+		            url: '/fitguardians/chat/fileUpload',  // 서버의 업로드 처리 URL
+		            type: 'POST',
+		            data: formData,
+		            processData: false, // 파일 데이터를 전송할 때는 false로 설정
+		            contentType: false, // 기본적으로 설정되는 Content-Type 헤더를 사용하지 않음
+		            success: function(response) {
+		                console.log('서버 응답:', response); // 서버에서 받은 응답을 콘솔에 출력
+		                try {
+		                    const jsonResponse = JSON.parse(response); // JSON 문자열을 객체로 변환
+		                    if (jsonResponse.success) {
+		                        alert('파일 업로드 성공!');
+		
+		                        // 업로드된 파일 링크를 채팅 메시지로 전송
+		                        const uploadedFiles = jsonResponse.uploadedFiles.split(", "); // 파일 이름들 분리
+		                        const uploadedFileUrls = jsonResponse.uploadedFileUrls.split(", "); // 파일 URL들 분리
+		                        
+		                        uploadedFiles.forEach(function(fileName, index) {
+		                            const fileUrl = uploadedFileUrls[index];
+		                            const fileLinkMessage = "<a href='" + fileUrl + "' download class='file-link'>" + fileName + "</a>"; // 파일 링크 메시지 생성
+		                            
+		                            // 파일 링크를 sendMessage 함수로 전송
+		                            sendMessage(fileLinkMessage);
+		                        });
+		                    } else {
+		                        alert('파일 업로드 실패');
+		                    }
+		                } catch (error) {
+		                    console.error('응답 파싱 중 오류 발생:', error);
+		                    alert('응답 처리 중 오류가 발생했습니다.');
+		                }
+		            }
+		        });
+		    }
+		});
+
+
 	</script>
 	
 	

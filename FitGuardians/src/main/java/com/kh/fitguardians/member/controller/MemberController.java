@@ -312,6 +312,8 @@ public class MemberController {
 			if(bcryptPasswordEncoder.matches(m.getUserPwd(), loginUser.getUserPwd())) {
 				
 				session.setAttribute("loginUser", loginUser);
+				System.out.println("회원 아이디 : " + loginUser.getUserId());
+				System.out.println("회원 정보 : " + loginUser);
 				
 				// 트레이너 정보 알아오기
 				String trainerId = loginUser.getPt();
@@ -333,6 +335,8 @@ public class MemberController {
 					session.setAttribute("mi", mi);
 					session.setAttribute("bi", bi);
 					session.setAttribute("recentBi", recentBi);
+					
+					System.out.println("회원의 recentBi : " + recentBi);
 
 					return "Trainee/traineeDashboard";
 				}else {

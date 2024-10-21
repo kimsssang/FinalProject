@@ -118,19 +118,12 @@ pageEncoding="UTF-8"%>
       </li>
 
       <!-- Nav Item - Utilities Collapse Menu -->
-      <li class="nav-item">
-        <a
-          class="nav-link collapsed"
-          href="mypage.me"
-          data-toggle="collapse"
-          data-target="#collapseUtilities"
-          aria-expanded="true"
-          aria-controls="collapseUtilities"
-        >
-          <i class="fas fa-user"></i>
-          <span> 내 정보 변경</span>
-        </a>
 
+      <li class="nav-item">
+        <a class="nav-link" href="mypage.me">
+          <i class="fas fa-user"></i>
+          <span>내 정보 변경</span></a
+        >
       </li>
 
       <!-- Divider -->

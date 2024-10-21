@@ -107,4 +107,10 @@ public interface MemberService {
 	// 기본 추가 정보 넣기
 	public int defaultMemberInfoInsert(MemberInfo mi);
 
+	// 신체 추가 정보 넣기
+	int defaultBodyInfoInsert(BodyInfo bi);
+
+	// 소셜 회원(신체정보 존재 유무 확인)
+	boolean checkBodyInfo(String userId);
+
 }

@@ -23,9 +23,9 @@
 .topdiv{
     position: absolute; /* 절대 위치 설정 */
     top: 200px; /* 위에서부터 50px 내려옴 */
-    left: 500px; /* 왼쪽에서부터 50px 떨어짐 */
+    left: 500px; 
     width: 50%;
-    height: 50%;
+    height: 180px;
     background-color: rgba(255, 255, 255, 1); 
     z-index: 4; /* z-index 설정 */
     display: none;
@@ -40,25 +40,48 @@
  	
  }
  .topdiv div{
- 	border: 1px solid black;
+ 	
  }
  .membershiplistdiv{
      display: flex; /* 플렉스 레이아웃 적용 */
     flex-direction: row;
  width:100%;
- height: 80%;
+ height: 100px;
+
+    align-items: center;  /* 수직 중앙 정렬 */
+      justify-content: space-between;
 
  }
  .membershiplistdiv div{
- width: 25%;
- height: 100%;
+ border-radius: 10px;
+ width: 20%;
+ height: 80%;
+ margin-left: 10px;
+ margin-right: 10px;
+border : 1px solid black;
+
+     text-align: center;
+     vertical-align: middle;
  }
  .buydiv{
- height: 20%
+ height: 20%;
+     display: flex;
+    align-items: center;  /* 수직 중앙 정렬 */
+    justify-content: center;
+    margin-top: 20px;
  }
  .selected {
-    background-color: rgb(230,230,230);
+    background-color: skyblue;
 }
+
+.btncssdiv{
+    display: flex;
+    align-items: center;  /* 수직 중앙 정렬 */
+    justify-content: center; 
+    margin-top: 20px;
+}
+
+
  </style>
 </head>
 <body>
@@ -86,17 +109,17 @@
               
 		         	<div class="topdiv">
 		         		<div class="membershiplistdiv">
-			         		<div class="3pt ptcheck">pt3회권
+			         		<div class="3pt ptcheck border-left-primary">pt3회권 <br> 15만원
 			         			<input class="ptval" type="hidden" value="3"> 
 			         		</div> 
-			         		<div class="5pt ptcheck">pt5회권
+			         		<div class="5pt ptcheck border-left-primary">pt5회권 <br> 20만원
 			         		<input class="ptval" type="hidden" value="5"> </div>
-			         		<div  class="10p ptcheck">pt10회권
+			         		<div  class="10p ptcheck border-left-primary">pt10회권 <br> 35만원
 			         		<input class="ptval" type="hidden" value="10"> </div>
-			         		<div class="20p ptcheck">pt20회권
+			         		<div class="20p ptcheck border-left-primary">pt20회권 <br> 60만원
 			         		<input class="ptval" type="hidden" value="20"> </div>
 		         		</div>
-		         		<div class="buydiv">구매버튼 예정</div>
+		         		<div class="buydiv "> <button  class="buybtn  btn btn-primary btn-icon-split btn-lg" type="button">구매하기</button></div>
 		         	</div>
 		         	<script >
 		         	
@@ -158,22 +181,36 @@
 		         });
 				
 		         // .buydiv 클릭 시 동작
-		         $('.buydiv').on('click', function() {
-		        	console.log($('.selected .ptval').val());
-		        	
-		        	
+		         var loginUserid = "${loginUser.userId}"
+		        	 if (loginUserid === "" || loginUserid === "null")
+			  		 {}else{
+			  			 
+			  		 }
+		         
+		         
+		         
+		         $('.buybtn').on('click', function() {
+		        	if(${ empty loginUser.userId})
+		        		 var loginUserid = "${loginUser.userId}"
+		        			 if (loginUserid === "" || loginUserid === "null"){
+		        				 alert("로그인이 필요한 서비스입니다")
+		        			 }else{
+		        				 
 		             if (isSelected) {
 		               let num = ($('.selected .ptval').val());
 		                 window.open('shop.do?orderpt='+ num, '_blank', 'width=800,height=600');
+		                 
 		             } else {
 		                 alert("회원권을 선택해주세요");
 		             }
+		        			 }
 		         });
 
 		         	</script>
 				        <div style="width: 100%">
 				    		<h2 class="trname">비회원입니다</h2>
 				    		<h2 class="pttime"></h2>
+				    		<input type="hidden" class="pId">
 				    		<br>
 				        </div>
 				             <c:forEach var="t" items="${list}" > 
@@ -212,9 +249,9 @@
 				             				</div>
 				             			
 				                		</div>
-				             			<div style="width: 12%; height: 100%"> 
+				             			<div class="btncssdiv" style="width: 12%; height: 100%"> 
 											<input class="newtrainerid" type="hidden" value="${ t.userId }">
-				             			<button class="ptchosebtn">회원권(pt)신청</button>
+				             			<button style="" class="ptchosebtn btn btn-primary btn-icon-split btn-lg">회원권(pt)신청</button>
 				             			
 				           		
 				             			</div>
@@ -270,7 +307,7 @@
   </div>
   
 				  		<script>
-				  	  var loginUser = "${loginUser.userId}"
+				  	  let loginUser = "${loginUser.userId}"
 
 				  		 if (loginUser === "" || loginUser === "null")
 				  		 {}else{
@@ -280,13 +317,11 @@
 				  						url : 'trainermatchingsearch.bo',
 				  					
 				  						success : function(date){
-				  							console.log("성공?");
-				  							
+				  						
+				  								$('.tid').text(date.userId)
 				  								$('.trname').text('현재 트레이너 '+date.pt)
 				  								$('.pttime').text('남은 PT 횟수 : '+date.ptTime)
-				  							console.log(date)
-				  							console.log(date.pt);
-				  							console.log(date.ptTime)
+				  					
 				  						},
 				  						error : function(){
 				  							console.log("실패?")

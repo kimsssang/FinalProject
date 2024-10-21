@@ -264,6 +264,25 @@
          WHERE user_level = 1 
            AND user_name LIKE #{keyword}
     </select>
+    
+    <!-- 파일 업로드 -->
+    <insert id="uploadFile" parameterType="map">
+        INSERT 
+          INTO FILE_UPLOAD
+              (
+               FILE_NO,
+               FILE_NAME,
+               FILE_PATH,
+               UPLOADED_BY
+              )
+        VALUES 
+        	  (
+        	   SEQ_FILE_NO.NEXTVAL,
+        	   #{fileName},
+        	   #{filePath},
+        	   #{uploadedBy}
+        	  )
+    </insert>
 	
 
 

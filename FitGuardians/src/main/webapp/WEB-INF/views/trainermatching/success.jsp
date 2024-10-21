@@ -1,16 +1,16 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html>
+<html lang="ko">
   <head>
-    <meta charset="UTF-8" />
-    <script src="https://js.tosspayments.com/v2/standard"></script>
+    <meta charset="utf-8" />
+    <link rel="icon" href="https://static.toss.im/icons/png/4x/icon-toss-logo.png" />
 
-      
-    <script src="../../../resources/js/server.js"></script>
-    <title>Insert title here</title>
-    
-    <style type="text/css">
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>토스페이먼츠 샘플 프로젝트</title>
+        <style type="text/css">
     body {
   background-color: #e8f3ff;
 }
@@ -584,107 +584,85 @@ textarea {
     
     </style>
   </head>
-  <body style="background-color: white">
-    <!-- 결제 UI -->
-    <div id="payment-method"></div>
-    <!-- 이용약관 UI -->
-    <div id="agreement"></div>
-    <!-- 할인 쿠폰 -->
 
-    <div style="margin-left: 30px; width: 100%;">
-      <input type="checkbox" id="coupon-box" />
-      <label for="coupon-box"> 5,000원 쿠폰 적용 </label>
-    </div>
-    <!-- 결제하기 버튼 -->
-    <div class="buttondiv" align="center">
-    <button class="button" id="payment-button" style="margin-bottom: 30px;">
-      결제하기
-    </button>
+  <body>
+    <div class="box_section" style="width: 600px">
+      <img width="100px" src="https://static.toss.im/illusts/check-blue-spot-ending-frame.png" />
+      <h2>결제를 완료했어요</h2>
+
+      <div class="p-grid typography--p" style="margin-top: 50px">
+        <div class="p-grid-col text--left"><b>결제금액</b></div>
+        <div class="p-grid-col text--right" id="amount"></div>
+      </div>
+      <div class="p-grid typography--p" style="margin-top: 10px">
+        <div class="p-grid-col text--left"><b>주문번호</b></div>
+        <div class="p-grid-col text--right" id="orderId"></div>
+      </div>
+      <div class="p-grid typography--p" style="margin-top: 10px">
+        <div class="p-grid-col text--left"><b>결제상품</b></div>
+        <div class="p-grid-col text--right" id="paymentKey" style="white-space: initial; width: 250px"></div>
+      </div>
+      <div class="" style="margin-top: 30px" 	align="center">
+        <button class="button p-grid-col5 fianlbtn" type="button">화면으로 돌아가기</button>
+      </div>
     </div>
 
     <script>
-    console.log(window.location.origin)
-    let value2 = "";
-    if(${orderpt} == 3){
-    	value2 = "150000"
-    }
-    if(${orderpt} == 5){
-    	value2 = "200000"
-    }
-    if(${orderpt} == 10){
-    	value2 = "350000"
-    }
-    if(${orderpt} == 20){
-    	value2 = "600000"
-    }
-    let reValue2 = parseInt(value2);
-console.log(value2 -4)
-    
-    main();
-		
-      async function main() {
-        const button = document.getElementById("payment-button");
-        const coupon = document.getElementById("coupon-box");
-        // ------  결제위젯 초기화 ------
-        const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
-        const tossPayments = TossPayments(clientKey);
-        // 회원 결제
-        const customerKey = "wIIspb7Mz-PYhSyM8aOo_";
-        const widgets = tossPayments.widgets({
-          customerKey,
-        });
-        // 비회원 결제
-        // const widgets = tossPayments.widgets({ customerKey: TossPayments.ANONYMOUS });
+      // 쿼리 파라미터 값이 결제 요청할 때 보낸 데이터와 동일한지 반드시 확인하세요.
+      // 클라이언트에서 결제 금액을 조작하는 행위를 방지할 수 있습니다.
+      const urlParams = new URLSearchParams(window.location.search);
 
-        // ------ 주문의 결제 금액 설정 ------
-        await widgets.setAmount({
-          currency: "KRW",
-          value: reValue2 ,
+      // 서버로 결제 승인에 필요한 결제 정보를 보내세요.
+      async function confirm() {
+        var requestData = {
+          paymentKey: urlParams.get("paymentKey"),
+          orderId: urlParams.get("orderId"),
+          amount: urlParams.get("amount"),
+        };
+
+        const response = await fetch("/confirm", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(requestData),
         });
 
-        await Promise.all([
-          // ------  결제 UI 렌더링 ------
-          widgets.renderPaymentMethods({
-            selector: "#payment-method",
-            variantKey: "DEFAULT",
-          }),
-          // ------  이용약관 UI 렌더링 ------
-          widgets.renderAgreement({
-            selector: "#agreement",
-            variantKey: "AGREEMENT",
-          }),
-        ]);
+        const json = await response.json();
 
-        // ------  주문서의 결제 금액이 변경되었을 경우 결제 금액 업데이트 ------
-        coupon.addEventListener("change", async function () {
-          if (coupon.checked) {
-            await widgets.setAmount({
-              currency: "KRW",
-              value: reValue2 - 5000,
-            });
+        if (!response.ok) {
+          // TODO: 결제 실패 비즈니스 로직을 구현하세요.
+          console.log(json);
+          window.location.href = `/fitguardians/fail?message=${json.message}&code=${json.code}`;
+        }
 
-            return;
-          }
-
-          await widgets.setAmount({
-            currency: "KRW",
-            value: reValue2,
-          });
-        });
-
-        // ------ '결제하기' 버튼 누르면 결제창 띄우기 ------
-        button.addEventListener("click", async function () {
-          await widgets.requestPayment({
-            orderId: "YyBXNwc0z20-qm1P_vExn",
-            orderName: "pt ${orderpt} 회권",
-            successUrl:  window.location.origin + "/fitguardians/success",
-            failUrl: window.location.origin + "/fail.html",
-            customerEmail: "customer123@gmail.com",
-            customerName: "김토스",
-            customerMobilePhone: "01012341234",
-          });
-        });
+        // TODO: 결제 성공 비즈니스 로직을 구현하세요.
+        // console.log(json)
+        return json;
       }
+      confirm().then(function (data) {
+        document.getElementById("response").innerHTML = `<pre>결제가 정상적으로 처리됬습니다</pre>`;
+      });
+
+      const paymentKeyElement = document.getElementById("paymentKey");
+      const orderIdElement = document.getElementById("orderId");
+      const amountElement = document.getElementById("amount");
+
+      orderIdElement.textContent = urlParams.get("orderId");
+      amountElement.textContent = urlParams.get("amount") + "원";
+      paymentKeyElement.textContent = urlParams.get("paymentKey");
+      if (window.opener) {
+    console.log("부모 창에 접근 가능");
+} else {
+    console.log("부모 창에 접근할 수 없음");
+}
+
+	 
+      $('.fianlbtn').on('click',function(){
+    	  window.opener.onReceivePaymentData("결제성공");
+		  window.close();
+      })
+		
     </script>
   </body>
 </html>

@@ -82,6 +82,18 @@ html, body {
               style="width: 98%; height: 100%; margin-left: 20px ;"
               align="center"
             >
+            			<c:choose>
+				<c:when test="${empty loginUser }">
+					<h2>로그인 후 이용 가능합니다</h2>
+				</c:when>
+				<c:otherwise>
+            
+            
+            
+            
+            
+            
+            
               <div class="plantitle card-header py-3" style="display: flex">
                 <h3 class="m-0 font-weight-bold text-primary">
                   먹은 식단 보내기
@@ -182,7 +194,7 @@ html, body {
                   트레이너에게 보내기
                 </button>
               </div>
-            </div>
+         
 
             <script>
               $.ajax({
@@ -723,6 +735,11 @@ html, body {
                 });
               }
             </script>
+            				</c:otherwise>
+			</c:choose>
+            
+            
+               </div>
           </div>
         </div>
       </div>

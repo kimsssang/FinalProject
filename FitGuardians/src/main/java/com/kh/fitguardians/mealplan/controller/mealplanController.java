@@ -200,9 +200,35 @@ public class mealplanController {
 		p.setGetUserId(getUserId);
 		p.setMealDate(today);
 		p.setSendUserId(senduserId);
-		
+
 		ArrayList<MealPlan> list = new MealPlanServiceImpl().selectMealPlantrainerList(sqlSession, p);
 	
+		
+	
+		return list;
+	}
+	@ResponseBody
+	@RequestMapping(value = "traineesendmealplanlist2.bo")
+	public ArrayList<MealPlan> traineesendmealplanlist2(Date day , HttpServletRequest request ,String sendUserId) {
+		HttpSession session = request.getSession();
+		
+		String today = day.toString();
+		//이제 이 String 가지고 서치해와야함
+		
+		//일단 같이 가야할 userId 가져오자
+		Member m =  (Member) session.getAttribute("loginUser");
+		String getuserId = m.getUserId();
+		
+		//이제 이 userId와 today를 가지고 서치해와야하는 상황 일단 넣어주고 보낸다
+		MealPlan p = new MealPlan();
+		p.setSendUserId(sendUserId);
+		p.setMealDate(today);
+		p.setGetUserId(getuserId);
+	
+	
+		ArrayList<MealPlan> list = new MealPlanServiceImpl().selectMealPlantrainerList(sqlSession, p);
+		
+		
 		return list;
 	}
 	

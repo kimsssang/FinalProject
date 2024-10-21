@@ -218,9 +218,10 @@ public class MemberController {
 			if(bcryptPasswordEncoder.matches(m.getUserPwd(), loginUser.getUserPwd())) {
 				
 				session.setAttribute("loginUser", loginUser);
-				
+			
 				// 트레이너 정보 알아오기
 				String trainerId = loginUser.getPt();
+			
 				Member trainer = mService.getTrainerInfo(trainerId);
 	
 				if(loginUser.getUserLevel().equals("2")) {
@@ -261,7 +262,9 @@ public class MemberController {
 	public ModelAndView traineeList(HttpSession session, ModelAndView mv) {
 		// 페이지가 로드되자마자 트레이너의 담당 회원이 조회되야 한다.
 		String userId = ((Member)session.getAttribute("loginUser")).getUserId();
+
 		ArrayList<Member> list = mService.getTraineeList(userId);
+
 		//System.out.println("userId :" + userId);
 		
 		//System.out.println(list);

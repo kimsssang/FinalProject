@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+      <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"  %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -93,6 +94,17 @@ html, body {
                   <div id="content">
                  <jsp:include page="../common/topBar.jsp"/>
 				 <div class=" card shadow mb-4" style="align-items: center; width:98%; height: 100%; margin-left: 10px" align="center">
+				 
+				 			<c:choose>
+				<c:when test="${empty loginUser }">
+					<h2>로그인 후 이용 가능합니다</h2>
+				</c:when>
+				<c:otherwise>
+				 
+				 
+				 
+				 
+				 
 				 <div class="card-header py-3 selecttrainee" style="display: flex; width: 100%;  ">
 					<select class="traineeList">
 					</select>
@@ -134,10 +146,7 @@ html, body {
 					<div class="mealMsg"></div>
 					<div class="mealReMsg"></div>
 					<button id="pdfgo" class="btn btn-primary btn-icon-split btn-lg">  Excel로 저장  </button>
-				</div>
-			</div>
-		   </div>
-		   </div>
+
 				<script>
 			    // 오늘날짜 확인
 			    let today = new Date();
@@ -286,8 +295,16 @@ html, body {
 			        });
 			    }
 			</script>
+							</c:otherwise>
+			</c:choose>
+             
 			
-
+			
+			
+				</div>
+			</div>
+		   </div>
+		   </div>
 
              
 

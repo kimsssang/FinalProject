@@ -87,7 +87,7 @@ pageEncoding="UTF-8"%>
     vertical-align: 0;
     border: 0;
     font-weight: 900;
-    content: '\f102';
+    content: '\f105';
     font-family: 'Font Awesome 5 Free';
     
     }
@@ -128,16 +128,11 @@ pageEncoding="UTF-8"%>
 
       <!-- Nav Item - Pages Collapse Menu -->
       <li class="nav-item">
-        <a
-          class="nav-link collapsed"
-          href="traineeList.me"
-          aria-expanded="true"
-          aria-controls="collapseTwo"
-        >
-          <i class="fas fa-fw fa-cog"></i>
-          <span>내 회원 정보</span>
-        </a>
-      </li>
+        <a class="nav-link collapsed" href="traineeList.me"
+			aria-expanded="true" aria-controls="collapseTwo"> <i
+				class="fas fa-fw fa-cog"></i> <span>내 회원 정보</span>
+		</a>
+		</li>
 
       <!-- Nav Item - Utilities Collapse Menu -->
       <li class="nav-item">

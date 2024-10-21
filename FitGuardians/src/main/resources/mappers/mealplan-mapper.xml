@@ -132,6 +132,7 @@ JOIN
 	and send_id = #{sendUserId}
 	and meal_date = #{mealDate}
 	and msg_type = 'S'
+	
 	</select>
 	
 	<select id="selectMealmainPlantrainerList" resultMap ="mealplanResultset" >

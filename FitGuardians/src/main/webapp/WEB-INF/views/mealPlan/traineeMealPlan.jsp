@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+    <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"  %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -65,7 +66,7 @@ html, body {
 
 </style>
 </head>
-<body>
+
     <body id="page-top">
         <!-- Page Wrapper -->
         <div id="wrapper">
@@ -75,6 +76,11 @@ html, body {
                   <div id="content">
                  <jsp:include page="../common/topBar.jsp"/>
 				 <div class="card shadow mb-4" style="width: 98%; height: 95%;" align="center">
+					<c:choose>
+						<c:when test="${empty loginUser }">
+							<h2>로그인 후 이용 가능합니다</h2>
+						</c:when>
+						<c:otherwise>
 
 					<div class="plantitle card-header py-3" style="display: flex; " >
 						
@@ -121,10 +127,12 @@ html, body {
 					<button class="mealReMsgbtn">  답장하기  </button>
 					</div>
 				</div>
-				</div>
-			</div>
-		   </div>
-   
+				
+				
+				
+				
+				
+
 
 				<script >
 				console.log($('.meaRelMsg').val());
@@ -288,8 +296,12 @@ html, body {
 				
 				</script>
 
-
+						</c:otherwise>
+					</c:choose>
              
-  
+  				</div>
+			</div>
+		   </div>
+   
 </body>
 </html>

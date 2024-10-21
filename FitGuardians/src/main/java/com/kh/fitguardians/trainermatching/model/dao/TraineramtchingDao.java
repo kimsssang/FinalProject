@@ -26,5 +26,14 @@ public class TraineramtchingDao {
 		
 		return  (ArrayList)sqlSession.selectList("trainermatchingMapper.trainerselect",null, rowBounds);
 	}
+	
+	public int trainerupdate(SqlSession sqlSession ,Member m) {
+
+		return sqlSession.update("trainermatchingMapper.trainerupdate",m);
+	}
+	public Member trainermatchingsearch(SqlSession sqlSession ,String userId) {
+		
+		return sqlSession.selectOne("trainermatchingMapper.trainermatchingsearch",userId);
+	}
 
 }

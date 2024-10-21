@@ -114,6 +114,16 @@ html, body {
                  <!-- Begin Page Content -->
                  
                       <div class="card shadow mb-4" style="width: 98%; margin-left: 10px ;height: 100%; align-items: center;" align="center">
+                      
+                      			<c:choose>
+				<c:when test="${empty loginUser }">
+					<h2>로그인 후 이용 가능합니다</h2>
+				</c:when>
+				<c:otherwise>
+                      
+                      
+                      
+                      
 		              <div class="card-header py-3" style="display: flex; align-items: center; width: 100%;">
 		              	<select name="" id="getmeallist">  
              		    
@@ -654,6 +664,13 @@ function calculateAndUpdateTotal() {
 
 	
              		</script>
+             		
+             						</c:otherwise>
+			</c:choose>
+             
+             		
+             		
+             		
              
              </div>
              </div>

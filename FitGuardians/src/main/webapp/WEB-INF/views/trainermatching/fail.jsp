@@ -1,16 +1,15 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html>
+<html lang="kr">
   <head>
-    <meta charset="UTF-8" />
-    <script src="https://js.tosspayments.com/v2/standard"></script>
-
-      
-    <script src="../../../resources/js/server.js"></script>
-    <title>Insert title here</title>
-    
-    <style type="text/css">
+    <meta charset="utf-8" />
+    <link rel="icon" href="https://static.toss.im/icons/png/4x/icon-toss-logo.png" />
+ 
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>토스페이먼츠 샘플 프로젝트</title>
+        <style type="text/css">
     body {
   background-color: #e8f3ff;
 }
@@ -584,107 +583,38 @@ textarea {
     
     </style>
   </head>
-  <body style="background-color: white">
-    <!-- 결제 UI -->
-    <div id="payment-method"></div>
-    <!-- 이용약관 UI -->
-    <div id="agreement"></div>
-    <!-- 할인 쿠폰 -->
 
-    <div style="margin-left: 30px; width: 100%;">
-      <input type="checkbox" id="coupon-box" />
-      <label for="coupon-box"> 5,000원 쿠폰 적용 </label>
-    </div>
-    <!-- 결제하기 버튼 -->
-    <div class="buttondiv" align="center">
-    <button class="button" id="payment-button" style="margin-bottom: 30px;">
-      결제하기
-    </button>
+  <body>
+    <div id="info" class="box_section" style="width: 600px">
+      <img width="100px" src="https://static.toss.im/lotties/error-spot-no-loop-space-apng.png" />
+      <h2>결제를 실패했어요</h2>
+
+      <div class="p-grid typography--p" style="margin-top: 50px">
+        <div class="p-grid-col text--left"><b>에러메시지</b></div>
+        <div class="p-grid-col text--right" id="message"></div>
+      </div>
+      <div class="p-grid typography--p" style="margin-top: 10px">
+        <div class="p-grid-col text--left"><b>에러코드</b></div>
+        <div class="p-grid-col text--right" id="code"></div>
+      </div>
+      <div class="p-grid">
+        <button class="button p-grid-col5"  type="button">화면으로 돌아가기</button>
+ 
+      </div>
     </div>
 
     <script>
-    console.log(window.location.origin)
-    let value2 = "";
-    if(${orderpt} == 3){
-    	value2 = "150000"
-    }
-    if(${orderpt} == 5){
-    	value2 = "200000"
-    }
-    if(${orderpt} == 10){
-    	value2 = "350000"
-    }
-    if(${orderpt} == 20){
-    	value2 = "600000"
-    }
-    let reValue2 = parseInt(value2);
-console.log(value2 -4)
-    
-    main();
-		
-      async function main() {
-        const button = document.getElementById("payment-button");
-        const coupon = document.getElementById("coupon-box");
-        // ------  결제위젯 초기화 ------
-        const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
-        const tossPayments = TossPayments(clientKey);
-        // 회원 결제
-        const customerKey = "wIIspb7Mz-PYhSyM8aOo_";
-        const widgets = tossPayments.widgets({
-          customerKey,
-        });
-        // 비회원 결제
-        // const widgets = tossPayments.widgets({ customerKey: TossPayments.ANONYMOUS });
+      const urlParams = new URLSearchParams(window.location.search);
 
-        // ------ 주문의 결제 금액 설정 ------
-        await widgets.setAmount({
-          currency: "KRW",
-          value: reValue2 ,
-        });
+      const codeElement = document.getElementById("code");
+      const messageElement = document.getElementById("message");
 
-        await Promise.all([
-          // ------  결제 UI 렌더링 ------
-          widgets.renderPaymentMethods({
-            selector: "#payment-method",
-            variantKey: "DEFAULT",
-          }),
-          // ------  이용약관 UI 렌더링 ------
-          widgets.renderAgreement({
-            selector: "#agreement",
-            variantKey: "AGREEMENT",
-          }),
-        ]);
-
-        // ------  주문서의 결제 금액이 변경되었을 경우 결제 금액 업데이트 ------
-        coupon.addEventListener("change", async function () {
-          if (coupon.checked) {
-            await widgets.setAmount({
-              currency: "KRW",
-              value: reValue2 - 5000,
-            });
-
-            return;
-          }
-
-          await widgets.setAmount({
-            currency: "KRW",
-            value: reValue2,
-          });
-        });
-
-        // ------ '결제하기' 버튼 누르면 결제창 띄우기 ------
-        button.addEventListener("click", async function () {
-          await widgets.requestPayment({
-            orderId: "YyBXNwc0z20-qm1P_vExn",
-            orderName: "pt ${orderpt} 회권",
-            successUrl:  window.location.origin + "/fitguardians/success",
-            failUrl: window.location.origin + "/fail.html",
-            customerEmail: "customer123@gmail.com",
-            customerName: "김토스",
-            customerMobilePhone: "01012341234",
-          });
-        });
-      }
+      codeElement.textContent = urlParams.get("code");
+      messageElement.textContent = urlParams.get("message");
+      $('.fianlbtn').on('click',function(){
+    	  window.opener.onReceivePaymentData("결제실패");
+		  window.close();
+      })
     </script>
   </body>
 </html>

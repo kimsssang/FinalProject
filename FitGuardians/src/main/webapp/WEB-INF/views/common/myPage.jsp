@@ -644,7 +644,7 @@
 				            // smm - 골격근량
 				           smm = 0.407 * weight + 0.267 * height - 19.2;
 				            // bmi - 체질량지수
-				           bmi = weight / (height ** 2);
+				           bmi = weight / (heightMeter ** 2);
 				            // fat - 체지방량
 				           fat = 1.20 * bmi + 0.23 * age - 16.2;
 

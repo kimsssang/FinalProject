@@ -640,7 +640,6 @@
 		     )
 	</insert>
 	
-	
 	<select id="selectPtSchedule" resultMap="scheduleResult">
 		select schedule_no
 		     , schedule_title
@@ -680,6 +679,40 @@
 		select user_no
 		  from member
 		 where user_id = #{userId}
+	</select>
+	
+	<insert id="defaultBodyInfoInsert">
+       insert
+         into body_info
+            (
+              body_info_no
+            , user_id
+            , measure_date
+            , bmi
+            , fat
+            , smm
+            , bi_status
+            )
+       values
+            (
+              seq_bf_no.nextval
+            , #{userId} 
+            , sysdate
+            , #{bmi}
+            , #{fat}
+            , #{smm}
+            , 'Y'
+            )
+	</insert>
+	
+	<select id="checkBodyInfo" resultType="int">
+	SELECT 
+	       COUNT(*)
+	  FROM BODY_INFO 
+	 WHERE USER_ID = #{userId}
+	   AND BMI ^= 0
+	   AND FAT ^= 0
+       AND SMM ^= 0
 	</select>
 	
 </mapper>

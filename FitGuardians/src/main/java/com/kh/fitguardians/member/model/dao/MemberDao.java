@@ -73,7 +73,7 @@ public class MemberDao {
 
 	public ArrayList<Member> getTraineeList(SqlSessionTemplate sqlSession, String userId) {
 		ArrayList<Member> m = (ArrayList)sqlSession.selectList("memberMapper.getTraineeList", userId);
-		//System.out.println("m의 값" + m);
+		System.out.println("m의 값" + m);
 		return m;
 	}
 
@@ -149,6 +149,8 @@ public class MemberDao {
 			return false;
 		}
 	}
+
+	
 
 	public int addBodyInfo(SqlSessionTemplate sqlSession, BodyInfo bi) {
 		return sqlSession.insert("memberMapper.addBodyInfo", bi);

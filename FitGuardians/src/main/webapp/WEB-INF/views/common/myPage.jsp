@@ -13,7 +13,9 @@
 	href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
 	rel="stylesheet"> -->
 <link rel="stylesheet" href="resources/css/sumoselect.css">
-
+<!-- sweetalert2 -->
+	    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.all.min.js"></script>
+		<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.min.css" rel="stylesheet">
 <!-- <script defer src="resources/templates/vendor/jquery/jquery.min.js"></script> -->
 <script defer src="resources/js/jquery.sumoselect.js"></script>
 </head>
@@ -283,13 +285,13 @@
 												</div>
 											</div>
 										</div>
-										<div class="card-body" id="disease-card"
-											style="filter: blur(5px)">
+										<div class="card-body" id="disease-card" >
 											<form action="">
 												<div class="input-group mb-3">
 													<input type="number" id="height" name="height"
 														class="form-control" placeholder="키 (cm)"
-														value="${ memberInfo.height }" required> <input
+														value="${ memberInfo.height }" required> 
+													<input
 														type="number" id="weight" name="weight"
 														class="form-control" placeholder="몸무게 (kg)"
 														value="${ memberInfo.weight }" required>
@@ -345,7 +347,29 @@
 														<c:if test="${memberInfo.goal.contains('심혈관 기능 증진')}">selected</c:if>>심혈관
 														기능증진</option>
 												</select>
-	
+												<div class="input-group mb-3">
+												<div class="input-group-prepend">
+													<span class="input-group-text">BMI</span>
+												</div> 
+													<input type="text" id="bmi" name="bmi"
+														class="form-control" placeholder="Bmi"
+														value="${bodyInfo.bmi}" readonly>
+												<div class="input-group-prepend">
+													<span class="input-group-text">골격근량</span>
+												</div> 
+													<input
+														type="text" id="smm" name="smm"
+														class="form-control" placeholder="Smm"
+														value="${bodyInfo.smm}" readonly>
+												<div class="input-group-prepend">
+													<span class="input-group-text">체지방량</span>
+												</div> 
+													<input
+														type="text" id="fat" name="fat"
+														class="form-control" placeholder="Fat"
+														value="${bodyInfo.fat}" readonly>
+												</div>
+												
 												<button type="button" class="btn btn-primary"
 													onclick="changeDisease();">변경하기</button>
 											</form>
@@ -564,11 +588,19 @@
 					let weight = $("input[name=weight]").val();
 					var disease = $("select[name=disease]").val();
 					var goal = $("select[name=goal]").val();
+					let heightMeter = height/100;
 					let mHeight = ${memberInfo.height};
 					let mWeight = ${memberInfo.weight};
 					let mDisease = ${disease};
 					let mGoal = "${memberInfo.goal}";
+					let userId = "${loginUser.userId}";
+					let gender = "${loginUser.gender}";
+					let age = "${loginUser.age}";
+					let smm;
+					let bmi;
+					let fat;
 					
+					// 정보가 바뀌었을때만 입력
 					if(parseInt(height) === mHeight && parseInt(weight) === mWeight && 
 							   JSON.stringify(disease) === JSON.stringify(mDisease) && goal === mGoal){
 						Swal.fire({ icon:'warning',	title: '바뀐 정보가 없습니다.' })
@@ -594,10 +626,54 @@
 								console.log("disease change ajax failed");
 								
 							},
-						})
-					}
-					
+						});
+						// 신체정보 계산
+						if(gender == 'F'){ // 여자 측정
+				            // smm - 골격근량
+				            smm = 0.252 * weight + 0.473 * height - 48.3;
+				            // bmi - 체질량지수
+				            bmi = weight / (heightMeter ** 2);
+				            // fat - 체지방량
+				            fat = 1.20 * bmi + 0.23 * age - 5.4;
+				            
+				            $("#bmi").val(bmi.toFixed(1));
+				            $("#smm").val(smm.toFixed(1));
+				            $("#fat").val(fat.toFixed(1));
+				       
+				        }else{ // 남자 측정
+				            // smm - 골격근량
+				           smm = 0.407 * weight + 0.267 * height - 19.2;
+				            // bmi - 체질량지수
+				           bmi = weight / (height ** 2);
+				            // fat - 체지방량
+				           fat = 1.20 * bmi + 0.23 * age - 16.2;
+
+				            $("#bmi").val(bmi.toFixed(1));
+			            	$("#smm").val(smm.toFixed(1));
+				            $("#fat").val(fat.toFixed(1));
+				            
+				        }
+						
+				        $.ajax({
+				            url : 'saveBodyInfo.me',
+				            method :'post',
+				            data : {
+				                userId : userId,
+				                smm : smm.toFixed(1),
+				                fat : fat.toFixed(1),
+				                bmi : bmi.toFixed(1),
+				            },
+				            success : function(result){
+				                
+				                },
+				            error : function(){
+				                console.log('bodyInfo 삽입 실패');
+				                },
+			        	})
+						
+						
 				}
+			}
 		</script>
 		</c:when>
 		<c:otherwise>

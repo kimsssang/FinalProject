@@ -230,6 +230,10 @@ public class MemberServiceImpl implements MemberService{
 	public int defaultMemberInfoInsert(MemberInfo mi) {
 		return mDao.defaultMemberInfoInsert(sqlSession, mi);
 	}
+
+	
+	
+
 	
 	
 

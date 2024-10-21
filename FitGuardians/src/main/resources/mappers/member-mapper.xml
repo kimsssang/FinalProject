@@ -56,6 +56,7 @@
 	<resultMap type="Schedule" id="scheduleResult">
 		<result column="schedule_no" property="scheduleNo"/>
 		<result column="user_no" property="userNo"/>
+		<result column="pt_user" property="ptUser"/>
 		<result column="schedule_title" property="scheduleTitle"/>
 		<result column="schedule_des" property="scheduleDes"/>
 		<result column="start_date" property="startDate"/>
@@ -210,6 +211,7 @@
 		     , back_color
 		  from schedule
 		 where user_no = #{userNo}
+		   and pt_user is null 
 	</select>
 	
 	<select id="findDuplicate" resultType="int">
@@ -217,6 +219,7 @@
 		  from schedule
 		 where schedule_title = #{scheduleTitle}
 		   and start_date = #{startDate}
+		   and user_no = #{userNo}
 	</select>
 	
 	<insert id="insertQrInfo">
@@ -637,5 +640,46 @@
 		     )
 	</insert>
 	
+	
+	<select id="selectPtSchedule" resultMap="scheduleResult">
+		select schedule_no
+		     , schedule_title
+		     , start_date
+		     , end_date
+		     , back_color
+		  from schedule
+		 where user_no = #{userNo}
+		   and pt_user = #{userId}
+	</select>
+	
+	<insert id="insertPtCalendar">
+		insert 
+		  into schedule
+		     (
+		       schedule_no
+		     , user_no
+		     , pt_user
+		     , schedule_title
+		     , start_date
+		     , end_date
+		     , back_color
+		     )
+		values
+		     (
+		       seq_cno.nextval
+		     , #{userNo}
+		     , #{ptUser}
+		     , #{scheduleTitle}
+		     , #{startDate}
+		     , #{endDate}
+		     , #{backColor}
+		     )
+	</insert>
+	
+	<select id="selectUserNoById" resultType="String">
+		select user_no
+		  from member
+		 where user_id = #{userId}
+	</select>
 	
 </mapper>

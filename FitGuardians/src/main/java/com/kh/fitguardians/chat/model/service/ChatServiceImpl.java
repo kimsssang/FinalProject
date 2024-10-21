@@ -2,9 +2,12 @@ package com.kh.fitguardians.chat.model.service;
 
 import java.util.ArrayList;
 
+import javax.servlet.http.HttpSession;
+
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.fitguardians.chat.model.dao.ChatDao;
 import com.kh.fitguardians.chat.model.vo.Message;
@@ -100,6 +103,19 @@ public class ChatServiceImpl implements ChatService {
 	public ArrayList<Member> searchTrainers(String keyword) {
 		return chatDao.searchTrainers(sqlSession, keyword);
 	}
+
+	// 파일 업로드
+	@Override
+	public int uploadFile(String fileName, String filePath, int userNo) {
+		
+		System.out.println("파일명: " + fileName);
+	    System.out.println("파일경로: " + filePath);
+	    System.out.println("업로드 사용자 ID: " + userNo);
+		
+		return chatDao.uploadFile(sqlSession, fileName, filePath, userNo);
+	}
+
+	
 
 	
 

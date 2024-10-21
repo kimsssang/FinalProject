@@ -1,8 +1,14 @@
 package com.kh.fitguardians.chat.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -10,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller; // 변경
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.kh.fitguardians.chat.model.service.ChatService;
 import com.kh.fitguardians.chat.model.vo.Message;
@@ -129,4 +136,76 @@ public class ChatController {
     public ArrayList<MessageParticipantDTO> getActiveParticipantsForTrainer(@PathVariable int userNo) {
         return chatService.getActiveParticipantsForTrainer(userNo);
     }
+    
+    // 채팅 모달에서 파일 업로드
+    @PostMapping("/fileUpload")
+    @ResponseBody
+    public String uploadFile(@RequestParam("files") MultipartFile[] files, @RequestParam("userNo") int userNo, HttpSession session) {
+        
+    	StringBuilder uploadedFileNames = new StringBuilder();
+    	StringBuilder uploadedFileUrls = new StringBuilder();
+
+        for (MultipartFile file : files) {
+        	
+        	
+            if (!file.isEmpty()) {
+                String fileName = saveFile(file, session); // 서비스 메서드 호출
+                uploadedFileNames.append(fileName).append(", "); // 업로드된 파일 이름 추가
+                String filePath = "/resources/uploadFiles/chat/" + fileName; // 파일 경로 생성
+                
+                // 파일 URL 생성
+                String fileUrl = "/fitguardians" + filePath; // 실제 URL로 변환
+                
+                int result = chatService.uploadFile(fileName, filePath, userNo); // 업로드 후 반환값 체크
+                
+                // 파일 URL을 응답에 추가
+                uploadedFileUrls.append(fileUrl).append(", ");
+                
+            }
+        }
+
+        // 마지막에 추가된 쉼표와 공백 제거
+        if (uploadedFileNames.length() > 0) {
+            uploadedFileNames.setLength(uploadedFileNames.length() - 2);
+        }
+        
+        if (uploadedFileUrls.length() > 0) {
+            uploadedFileUrls.setLength(uploadedFileUrls.length() - 2);
+        }
+        
+        System.out.println("Uploaded file URLs: " + uploadedFileUrls.toString()); // 업로드된 파일 URL 출력
+        
+
+        return "{\"success\": true, \"uploadedFiles\": \"" + uploadedFileNames.toString() + "\", \"uploadedFileUrls\": \"" + uploadedFileUrls.toString() + "\"}"; // JSON 형태로 응답
+    }
+
+    
+    
+    
+    public String saveFile(MultipartFile upfile, HttpSession session) {
+		String originName = upfile.getOriginalFilename(); // "flower.png" 원본명
+		
+		String currentTime = new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()); // "20240926150855"
+		int ranNum = (int)(Math.random() * 90000 + 10000); // 23152 (5자리 랜덤값)
+		String ext = originName.substring(originName.lastIndexOf(".")); // ".png"
+		
+		String changeName = currentTime + ranNum + ext;
+		
+		// 업로드 시키고자 하는 폴더의 물리적인 경로 알아내기
+		String savePath = session.getServletContext().getRealPath("/resources/uploadFiles/chat/");
+		
+		File folder = new File(savePath);
+		if (!folder.exists()) {
+		    folder.mkdirs(); // 폴더가 없으면 생성
+		}
+		
+		try {
+			upfile.transferTo(new File(savePath + changeName));
+		} catch (IllegalStateException | IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+		return changeName;
+	}
 }

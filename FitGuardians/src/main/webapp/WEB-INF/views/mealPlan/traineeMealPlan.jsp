@@ -123,8 +123,8 @@ html, body {
 					<div class="mealReMsgtitle" style="margin-top: 20px; margin-bottom: 20px;"> <h2>트레이너에게 답장 </h2></div>
 					<div class="mealReMsgdiv">
 					  <textarea rows="10"class="meaRelMsg" style="resize: none ;width: 85%;" placeholder="아직 답장이 작성되지 않았습니다"></textarea> <br>
-					<button id="pdfgo">  Excel로 저장  </button>
-					<button class="mealReMsgbtn">  답장하기  </button>
+					<button id="pdfgo" class="btn btn-primary btn-icon-split btn-lg">  Excel로 저장  </button>
+					<button class="mealReMsgbtn btn btn-primary btn-icon-split btn-lg">  답장하기  </button>
 					</div>
 				</div>
 				

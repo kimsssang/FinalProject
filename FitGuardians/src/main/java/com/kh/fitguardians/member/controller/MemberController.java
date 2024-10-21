@@ -169,7 +169,9 @@ public class MemberController {
 				BitMatrix bitMatrix = qrCodeWriter.encode(qrData, BarcodeFormat.QR_CODE, 200, 200);
 				Path path = FileSystems.getDefault().getPath(filePath);
 				MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
-				m.setQr(filePath);
+				
+				String qrCodeUrl = "http://localhost:8282/fitguardians/resources/qrCodes/" + fileName;
+				m.setQr(qrCodeUrl);
 			} catch (WriterException e) {
 				e.printStackTrace();
 			}

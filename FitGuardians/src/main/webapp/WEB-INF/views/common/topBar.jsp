@@ -17,6 +17,8 @@
 	<link rel="stylesheet" href="resources/css/sumoselect.css">
 	<script defer src="resources/js/jquery.sumoselect.js"></script>
 	
+	<script src="resources/js/kakao.min.js"></script>
+	
 	<link rel="stylesheet" href="resources/css/topBar.css">
 </c:if>
 </head>
@@ -210,13 +212,14 @@
 		                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
 		                                    My Page
 		                                </a>
-		                                <a class="dropdown-item" href="#">
+		                                <a class="dropdown-item" onclick="uploadImg();">
 		                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
 		                                    Settings
+											<a id="qr" href="${loginUser.qr}"></a>
 		                                </a>
-		                                <a class="dropdown-item" href="#">
+		                                <a class="dropdown-item" href="sendQr.me">
 		                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-		                                    Activity Log
+		                                    QR코드 전송
 		                                </a>
 		                                <div class="dropdown-divider"></div>
 		                                <a class="dropdown-item" href="logout.me" data-toggle="modal" data-target="#logoutModal">
@@ -707,6 +710,9 @@
 			</c:if>
 	    </c:otherwise>
 	</c:choose>
+
+
+
 
 </body>
 </html>

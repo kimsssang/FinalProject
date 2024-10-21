@@ -195,6 +195,13 @@ pageEncoding="UTF-8"%>
           <span>스케줄러</span></a
         >
       </li>
+      <li class="nav-item">
+        <!-- <a class="nav-link" href="calendar.kt"> -->
+        <a class="nav-link" href="calendar.kt">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>스케줄러테스트</span></a
+        >
+      </li>
 
       <hr class="sidebar-divider" />
       <div class="sidebar-heading">헬스장</div>

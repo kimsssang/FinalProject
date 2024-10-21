@@ -29,6 +29,7 @@ public class Member {
 	private String qr;
 	private String profilePic;
 	private String membership;
+	private int ptTime;
 	
 	// 조인할 예정
 	// memberInfo테이블 컬럼

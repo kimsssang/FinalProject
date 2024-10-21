@@ -29,4 +29,18 @@ public class TrainermatchingserviceImpl implements Trainermatchingservice {
 		return tDao.trainerselect(sqlSession , pi);
 	}
 
+	@Override
+	public int trainerupdate(SqlSession sqlSession, Member m) {
+
+		return tDao.trainerupdate(sqlSession , m);
+	}
+
+	@Override
+	public Member trainermatchingsearch(SqlSession sqlSession, String userId) {
+		
+		
+		return tDao.trainermatchingsearch(sqlSession , userId);
+	}
+	
+
 }

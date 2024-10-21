@@ -79,8 +79,8 @@
                                                         <div class="row no-gutters align-items-center">
                                                             <div class="col mr-2">
                                                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                                    이번달 PT횟수</div>
-                                                                <div class="h5 mb-0 font-weight-bold text-gray-800">4번 출석</div>
+                                                                    등록일</div>
+                                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="enroll-date">${ loginUser.enrollDate}</div>
                                                             </div>
                                                             <div class="col-auto">
                                                                 <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -90,23 +90,56 @@
                                                 </div>
                                             </div>
                     
-                                            <!-- 이번달 자유운동 횟수 Example -->
+                                            <!-- d-day -->
                                             <div class="col-xl-3 col-md-6 mb-4">
                                                 <div class="card border-left-success shadow h-100 py-2">
                                                     <div class="card-body">
                                                         <div class="row no-gutters align-items-center">
                                                             <div class="col mr-2">
                                                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                                    이번달 자유운동 횟수</div>
-                                                                <div class="h5 mb-0 font-weight-bold text-gray-800">10번 출석</div>
+                                                                    D-Day</div>
+                                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="d-day" data-enroll-date="${ loginUser.enrollDate }">+</div>
                                                             </div>
                                                             <div class="col-auto">
-                                                                <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                                                <i class="fas fa-plus fa-2x text-gray-300"></i>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+                                            
+                                            <script>
+                                			// d-day 
+                                			document.addEventListener("DOMContentLoaded", ()=>{
+                                				const dDay = document.getElementById("d-day");
+                                				const enrollDate = new Date(dDay.getAttribute('data-enroll-date'));
+                                				const currentDate = new Date();
+                                				
+                                				const difTime = currentDate - enrollDate;
+                                				
+                                				const difDay = Math.ceil(difTime / (1000 * 60 * 60 * 24 ));
+                                				
+                                				if(difDay >= 0){
+                                					dDay.textContent = "+" + difDay;
+                                					
+                                				}else{
+                                					dDay.textContent = "미등록"
+                                				}
+                                				
+                                				// 등록일 
+                                				const enrollDay = "${loginUser.enrollDate}";
+                                				const eDate = new Date(enrollDay); 
+                                				// 날짜를 원하는 형식으로 포맷팅
+                                			    const year = eDate.getFullYear();
+                                			    const month = String(eDate.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+                                			    const day = String(eDate.getDate()).padStart(2, '0');
+
+                                			    const formattedDate = `\${year}년 \${month}월 \${day}일`;
+                                			    
+                                			    $("#enroll-date").text(formattedDate);
+                                				
+                                			})
+                                            </script>
                     
                                             <!-- Earnings (Monthly) Card Example -->
                                             <div class="col-xl-3 col-md-6 mb-4">
@@ -184,9 +217,10 @@
 
                                         <!-- 차트 호출 스크립트 -->
                                         <script>
-                                        let recentBi = "${recentBi}";
-
-                                        //console.log(recentBi);
+                                        let userId = "${loginUser.userId}";
+                                        window.recentBi = "${recentBi}";
+                                        console.log("회원 아이디 : "  + userId);
+                                        console.log(recentBi);
                                         </script>
                                         <script src="resources/js/traineeDetailInfo.js"></script>
                     
@@ -390,7 +424,12 @@
 
                                                       <script >
                                                       // 그날 보낸 식단 확인용 스크립트
+
+                                                      
+                                                      //오늘날짜 확인
+
                                                       // 오늘날짜 확인
+
 													    let today = new Date();
                                                       //날짜 형식 변경 함수
                                                       			
@@ -406,13 +445,18 @@
 																 url: 'traineesendmealmainplanlist.bo',
 														            data: { day: day, getUserId : $('.trainerId').text() },
 														            success: function(data) {
+														            	
 														            	   let value = "";
 														            	 if (data == ""){
-														            		 value = "<h2>${loginUser.userName} 님이 " + 오늘 + " 보낸 식단이 없습니다</h2>";
+
+														            		 value = "<tr><td>${loginUser.userName} 님이 " + '오늘' + " 보낸 식단이 없습니다<td></tr>";
+
+														            		 value = "<h2>${loginUser.userName} 님이 " + "오늘 보낸 식단이 없습니다</h2>";
+
 														            		 $('#mealtable').html(value);
 														            	 }
 														            	 else{
-														            		 
+														            		
 													                    for (let i in data) {
 													                        let num = parseInt(i) + 1;
 													                        value += "<tr>" +

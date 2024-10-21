@@ -180,26 +180,65 @@
                             <br/>
                             <div style="height:165px;">
                                 <span class="planner">식단 플래너</span>
-                                <ul>
-                                    <li>
-                                        아침 : 깔쌈하게 운동하기(5회 5세트)
-                                    </li>
-                                    <li>
-                                        점심 : 깔쌈하게 운동하기(5회 5세트)
-                                    </li>
-                                    <li>
-                                        간식 : 깔쌈하게 운동하기(5회 5세트)
-                                    </li>
-                                    <li>
-                                        저녁 : 깔쌈하게 운동하기(5회 5세트)
-                                    </li>
-                                </ul>
+                                	<table id="mealtable" class=""  style="border: 0px solid black;  margin-top: 10px; background-color: white; width: 90%;"> 
+										
+									
+											<tbody>
+											<tr><td>${m.userName}님이 오늘 보낸 식단이 없습니다<td></tr>
+											</tbody>
+											
+									</table>
                             </div>
                             
                         </div>
                     </div>
 
                    </div>
+                   <script >
+                   
+               
+				    let today = new Date();
+                 //날짜 형식 변경 함수
+                 			
+				    function formatDate(date) {
+				        // yyyy-MM-dd 형식으로 변환
+				        let fomartday = date.getFullYear() + "-" + ((date.getMonth() + 1).toString().padStart(2, '0')) + "-" + (date.getDate().toString().padStart(2, '0'));
+				        return fomartday;
+				   			 }
+                 //지금날짜 변경된거(day)
+                  let day = formatDate(today);
+						//ajax로 파일 가져오기
+						$.ajax({
+							 url: 'traineesendmealplanlist2.bo',
+					            data: { day: day, sendUserId :'${m.userId}'},
+					            success: function(data) {
+					            
+					            	   let value = "";
+					            	 if (data == ""){
+					            		 value = "<tr><td>${m.userName}님이 " + '오늘' + " 보낸 식단이 없습니다<td></tr>";
+					            		 $('#mealtable tbody').html(value);
+					            	 }
+					            	 else{
+					            		
+				                    for (let i in data) {
+				                        let num = parseInt(i) + 1;
+				                        value += "<tr>" +
+				                                 
+				                                 "<td style='width:10px'>" + data[i].foodName + "</td>" + 
+				                                 "<td style='width:40px'>" + data[i].kcal +'kcal' + "</td>" + 
+				                                 "</tr>";
+				                    }
+				                    
+				                    $('#mealtable tbody').html(value);
+					            	 }
+					            },
+					            error : function(){
+					            	console.log("식단 ajax오류")
+					            }
+						})
+
+
+</script>
 
                    <!-- 회원 PT스케줄 -->
                    <div class="col-lg-6" style="display:inline;">

@@ -73,7 +73,7 @@ public class MemberDao {
 
 	public ArrayList<Member> getTraineeList(SqlSessionTemplate sqlSession, String userId) {
 		ArrayList<Member> m = (ArrayList)sqlSession.selectList("memberMapper.getTraineeList", userId);
-		//System.out.println("m의 값" + m);
+		System.out.println("m의 값" + m);
 		return m;
 	}
 
@@ -160,6 +160,19 @@ public class MemberDao {
 
 	public int defaultMemberInfoInsert(SqlSessionTemplate sqlSession, MemberInfo mi) {
 		return sqlSession.insert("memberMapper.defaultMemberInfoInsert", mi);
+	}
+
+	public int defaultBodyInfoInsert(SqlSessionTemplate sqlSession, BodyInfo bi) {
+		return sqlSession.insert("memberMapper.defaultBodyInfoInsert", bi);
+	}
+
+	public boolean checkBodyInfo(SqlSessionTemplate sqlSession, String userId) {
+		int result = sqlSession.selectOne("memberMapper.checkBodyInfo", userId);
+		if(result > 0) {
+			return true;
+		}else {
+			return false;
+		}
 	}
 
 }

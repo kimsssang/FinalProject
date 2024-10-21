@@ -44,13 +44,15 @@ pageEncoding="UTF-8"%>
       src="//dapi.kakao.com/v2/maps/sdk.js?appkey=YOUR_APP_KEY&libraries=services,clusterer,drawing"
     ></script>
     <style>
-      .mealpage:hover {
+      .mealpagea:hover {
         cursor: pointer;
-        background-color: white;
+        background-color: red;
       }
       .mealpage a {
         display: none;
       }
+      .mealpage:hover{
+      cursor: pointer;}
 
       .mealpagea {
         background-color: white;
@@ -118,33 +120,12 @@ pageEncoding="UTF-8"%>
       </li>
 
       <!-- Nav Item - Utilities Collapse Menu -->
+
       <li class="nav-item">
-        <a
-          class="nav-link collapsed"
-          href="#"
-          data-toggle="collapse"
-          data-target="#collapseUtilities"
-          aria-expanded="true"
-          aria-controls="collapseUtilities"
-        >
+        <a class="nav-link" href="mypage.me">
           <i class="fas fa-user"></i>
-          <span>내정보 변경</span>
-        </a>
-        <div
-          id="collapseUtilities"
-          class="collapse"
-          aria-labelledby="headingUtilities"
-          data-parent="#accordionSidebar"
+          <span>내 정보 변경</span></a
         >
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="utilities-color.html"
-              >개인정보 변경</a
-            >
-            <a class="collapse-item" href="utilities-border.html"
-              >신체 정보 변경</a
-            >
-          </div>
-        </div>
       </li>
 
       <!-- Divider -->
@@ -180,23 +161,26 @@ pageEncoding="UTF-8"%>
               식단관리
               <a
                 class="collapse-item mealpagea"
-                style="display: none"
+               style="display: none;"
                 href="traineesnedMealplan.bo"
                 >식단 보내기</a
               >
               <a
                 class="collapse-item mealpagea"
-                style="display: none"
+                 style="display: none;"
                 href="traineesendMealPlanList.bo"
                 >보낸 식단 확인</a
               >
               <a
                 class="collapse-item mealpagea"
-                style="display: none"
+                style="display: none;"
                 href="traineemealplan.bo"
                 >받은 식단 확인</a
               >
             </div>
+
+
+
 
           </div>
         </div>
@@ -204,9 +188,16 @@ pageEncoding="UTF-8"%>
 
       <!-- Nav Item - Charts -->
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)">
+        <a class="nav-link" href="calendar.me">
           <i class="fas fa-fw fa-chart-area"></i>
-          <span>스케쥴러</span></a
+          <span>스케줄러</span></a
+        >
+      </li>
+      <li class="nav-item">
+        <!-- <a class="nav-link" href="calendar.kt"> -->
+        <a class="nav-link" href="calendar.kt">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>스케줄러테스트</span></a
         >
       </li>
 

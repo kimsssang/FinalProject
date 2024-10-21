@@ -133,7 +133,7 @@ public class SocialMemberController {
 	    	
 	    	JsonObject jsonRes = new Gson().fromJson(response.toString(), JsonObject.class);
 	    	String accessToken = jsonRes.get("access_token").getAsString();
-	    	
+	    	session.setAttribute("accessToken", accessToken);
 	    	// 사용자 정보 추출 및 리다이렉트 
 	    	String redirect = getKakaoUserProfile(accessToken, session, request);
 	    	
@@ -141,14 +141,25 @@ public class SocialMemberController {
 	    	int userNo = ((Member)session.getAttribute("loginUser")).getUserNo();
 	    	boolean hasAdditionalInfo = mService.checkAdditionalInfo(userNo);
 	    	
+	    	// bodyInfo 유무 확인
+	    	String userId = ((Member)session.getAttribute("loginUser")).getUserId();
+	    	boolean hasBodyInfo = mService.checkBodyInfo(userId);
+	    	
 	    	// 추가정보가 있다면 적용
 	    	if(hasAdditionalInfo) {
 	    		MemberInfo mi = mService.getMemberInfo(userNo);
     			session.setAttribute("mi", mi);
 	    	}
 	    	
+	    	// bodyinfo 있다면 적용
+	    	if(hasBodyInfo) {
+	    		BodyInfo bi = mService.getBodyInfo(userId);
+	    		session.setAttribute("bi", bi);		
+	    	}
+	    	
 	    	// 세션에 추가 정보 입력 후 저장
 	    	session.setAttribute("hasAdditionalInfo", hasAdditionalInfo);
+	    	session.setAttribute("hasBodyInfo", hasBodyInfo);
 	    	
 	    	return redirect;
 	    }else {
@@ -272,10 +283,12 @@ public class SocialMemberController {
             		// 등록되고난 후에 해당 사용자의 모든 데이터 가져오고 기본 추가정보 적용
             		Member m = mService.selectMemberByUserId(kakaoRandomId);
             		MemberInfo mi = defaultMemberInfoInsert(m.getUserNo());
+            		BodyInfo bi = defaultBodyInfoInsert(m.getUserId());
             		
             		// 등록된 사용자 정보 세션에 저장
             		session.setAttribute("loginUser", m);
             		session.setAttribute("mi", mi);
+            		session.setAttribute("bi", bi);
             		
             		return "redirect:dashboard.me";
             	}else {
@@ -364,14 +377,25 @@ public class SocialMemberController {
 	    	int userNo = ((Member)session.getAttribute("loginUser")).getUserNo();
 	    	boolean hasAdditionalInfo = mService.checkAdditionalInfo(userNo);
 	    	
+	    	// BodyInfo 확인
+	    	String userId = ((Member)session.getAttribute("loginUser")).getUserId();
+	    	boolean hasBodyInfo = mService.checkBodyInfo(userId);
+	    	
 	    	// 추가정보가 있다면 적용
 	    	if(hasAdditionalInfo) {
 	    		MemberInfo mi = mService.getMemberInfo(userNo);
     			session.setAttribute("mi", mi);
 	    	}
 	    	
+	    	// bodyinfo 있다면 적용
+	    	if(hasBodyInfo) {
+	    		BodyInfo bi = mService.getBodyInfo(userId);
+	    		session.setAttribute("bi", bi);		
+	    	}
+	    	
 	    	// 세션에 추가 정보 입력 후 저장
 	    	session.setAttribute("hasAdditionalInfo", hasAdditionalInfo);
+	    	session.setAttribute("hasBodyInfo", hasBodyInfo);
 	    	
 	    	return redirect; 
 	    } else {
@@ -481,10 +505,12 @@ public class SocialMemberController {
             		// 등록되고난 후에 해당 사용자의 모든 데이터 가져오고 기본 추가정보 적용
             		Member m = mService.selectMemberByUserId(naverRandomId);
             		MemberInfo mi = defaultMemberInfoInsert(m.getUserNo());
+            		BodyInfo bi = defaultBodyInfoInsert(m.getUserId());
             		
             		// 등록된 사용자 정보 세션에 저장
             		session.setAttribute("loginUser", m);
             		session.setAttribute("mi", mi);
+            		session.setAttribute("bi", bi);
             		
             		return "redirect:dashboard.me";
             	}else {
@@ -587,14 +613,24 @@ public class SocialMemberController {
 	    	int userNo = ((Member)session.getAttribute("loginUser")).getUserNo();
 	    	boolean hasAdditionalInfo = mService.checkAdditionalInfo(userNo);
 	    	
+	    	// bodyInfo 유무 확인
+	    	String userId = ((Member)session.getAttribute("loginUser")).getUserId();
+	    	boolean hasBodyInfo = mService.checkBodyInfo(userId);
+	    	
 	    	// 추가정보가 있다면 적용
 	    	if(hasAdditionalInfo) {
 	    		MemberInfo mi = mService.getMemberInfo(userNo);
     			session.setAttribute("mi", mi);
 	    	}
 	    	
+	    	if(hasBodyInfo) {
+	    		BodyInfo bi = mService.getBodyInfo(userId);
+	    		session.setAttribute("bi", bi);
+	    	}
+	    	
 	    	// 세션에 추가 정보 입력 후 저장
 	    	session.setAttribute("hasAdditionalInfo", hasAdditionalInfo);
+	    	session.setAttribute("hasBodyInfo", hasBodyInfo);
 	    	
 	    	return redirect; 
 	    }else {
@@ -719,10 +755,12 @@ public class SocialMemberController {
             		// 등록되고난 후에 해당 사용자의 모든 데이터 가져오고 기본 추가정보 적용
             		Member m = mService.selectMemberByUserId(googleRandomId);
             		MemberInfo mi = defaultMemberInfoInsert(m.getUserNo());
+            		BodyInfo bi = defaultBodyInfoInsert(m.getUserId());
             		
             		// 등록된 사용자 정보 세션에 저장
             		session.setAttribute("loginUser", m);
             		session.setAttribute("mi", mi);
+            		session.setAttribute("bi", bi);
             		
             		return "redirect:dashboard.me";
             	}else {
@@ -861,24 +899,61 @@ public class SocialMemberController {
 	@RequestMapping("delayAdditionalInfo.me")
 	public void delayAdditionalInfo(HttpSession session) {
 		session.setAttribute("hasAdditionalInfo", true);
+		//session.setAttribute("hasBodyInfo", true);
 	}
 	
 	// 소셜 로그인 사용자를 위한 추가 정보 입력 기능
 	@ResponseBody
 	@RequestMapping(value = "addAdditionalInfo.me", produces = "text/plain; charset=UTF-8")
-	public String addAdditionalInfo(@RequestBody MemberInfo memberInfo, HttpSession session) {
+	public String addAdditionalInfo(@RequestBody MemberInfo memberInfo, BodyInfo bodyInfo, HttpSession session) {
 	    // 사용자 식별 번호를 가져오기 위한 작업
 	    Member loginMember = (Member)session.getAttribute("loginUser");
 
 	    // 사용자 번호 설정
 	    memberInfo.setUserNo(loginMember.getUserNo());
 	    
-	    int result = mService.addAdditionalInfo(memberInfo);
+	    // bodyInfo 정보 생성
+	    bodyInfo.setUserId(loginMember.getUserId());
+	    // bodyInfo 값 삽입 여부 판단
+	    int result1 = 0;
 	    
-	    if(result > 0) {
+	    // 성별에 따라 계산
+	    if(loginMember.getGender().equals("M")) { // 남자라면
+	    	double mAge = Double.parseDouble(loginMember.getAge());
+        	double mBmi = memberInfo.getWeight() / Math.pow(memberInfo.getHeight(), 2);
+        	double mSmm = 0.407 * memberInfo.getWeight() + 0.267 * memberInfo.getHeight() - 19.2;
+        	double mBfp = 1.20 * mBmi + 0.23 * mAge - 16.2;
+        	double mFat = memberInfo.getWeight() * (mBfp / 100);
+        	
+        	bodyInfo.setBmi(mBmi);
+        	bodyInfo.setSmm(mSmm);
+        	bodyInfo.setFat(mFat);
+        	
+        	result1 = mService.addBodyInfo(bodyInfo);
+        	
+	    }else { // 여자라면
+	    	double fAge = Double.parseDouble(loginMember.getAge());
+        	double fBmi = memberInfo.getWeight() / Math.pow(memberInfo.getHeight(), 2);
+        	double fSmm = 0.252 * memberInfo.getWeight() + 0.473 * memberInfo.getHeight() - 48.3;
+        	double fBfp = 1.20 * fBmi + 0.23 * fAge - 5.4;
+        	double fFat = memberInfo.getWeight() * (fBfp / 100);
+        	
+        	bodyInfo.setBmi(fBmi);
+        	bodyInfo.setSmm(fSmm);
+        	bodyInfo.setFat(fFat);
+        	
+        	result1 = mService.addBodyInfo(bodyInfo);
+	    }
+	    
+	    int result2 = mService.addAdditionalInfo(memberInfo);
+	    
+	    if(result1 > 0 && result2 > 0) {
 	    	// 세션에 입력하는 갱신된 추가정보 넣기
 	    	MemberInfo mi = mService.getMemberInfo(loginMember.getUserNo());
+	    	BodyInfo bi = mService.getBodyInfo(loginMember.getUserId());
 	    	session.setAttribute("mi", mi);
+	    	session.setAttribute("bi", bi);
+	    	
 	        return "success";
 	    } else {
 	        return "error";
@@ -940,4 +1015,21 @@ public class SocialMemberController {
 			return null;
 		}
 	}
+	
+	// 사용자의 신체 추가정보를 기본값으로 추가하기 위한 메소드
+	public BodyInfo defaultBodyInfoInsert(String userId) {
+		BodyInfo bi = new BodyInfo();
+		bi.setUserId(userId);
+		bi.setBmi(0);
+		bi.setFat(0);
+		bi.setSmm(0);
+		
+		int result = mService.defaultBodyInfoInsert(bi);
+		if(result>0) {
+			return bi;
+		}else {
+			return null;
+		}
+	}
+	
 }

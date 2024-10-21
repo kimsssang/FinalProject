@@ -78,25 +78,52 @@ input[type="checkbox"]:checked::after {
     text-align: center;
     line-height: 50px; 
 }
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* 전체 페이지에 스크롤이 발생하지 않도록 설정 */
+}
+
+#wrapper {
+    height: 100vh; /* 뷰포트의 높이에 맞게 설정 */
+    overflow: auto; /* 콘텐츠가 넘칠 경우에만 스크롤 발생 */
+}
+
+#content-wrapper {
+    height: 100%; /* 컨텐츠 래퍼에 높이를 명확하게 설정 */
+    display: flex;
+    flex-direction: column; /* 요소들이 세로로 배치되도록 설정 */
+}
 
 
 
 </style>
 </head>
-<body>
+
 <!-- 트레이너가 회원에게 식단 입력하는 페이지 -->
-    <body id="page-top">
+    <body >
         <!-- Page Wrapper -->
       
-        <div id="wrapper">
+        <div id="wrapper"style="overflow: auto">
          <jsp:include page="../common/sideTrainer.jsp" />
-         <div id="content-wrapper" class="d-flex flex-column">
+         <div id="content-wrapper" class="d-flex flex-column" style="display: none" >
          <!-- Main Content -->
              <div id="container-fluid" >
                  <jsp:include page="../common/topBar.jsp"/>
                  <!-- Begin Page Content -->
                  
-                      <div class="card shadow mb-4" style="width: 95%; margin-left: 10px ;height: 95%; align-items: center;" align="center">
+                      <div class="card shadow mb-4" style="width: 98%; margin-left: 10px ;height: 100%; align-items: center;" align="center">
+                      
+                      			<c:choose>
+				<c:when test="${empty loginUser }">
+					<h2>로그인 후 이용 가능합니다</h2>
+				</c:when>
+				<c:otherwise>
+                      
+                      
+                      
+                      
 		              <div class="card-header py-3" style="display: flex; align-items: center; width: 100%;">
 		              	<select name="" id="getmeallist">  
              		    
@@ -148,7 +175,7 @@ input[type="checkbox"]:checked::after {
                         </div>
                  
                         
-                        
+                         
                         
                    <h4 style="margin-top: 20px;">보낼식단</h4>
                     <table  class="sendmealfoodlist table table-bordered">
@@ -176,7 +203,7 @@ input[type="checkbox"]:checked::after {
                		 
                			<div align="center" style="margin-bottom: 20px">
                			
-                    	   <button class="sendDataBtn btn btn-primary btn-icon-split btn-lg" align="center" style="   line-height: 50px; ">회원에게 보내기</button>
+                    	   <button class="sendDataBtn btn btn-primary btn-icon-split btn-lg" style=" line-height: 50px; ">회원에게 보내기</button>
                		  </div>
                		 </div>
                     
@@ -637,7 +664,15 @@ function calculateAndUpdateTotal() {
 
 	
              		</script>
+             		
+             						</c:otherwise>
+			</c:choose>
              
+             		
+             		
+             		
+             
+             </div>
              </div>
          </div>
         </div>

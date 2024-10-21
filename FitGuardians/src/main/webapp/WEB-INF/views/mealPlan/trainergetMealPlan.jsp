@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+      <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"  %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -65,9 +66,27 @@
 .mealReMsg{
 	margin-bottom: 20px;
 }
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* 전체 페이지에 스크롤이 발생하지 않도록 설정 */
+}
+
+#wrapper {
+    height: 100vh; /* 뷰포트의 높이에 맞게 설정 */
+    overflow: auto; /* 콘텐츠가 넘칠 경우에만 스크롤 발생 */
+}
+
+#content-wrapper {
+    height: 100%; /* 컨텐츠 래퍼에 높이를 명확하게 설정 */
+    display: flex;
+    flex-direction: column; /* 요소들이 세로로 배치되도록 설정 */
+}
+
 </style>
 </head>
-<body>
+
     <body id="page-top">
         <!-- Page Wrapper -->
         <div id="wrapper">
@@ -75,7 +94,13 @@
          <div id="content-wrapper" class="d-flex flex-column">
          <!-- Main Content -->
                   <div id="content">
-					<div class="card shadow mb-4" style="width: 95%; height: 95%;" align="center">
+					<div class="card shadow mb-4" style="width: 98%; height: 100%; margin-left: 10px ;" align="center">
+								<c:choose>
+				<c:when test="${empty loginUser }">
+					<h2>로그인 후 이용 아마 가능합니다</h2>
+				</c:when>
+				<c:otherwise>
+					
 
 			
                  <jsp:include page="../common/topBar.jsp"/>
@@ -122,208 +147,174 @@
 					<button id="pdfgo" class="btn btn-primary btn-icon-split btn-lg">  Excel로 저장  </button>
 					<button class="mealReMsgbtn btn btn-primary btn-icon-split btn-lg" style="padding: 10px;">  답장하기  </button>
 				</div>
+
+<script>
+// 오늘 날짜 확인
+let today = new Date();
+
+// 날짜 형식 변경 함수
+function formatDate(date) {
+    // yyyy-mm-dd 형식으로 변환
+    let fomartday = date.getFullYear() + "-" + ((date.getMonth() + 1).toString().padStart(2, '0')) + "-" + (date.getDate().toString().padStart(2, '0'));
+    // input에 value 넣어주기
+    $('.selectday input').val(fomartday);
+    return fomartday;
+}
+
+$(document).ready(function() {
+    // 페이지 로딩 시 첫 화면에 날짜 표시
+    let day = formatDate(today);
+    $('.today h2').text(day);
+
+    // 회원 목록 불러오기 (check 함수 역할을 하는 AJAX)
+    check(function() {
+        // 회원 목록 불러온 후 첫 번째 회원으로 식단 로드
+        mealplan(day);
+    });
+});
+
+// 어제를 불러오는 함수
+$('.leftbutton button').click(function() {
+    today.setDate(today.getDate() - 1);
+    let day = formatDate(today);
+    $('.today h2').text(day);
+    mealplan(day); // 날짜 변경 시 식단 로드
+});
+
+// 다음날 함수
+$('.rightbutton button').click(function() {
+    today.setDate(today.getDate() + 1);
+    let day = formatDate(today);
+    $('.today h2').text(day);
+    mealplan(day); // 날짜 변경 시 식단 로드
+});
+
+// 날짜 선택 함수
+$('.selectday input').on('change', function() {
+    let selectday = new Date($('.selectday input').val());
+    today = selectday;
+    let day = formatDate(today);
+    $('.today h2').text(day);
+    mealplan(day); // 날짜 선택 시 식단 로드
+});
+
+// 식단 데이터를 불러오는 함수
+function mealplan(day) {
+    $.ajax({
+        url: 'mealPlanTrainerList.bo',
+        data: { day: day, sendUser: $('#getmeallist option:selected').val() },
+        success: function(data) {
+            let value = "";
+            if (data == "") {
+                $('.tablediv').css('display', 'none');
+                $('.mealReMsgdiv').css('display', 'none');
+                if ($('#getmeallist option:selected').text() == 'pt를 받는 회원이 없습니다') {
+                    value = "<h2>" + $('#getmeallist option:selected').text();
+                } else {
+                    value = "<h2>" + $('#getmeallist option:selected').text() + '님이 ' + day + ' 에 보낸 식단이 없습니다</h2>';
+                }
+                $('.mealMsg').html("");
+                $('.tabledivno').html(value);
+            } else {
+                $('.tablediv').css('display', 'block');
+                $('.mealReMsgdiv').css('display', 'block');
+                for (let i in data) {
+                    let num = parseInt(i) + 1;
+                    value += "<tr>" +
+                                "<td>" + num + "</td>" +
+                                "<td>" + data[i].foodName + "</td>" +
+                                "<td>" + data[i].kcal + "</td>" +
+                                "<td>" + data[i].sugar + "</td>" +
+                                "<td>" + data[i].carbs + "</td>" +
+                                "<td>" + data[i].protein + "</td>" +
+                                "<td>" + data[i].fat + "</td>" +
+                            "</tr>";
+                    $('.tablediv tbody').html(value);
+                }
+                let mealRemsg = data[0].mealRemsg || "";
+                $('.meaRelMsg').val(mealRemsg);
+
+                let value2 = "<h2>" + data[0].sendUserId + "님이 보낸 " + day + " 식단입니다</h2>";
+                $('.tabledivno').html(value2);
+
+                let value3 = data[0].mealMsg ? "<h2>" + data[0].sendUserId + "님의 한마디</h2>" + data[0].mealMsg : "<h2>" + data[0].sendUserId + "님의 한마디</h2> 따로 남긴 말이 없습니다";
+                $('.mealMsg').html(value3);
+            }
+        },
+        error: function() {
+            console.log("회원의 식단 정보 불러오기 실패");
+        }
+    });
+}
+
+// 엑셀 다운로드 버튼 이벤트
+document.getElementById('pdfgo').addEventListener('click', function() {
+    var table = document.getElementById('pdftable');
+    var wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
+    XLSX.writeFile(wb, formatDate(today) + '식단.xlsx');
+});
+
+// 답장 전송 버튼 이벤트
+$('.mealReMsgbtn').on('click', function() {
+    if ($('.meaRelMsg').val() == "") {
+        alert("답장이 작성되지 않았습니다");
+        return false;
+    } else {
+        $.ajax({
+            url: 'trainersendReMsg.bo',
+            data: { day: formatDate(today), sendUser: $('#getmeallist option:selected').val(), mealRemsg: $('.meaRelMsg').val() },
+            success: function() {
+                alert("답장이 성공적으로 전달되었습니다");
+                setTimeout(function() {
+                    location.reload(); // 1초 후 새로고침
+                }, 1000);
+            },
+            error: function() {
+                console.log("ajax 마지막 버튼 오류");
+            }
+        });
+    }
+});
+
+// 회원 목록 불러오기 함수 (check 함수 역할)
+function check(callback) {
+    let value = "";
+    $.ajax({
+        url: 'gettrainelist.bo',
+        data: { userId: '${loginUser.userId}' },
+        success: function(date) {
+            if (date == null || date.length === 0) {
+                value += '<option value="">pt를 받는 회원이 없습니다</option>';
+                $('#getmeallist').html(value);
+            } else {
+                for (let i in date) {
+                    value += "<option value=" + date[i].userId + ">" + date[i].userName + "</option>";
+                }
+                $('#getmeallist').html(value);
+            }
+            // 회원 목록 불러온 후 콜백 실행
+            if (callback) callback();
+        },
+        error: function() {
+            console.log("ajax 오류");
+        }
+    });
+}
+
+// 회원 목록 변경 시 식단 로드
+$('#getmeallist').on('change', function() {
+    let day = formatDate(today); // 현재 날짜 가져오기
+    mealplan(day); // 날짜와 선택된 회원으로 AJAX 호출
+});
+</script>
+				</c:otherwise>
+			</c:choose>
+             
 			</div>
 			</div>
 			</div>
 			</div>
-				<script >
 			
-				
-				//오늘날짜 확인 
-				
-				 let today = new Date();
-				
-				//날짜 형식 변경 함수
-				 function formatDate(date) {
-					//이제 이 함수값 넣고 리턴하면 날짜가 yyyy-mm-dd형식으로 변할거임
-					let fomartday =  date.getFullYear() + "-" + ((date.getMonth() + 1).toString().padStart(2, '0')) + "-" + (date.getDate().toString().padStart(2, '0'));
-						//input에 value 넣어주기용도
-					$('.selectday input').val(fomartday);
-						//이제 식단 나와야하니 밑에 함수 하나 새로 보내주기
-					 mealplan(fomartday); 
-				        return fomartday;
-				    }
-					
-				
-				
-				$(document).ready(function(){
-					//일단 페이지 로딩시 보여줄 첫 화면
-				
-					let day = formatDate(today);
-				
-					$('.today h2').text(day);
-				
-					
-				})
-				
-				
-				//어제를 불러오는 함수
-				
-					
-				$('.leftbutton button').click(function(){
-					today.setDate(today.getDate() - 1);
-					let day = formatDate(today);
-				
-					$('.today h2').text(day);
-				
-				});
-				
-				
-				
-					//다음날 함수
-				$('.rightbutton button').click(function(){
-					 
-					today.setDate(today.getDate() + 1);
-					let day = formatDate(today);
-					
-					$('.today h2').text(day);
-				
-					
-				});
-					
-					//마지막으로 원하는 날짜로 바꿀 수 있는 input 함수 만들자
-					$('.selectday input').on('change',function(){
-						let selectday = new Date($('.selectday input').val());
-						today = selectday;
-						let day = formatDate(today);
-							$('.today h2').text(day);
-					});
-					
-					function mealplan(day){
-						//변경시마다 파일 가지고와야하니까 슬슬 ajax 준비하자
-					
-						$.ajax({
-							url : 'mealPlanTrainerList.bo',
-							data : {day : day , sendUser : $('#getmeallist option:selected').val() },
-							success : function(data){
-							//이건 성공시 받아올 파일
-							let value = "";
-							if(data == ""){
-								
-								$('.tablediv').css('display','none');
-								$('.mealReMsgdiv').css('display','none');
-								
-								if($('#getmeallist option:selected').text() == 'pt를 받는 회원이 없습니다'){
-									value = "<h2>"+ $('#getmeallist option:selected').text()
-								}else{
-								value = "<h2>"+ $('#getmeallist option:selected').text()  +'님이'+ day +' 에 보낸 식단이 없습니다'+"</h2>"
-									
-								}
-								value3 =""
-									$('.mealMsg').html(value3)
-							$('.tabledivno').html(value);
-							}else{
-								for(let i in data){
-									$('.tablediv').css('display','block');
-									$('.mealReMsgdiv').css('display','block');
-								
-									console.log(data[i])
-									let num = parseInt(i)+1
-								value += "<tr>"+
-											"<td>"+ num +"</td>" + 
-											"<td>"+ data[i].foodName +"</td>" + 
-											"<td>"+ data[i].kcal +"</td>" + 
-											"<td>"+ data[i].sugar +"</td>" + 
-											"<td>"+ data[i].carbs +"</td>" + 
-											"<td>"+ data[i].protein +"</td>" + 
-											"<td>"+ data[i].fat +"</td>" + 
-								
-										 "</tr>"
-										 	$('.tablediv tbody').html(value)
-								}
-								let value5 = ""
-								value5 = data[0].mealRemsg
-								if(value5 == null){
-									$('.meaRelMsg').val(value5)	
-								
-								}else{
-										 	$('.meaRelMsg').val(value5)	
-								
-										 	
-								}
-								let value2 = "<h2>"+data[0].sendUserId +'님이 보낸'+ day +'식단입니다'+"</h2>"
-								$('.tabledivno').html(value2);
-								let value3 = ""
-								if(data[0].mealMsg == null){
-									value3 =  "<h2>"+data[0].sendUserId +'님의 한마디'+"</h2>" + data[0].sendUserId+'님이 따로 남긴 말이 없습니다'
-								}else{
-									value3 =  "<h2>"+data[0].sendUserId +'님의 한마디'+"</h2>" +data[0].mealMsg
-								}
-								$('.mealMsg').html(value3)
-					
-							}
-							
-							},
-							error : function(){
-								console.log("회원의 식단정보 불러오기 실패")
-							}
-						})
-					}
-					 document.getElementById('pdfgo').addEventListener('click', function() {
-				            // HTML 테이블을 가져옴
-				            var table = document.getElementById('pdftable');
-
-				            // 테이블을 워크북으로 변환
-				            var wb = XLSX.utils.table_to_book(table, { sheet: "Sheet1" });
-
-				            // Excel 파일로 다운로드
-				            XLSX.writeFile(wb, formatDate(today)+'식단.xlsx');
-				        });
-						$('.mealReMsgbtn').on('click',function(){
-							if($('.meaRelMsg').val() == ""){
-								alert("답장이 작성되지 않았습니다")
-								return false;
-							}else{
-
-								$.ajax({
-									url : 'trainersendReMsg.bo' ,
-									data : { day : formatDate(today), sendUser : $('#getmeallist option:selected').val() , mealRemsg :$('.meaRelMsg').val()  },
-									success : function(){
-										alert("답장이 성공적으로 전달되었습니다"); // 먼저 메시지를 보여줌
-
-									setTimeout(function() {
-										location.reload(); // 1초 후 새로고침
-									}, 1000);
-								},
-								error : function(){
-									console.log("ajax 마지막 버튼 오류")
-								}
-								})
-							}
-						})
-						
-						//회원목록용
-					let value = ""
-					$.ajax({
-						url: 'gettrainelist.bo',
-						data: {userId:'${loginUser.userId}'},
-						success: function(date){
-							if(date == null || date.length === 0 ){
-								value += '<option value="">pt를 받는 회원이 없습니다</option>'
-									$('#getmeallist').html(value);
-							}else{
-								
-							for(let i in date){
-							value += "<option value="+date[i].userId +">" +date[i].userName  +"</option>" 
-							}
-							$('#getmeallist').html(value);
-							}
-							
-						
-					
-						},
-						error: function(){
-							console.log("ajax오류");
-						}
-						
-					})
-				    $('#getmeallist').on('change', function() {
-					        let day = formatDate(today); // 현재 날짜 가져오기
-					        mealplan(day); // 날짜와 선택된 회원으로 AJAX 호출
-					    });
-										
-				</script>
-
 
              
 

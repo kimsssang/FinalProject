@@ -45,9 +45,27 @@ uri="http://java.sun.com/jsp/jstl/core" %>
         width: 50px;
         height: 38px;
       }
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* 전체 페이지에 스크롤이 발생하지 않도록 설정 */
+}
+
+#wrapper {
+    height: 100vh; /* 뷰포트의 높이에 맞게 설정 */
+    overflow: auto; /* 콘텐츠가 넘칠 경우에만 스크롤 발생 */
+}
+
+#content-wrapper {
+    height: 100%; /* 컨텐츠 래퍼에 높이를 명확하게 설정 */
+    display: flex;
+    flex-direction: column; /* 요소들이 세로로 배치되도록 설정 */
+}
+
     </style>
   </head>
-  <body>
+
     <!-- 트레이너가 회원에게 식단 입력하는 페이지 -->
     <body id="page-top">
       <!-- Page Wrapper -->
@@ -61,9 +79,21 @@ uri="http://java.sun.com/jsp/jstl/core" %>
             <!-- Begin Page Content -->
             <div
               class="card shadow mb-4"
-              style="width: 95%; height: 95%"
+              style="width: 98%; height: 100%; margin-left: 20px ;"
               align="center"
             >
+            			<c:choose>
+				<c:when test="${empty loginUser }">
+					<h2>로그인 후 이용 가능합니다</h2>
+				</c:when>
+				<c:otherwise>
+            
+            
+            
+            
+            
+            
+            
               <div class="plantitle card-header py-3" style="display: flex">
                 <h3 class="m-0 font-weight-bold text-primary">
                   먹은 식단 보내기
@@ -164,7 +194,7 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                   트레이너에게 보내기
                 </button>
               </div>
-            </div>
+         
 
             <script>
               $.ajax({
@@ -705,9 +735,14 @@ uri="http://java.sun.com/jsp/jstl/core" %>
                 });
               }
             </script>
+            				</c:otherwise>
+			</c:choose>
+            
+            
+               </div>
           </div>
         </div>
       </div>
     </body>
-  </body>
+
 </html>

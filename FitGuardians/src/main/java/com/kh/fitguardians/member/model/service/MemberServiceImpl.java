@@ -230,6 +230,20 @@ public class MemberServiceImpl implements MemberService{
 	public int defaultMemberInfoInsert(MemberInfo mi) {
 		return mDao.defaultMemberInfoInsert(sqlSession, mi);
 	}
+
+	@Override
+	public int defaultBodyInfoInsert(BodyInfo bi) {
+		return mDao.defaultBodyInfoInsert(sqlSession, bi);
+	}
+
+	@Override
+	public boolean checkBodyInfo(String userId) {
+		return mDao.checkBodyInfo(sqlSession, userId);
+	}
+
+	
+	
+
 	
 	
 

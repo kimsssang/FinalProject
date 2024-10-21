@@ -284,15 +284,15 @@ public class MessageController {
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 		headers.set("Authorization", "Bearer " + accessToken);
 		
-		String serverUrl = "https://kimsssang.github.io/FinalProject/FitGuardians/src/main/webapp";  // 실제 서버 IP 주소나 도메인으로 수정
-		String fileName = qrUrl.substring(qrUrl.lastIndexOf("/") + 1);
+		String serverUrl = "https://kimsssang.github.io/FinalProject/FitGuardians/src/main/webapp/resources/qrCodes/";  // 실제 서버 IP 주소나 도메인으로 수정
+		String fileName = qrUrl.substring(qrUrl.lastIndexOf("\\") + 1);
 		
 		String templateObject = String.format(
 		    "{\"object_type\":\"feed\"," +
 		    "\"content\":{\"title\":\"%s\"," +
 		    "\"image_url\":\"%s\"," +
-		    "\"link\":{\"web_url\":\"%s/resources/qrCodes/%s\",\"mobile_web_url\":\"%s/resources/qrCodes/%s\"}}}",
-		    message, qrUrl, serverUrl, fileName, serverUrl, fileName  
+		    "\"link\":{\"web_url\":\"%s%s\",\"mobile_web_url\":\"%s%s\"}}}",
+		    message, serverUrl + fileName, serverUrl, fileName, serverUrl, fileName  
 		);
 		
         String params = "template_object=" + URLEncoder.encode(templateObject, "UTF-8");

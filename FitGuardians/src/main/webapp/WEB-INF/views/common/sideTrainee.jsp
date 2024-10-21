@@ -211,7 +211,7 @@ pageEncoding="UTF-8"%>
       </li>
       <li class="nav-item">
         <!-- <a class="nav-link" href="calendar.kt"> -->
-        <a class="nav-link" href="createCalendar.kt">
+        <a class="nav-link" href="calendar.kt">
           <i class="fas fa-fw fa-chart-area"></i>
           <span>스케줄러테스트</span></a
         >

@@ -22,6 +22,11 @@ public class TraineeController {
 	@Autowired
 	private TraineeServiceImpl tnService;
 	
+	@RequestMapping("main.tn")
+	public String traineeMain() {
+		return "Trainee/traineeDashboard";
+	}
+	
 	@RequestMapping("traineeExercisePlanner.tn")
 	public String traineeExercisePlanner(HttpSession session, Model model) {
 		// 여기서 넘어갈 때 addTraineeExPlan들의 ArrayList를 가지고 와야 한다.
@@ -49,22 +54,23 @@ public class TraineeController {
 	@ResponseBody
 	@RequestMapping(value ="deleteTraineeExPlan.tn")
 	public int deleteTraineeExPlan(int exerciseNo) {
-		//System.out.println("exerciseNo값 잘 나오는지 : " + exerciseNo);
+		// System.out.println("exerciseNo값 잘 나오는지 : " + exerciseNo);
 		int result = tnService.deleteTraineeExPlan(exerciseNo);
+		// System.out.println(result);
 		return result;
 	}
 	
 	@RequestMapping("sendDatatoTrainer.tn")
 	public String sendDatatoTrainer(@RequestBody TnWorkout tn, HttpSession session, Model model) {
 		
-		System.out.println("tn 넘어오나 : " + tn);
+		// System.out.println("tn 넘어오나 : " + tn);
 		// user의 값을 여기서 얻는다.
 		String userId = ((Member)session.getAttribute("loginUser")).getUserId();
 		tn.setUserId(userId);
 		
 		model.addAttribute("data", tn);
 		
-		System.out.println("tn 세팅 후 어떻냐 : " + tn);
+		// System.out.println("tn 세팅 후 어떻냐 : " + tn);
 		
 		return "Trainer/traineeDetailInfo";
 	}

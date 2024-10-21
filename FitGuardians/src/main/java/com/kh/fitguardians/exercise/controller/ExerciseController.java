@@ -4,14 +4,17 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.http.HttpClient;
+import java.net.http.HttpHeaders;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,7 +28,9 @@ import org.apache.pdfbox.pdmodel.PDPageContentStream;
 import org.apache.pdfbox.pdmodel.common.PDRectangle;
 import org.apache.pdfbox.pdmodel.font.PDFont;
 import org.apache.pdfbox.pdmodel.font.PDType0Font;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -44,8 +49,10 @@ import com.kh.fitguardians.exercise.model.vo.ExerciseDesc;
 import com.kh.fitguardians.exercise.model.vo.ExerciseDetails;
 import com.kh.fitguardians.exercise.model.vo.ExerciseInfo;
 import com.kh.fitguardians.exercise.model.vo.ExercisePlan;
+import com.kh.fitguardians.exercise.model.vo.TnWorkout;
 import com.kh.fitguardians.exercise.model.vo.Workout;
 import com.kh.fitguardians.member.model.vo.Member;
+
 
 @Controller
 public class ExerciseController {
@@ -158,7 +165,11 @@ public class ExerciseController {
 		
 		// 글쓰기
 		contentStream.setFont(boldFont, 25);
-		contentStream.newLineAtOffset(30,800);
+		// x축 시작 좌표
+		int startX = 30;
+		// y축 시작 좌표
+		int startY = 800;
+		contentStream.newLineAtOffset(startX,startY);
 		String title = "AI가 만들어준 운동 일정표";
 		contentStream.showText(title);
 		
@@ -197,21 +208,43 @@ public class ExerciseController {
 
 	    ArrayList<ExerciseDetails> exercises = exerciseInfo.getExercise();
 	    contentStream.setFont(textFont, 12);
+	    
+	    // 일자를 기준으로 묶기
+	    Map<String, ArrayList<ExerciseDetails>> exercisesByDay = new LinkedHashMap<>();// Hashmap은 기본적으로 순서를 보장 x => 순서를 보장받고 싶으면 LinkedHashMap<>();을 작성해야 한다.
 
-	    for (ExerciseDetails exercise : exercises) {
-	        
-	        contentStream.showText("일자: " + exercise.getDay());
-	        contentStream.newLineAtOffset(0, -15);
-	        contentStream.showText("운동명: " + exercise.getName());
-	        contentStream.newLineAtOffset(0, -15);
-	        contentStream.showText("장비: " + exercise.getEquipment());
-	        contentStream.newLineAtOffset(0, -15);
-	        contentStream.showText("소요 시간: " + exercise.getDuration());
-	        contentStream.newLineAtOffset(0, -15);
-	        contentStream.showText("반복 수: " + exercise.getRepetitions());
-	        contentStream.newLineAtOffset(0, -15);
-	        contentStream.showText("세트 수: " + exercise.getSets());
-	        contentStream.newLineAtOffset(0, -15); // Extra space between exercises
+	    // 운동 정보를 일자별로 그룹화
+	    for(ExerciseDetails exercise: exercises) {
+	    	exercisesByDay.computeIfAbsent(exercise.getDay(), k -> new ArrayList<>()).add(exercise);
+	    }
+
+	    
+	    // 각 요일에 따른 운동 정보를 출력
+	    for (Map.Entry<String, ArrayList<ExerciseDetails>> entry : exercisesByDay.entrySet()) {
+	    	
+	    	String day = entry.getKey();
+	    	ArrayList<ExerciseDetails> dayExercises = entry.getValue();
+	    	
+	    	contentStream.showText("일자: " + day);
+	    	int exerciseNumber = 1;
+	    	
+	    	for(ExerciseDetails info : dayExercises) {
+	    		
+	    		contentStream.showText(exerciseNumber + "번째 운동");
+	            contentStream.newLineAtOffset(0, -15);
+	    		
+	    		contentStream.showText("운동명: " + info.getName());
+	    		contentStream.newLineAtOffset(0, -15);
+	    		contentStream.showText("장비: " + info.getEquipment());
+	    		contentStream.newLineAtOffset(0, -15);
+	    		contentStream.showText("소요 시간: " + info.getDuration());
+	    		contentStream.newLineAtOffset(0, -15);
+	    		contentStream.showText("반복 수: " + info.getRepetitions());
+	    		contentStream.newLineAtOffset(0, -15);
+	    		contentStream.showText("세트 수: " + info.getSets());
+	    		contentStream.newLineAtOffset(0, -30); 
+	    		exerciseNumber++;
+	    	
+	    	}
 	      
 	    }
 
@@ -344,6 +377,7 @@ public class ExerciseController {
 	
 	}// searchExercise
 	
+	// 트레이너가 입력한 오늘의 운동 플랜 회원에게 보이기
 	@ResponseBody
 	@RequestMapping(value="selectTodayWorkout.ex", produces="application/json; charset:utf-8")
 	public String selectTodayWorkout(@RequestParam String userId) {
@@ -352,12 +386,34 @@ public class ExerciseController {
 		return new Gson().toJson(list);
 	}
 	
+	// 트레이너가 입력한 오늘의 운동 플랜 트레이너에게 보이기
 	@ResponseBody
 	@RequestMapping(value="selectTodayWorkoutforTrainer.ex", produces="application/json; charset:utf-8")
 	public String selectTodayWorkutforTrainer(@RequestParam String userId) {
 		//System.out.println("사용자 아이디 : " + userId);
 		ArrayList<Workout> list = eService.selectWorkoutList(userId);
 		return new Gson().toJson(list);
+	}
+	
+	// 회원이 작성한 것을 보여주는 스케줄러
+	@ResponseBody
+	@RequestMapping(value="selectTraineeWorkoutList.ex", produces="application/json; charset:utf-8")
+	public String selectTraineeWorkoutList(@RequestParam String userId) {
+		ArrayList<TnWorkout> list = eService.selectTraineeWorkoutList(userId);
+		return new Gson().toJson(list);
+	}
+	
+	// 트레이너가 작성한 것을 회원에게 보여주는 스케줄러
+	@ResponseBody
+	@RequestMapping(value="workoutListfromTrainer.ex", produces="application/json; charset:utf-8")
+	public String selectTrainerWorkoutList(@RequestParam String userId) {
+		ArrayList<Workout> list = eService.selectWorkoutList(userId);
+		return new Gson().toJson(list);
+	}
+	
+	// 카카오톡을 이용하여 운동 플래너 알림(coolSMS)
+	public void sendPlanMsg() {
+		
 	}
 
 

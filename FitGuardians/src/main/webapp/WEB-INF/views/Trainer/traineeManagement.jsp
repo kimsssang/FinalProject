@@ -47,7 +47,7 @@
 
                                 <div class="col-lg-6">
                                 <c:forEach var="m" items="${list}">
-                                    <div class="card mb-3 py-4 border-left-primary">
+                                    <div class="card mb-3 py-4 border-left-primary traineeCard" onclick="traineeDetail('${m.userId}');">
                                         <div class="card-body"  style="display:flex;">
                                             <div style="margin-left:30px;">
                                                 <div style="border-radius:50%; border:1px solid royalblue; width:150px; height:150px; overflow:hidden;">
@@ -56,7 +56,7 @@
                                                 </div>
                                             </div>
                                             <div style="margin-left:30px;">
-                                                <a class = "traineeName" href="traineeDetail.me?userId=${m.userId}" style="cursor:pointer; text-decoration:none;">${m.userName}</a>
+                                                <span class = "traineeName">${m.userName}</span>
                                                 <br/>
                                                 <span>나이 : ${m.age}살</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>성별: ${m.gender}</span> <br/>
                                                 <span>키 : ${m.height}cm</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>몸무게 : ${m.weight}kg</span> <br/>
@@ -68,7 +68,14 @@
                                     </div>
                                 </c:forEach>
                             </div>
-
+							
+							<script>
+								function traineeDetail(id){
+									location.href = "traineeDetail.me?userId=" + id;
+								}
+								
+								
+							</script>
                         <!-- 회원 관리 카드 끝 -->
 
                     </div>

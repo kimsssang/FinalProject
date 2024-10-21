@@ -215,6 +215,33 @@ public class MemberServiceImpl implements MemberService{
 		// mDao 재사용
 		return mDao.insertMemberInfo(sqlSession, addAdditionalInfo); // MEMBER_INFO에 데이터 삽입;
 	}
+
+	@Override
+	public int addBodyInfo(BodyInfo bi) {
+		return mDao.addBodyInfo(sqlSession, bi);
+	}
+	
+	@Override
+	public Member selectMemberByUserId(String userId) {
+		return mDao.selectMemberByUserId(sqlSession, userId);
+	}
+
+	@Override
+	public int defaultMemberInfoInsert(MemberInfo mi) {
+		return mDao.defaultMemberInfoInsert(sqlSession, mi);
+	}
+
+	@Override
+	public int defaultBodyInfoInsert(BodyInfo bi) {
+		return mDao.defaultBodyInfoInsert(sqlSession, bi);
+	}
+
+	@Override
+	public boolean checkBodyInfo(String userId) {
+		return mDao.checkBodyInfo(sqlSession, userId);
+	}
+
+	
 	
 
 	

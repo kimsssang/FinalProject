@@ -12,6 +12,7 @@ import lombok.ToString;
 public class Schedule {
 	private int scheduleNo;
 	private String userNo;
+	private String ptUser;
 	private String scheduleTitle;
 	private String scheduleDes;
 	private String startDate;

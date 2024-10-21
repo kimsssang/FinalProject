@@ -105,9 +105,9 @@
 					    		let muscle = $('#muscleGroup').val();
 					    		let difficulty = $('#difficulty').val();
 					    		
-					    		console.log(type);
-					    		console.log(muscle);
-					    		console.log(difficulty);
+					    		// console.log(type);
+					    		// console.log(muscle);
+					    		// console.log(difficulty);
 					    		
 					    		$.ajax({
 					    			url:'searchEx.ex',
@@ -471,6 +471,15 @@
 						</div>
 					</div>
 
+					<script>
+						document.addEventListener('DOMContentLoaded', function() {
+							window.isLevel = '${loginUser.userLevel}'; // let isLevel : 지역변수로 선언되서 외부 js화면으로 변수가 적용되지 않는다.
+																	   // 변수를 적용하기 위해선 window객체를 사용해야 한다.
+																	   // 캘린더의 '일정추가' 버튼이 트레이너 화면에선 보여야 한다 - 사용자의 level을 외부 자바스크립트로 보냄(트레이너 === 1)
+							// console.log("트레이너 화면", isLevel);
+						})
+					</script>
+
 					<!-- modal 추가 -->
 					<div class="modal fade" id="calendarModal" tabindex="-1"
 						role="dialog" aria-labelledby="exampleModalLabel"
@@ -510,15 +519,7 @@
 											name="calendar_date"> <label for="taskId"
 											class="col-form-label">운동 내용</label>
 										<textarea class="form-control" id="calendar_description"
-											name="calendar_description" style="height: 200px;">(이름입력)님, 안녕하세요! 
-금일 운동 스케줄을 알려드립니다.
-
-
-
-
-오늘도 좋은 운동이 되시길 바랍니다. 감사합니다.
-FitGuardians팀 트레이너 (트레이너 이름)
-										</textarea>
+											name="calendar_description" style="height: 200px;"></textarea>
 
 									</div>
 								</div>

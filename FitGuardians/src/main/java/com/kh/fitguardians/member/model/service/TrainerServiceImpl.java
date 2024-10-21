@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.kh.fitguardians.member.model.dao.TrainerDao;
+import com.kh.fitguardians.member.model.vo.Member;
 import com.kh.fitguardians.member.model.vo.Schedule;
 
 @Service
@@ -34,7 +35,22 @@ public class TrainerServiceImpl implements TrainerService{
 		return count > 0;
 	}
 
+	@Override
+	public ArrayList<Schedule> selectPtSchedule(Member m) {
+		return tDao.selectPtSchedule(sqlSession, m);
+	}
 
+	@Override
+	public int insertPtCalendar(Schedule schedule) {
+		return tDao.insertPtCalendar(sqlSession, schedule);
+	}
+
+	@Override
+	public String selectUserNo(String userId) {
+		return tDao.selectUserNo(sqlSession, userId);
+	}
+	
+	
 	
 
 }

@@ -40,6 +40,7 @@ import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.kh.fitguardians.common.model.vo.QrInfo;
 import com.kh.fitguardians.member.model.service.MemberServiceImpl;
+import com.kh.fitguardians.member.model.vo.BodyInfo;
 import com.kh.fitguardians.member.model.vo.Member;
 import com.kh.fitguardians.member.model.vo.MemberInfo;
 
@@ -132,18 +133,35 @@ public class SocialMemberController {
 	    	
 	    	JsonObject jsonRes = new Gson().fromJson(response.toString(), JsonObject.class);
 	    	String accessToken = jsonRes.get("access_token").getAsString();
-	    	
-	    	// 사용자 정보 추출 
-	    	getKakaoUserProfile(accessToken, session, request);
+	    	session.setAttribute("accessToken", accessToken);
+	    	// 사용자 정보 추출 및 리다이렉트 
+	    	String redirect = getKakaoUserProfile(accessToken, session, request);
 	    	
 	    	// 추가정보 확인하기
 	    	int userNo = ((Member)session.getAttribute("loginUser")).getUserNo();
 	    	boolean hasAdditionalInfo = mService.checkAdditionalInfo(userNo);
 	    	
+	    	// bodyInfo 유무 확인
+	    	String userId = ((Member)session.getAttribute("loginUser")).getUserId();
+	    	boolean hasBodyInfo = mService.checkBodyInfo(userId);
+	    	
+	    	// 추가정보가 있다면 적용
+	    	if(hasAdditionalInfo) {
+	    		MemberInfo mi = mService.getMemberInfo(userNo);
+    			session.setAttribute("mi", mi);
+	    	}
+	    	
+	    	// bodyinfo 있다면 적용
+	    	if(hasBodyInfo) {
+	    		BodyInfo bi = mService.getBodyInfo(userId);
+	    		session.setAttribute("bi", bi);		
+	    	}
+	    	
 	    	// 세션에 추가 정보 입력 후 저장
 	    	session.setAttribute("hasAdditionalInfo", hasAdditionalInfo);
+	    	session.setAttribute("hasBodyInfo", hasBodyInfo);
 	    	
-	    	return "redirect:/";
+	    	return redirect;
 	    }else {
 	    	throw new IOException("토큰에 접근하는데에 실패하였습니다, 응답 코드 : " + responseCode);
 	    }
@@ -198,13 +216,14 @@ public class SocialMemberController {
 	                : null;
 	        String normGender = normalizeGender(gender);
 	        
-	        // 휴대폰 번호 (기본 형식 : +82 10-0000-0000, 조정완료)
+	        // 휴대폰 번호 (기본 형식 : +82 10-0000-0000)(수정된 형식 : 01000000000)
 			String phoneNumber = kakaoAccount.has("phone_number")
 			                ? kakaoAccount.get("phone_number")
 			                		.getAsString()
 			                : null;
 			if(phoneNumber.startsWith("+82")) {
-				phoneNumber = phoneNumber.replace("+82 ", "0"); // +82를 0으로 변환(외국인이 회원가입하려고하면 어떡하지)
+				phoneNumber = phoneNumber.replace("+82 ", "0") // '+82 '를 0으로 변환(외국인이 회원가입하려고하면 어떡하지)
+							.replaceAll("-", ""); 			   // '-'를 제거
 			}
 			
 			// 출생연도(나이로 만들기)
@@ -225,6 +244,12 @@ public class SocialMemberController {
             // 프로필 이미지 다운로드 및 저장
             if (profileImage != null) {
             	savedProfileImage = downloadAndRenamePic(profileImage);  // 이미지 다운로드 및 파일명 수정
+            }else {
+            	if(normGender.equals("F")) {
+            		savedProfileImage = "resources/profilePic/gymW.png";
+            	}else {
+            		savedProfileImage = "resources/profilePic/gymM.png";
+            	}
             }
             
             if(name == null || email == null || api == null) {
@@ -252,12 +277,20 @@ public class SocialMemberController {
             	newUser.setQr(qrPath);
             	
             	// DB에 새로운 사용자 저장하기
-            	int result1 = mService.insertSocialMember(newUser);
+            	int result = mService.insertSocialMember(newUser);
             	
-            	if(result1 > 0) {
+            	if(result > 0) {
+            		// 등록되고난 후에 해당 사용자의 모든 데이터 가져오고 기본 추가정보 적용
+            		Member m = mService.selectMemberByUserId(kakaoRandomId);
+            		MemberInfo mi = defaultMemberInfoInsert(m.getUserNo());
+            		BodyInfo bi = defaultBodyInfoInsert(m.getUserId());
+            		
             		// 등록된 사용자 정보 세션에 저장
-            		session.setAttribute("loginUser", newUser);
-            		return "redirect:/";
+            		session.setAttribute("loginUser", m);
+            		session.setAttribute("mi", mi);
+            		session.setAttribute("bi", bi);
+            		
+            		return "redirect:dashboard.me";
             	}else {
             		// 등록 실패, 기존 로그인 창으로 리다이랙트
             		session.setAttribute("errorMsg", "로그인 실패");
@@ -267,7 +300,7 @@ public class SocialMemberController {
             }else {
             	// 기존 사용자 정보가 있을 경우 세션에 저장
             	session.setAttribute("loginUser", existingUser);
-            	return "redirect:/";
+            	return "redirect:dashboard.me";
             }
 		}else {
 			session.setAttribute("errorMsg", "사용자 정보 데이터를 가져올 수 없습니다.");
@@ -337,17 +370,34 @@ public class SocialMemberController {
 
 	        JsonObject jsonResponse = new Gson().fromJson(response.toString(), JsonObject.class);
 	        String accessToken = jsonResponse.get("access_token").getAsString();
-	        // 사용자 정보 추출 
-			getNaverUserProfile(accessToken, session, request);
+	        // 사용자 정보 추출 및 리다이렉트
+			String redirect = getNaverUserProfile(accessToken, session, request);
 	    	
 			// 추가정보 확인하기
 	    	int userNo = ((Member)session.getAttribute("loginUser")).getUserNo();
 	    	boolean hasAdditionalInfo = mService.checkAdditionalInfo(userNo);
 	    	
+	    	// BodyInfo 확인
+	    	String userId = ((Member)session.getAttribute("loginUser")).getUserId();
+	    	boolean hasBodyInfo = mService.checkBodyInfo(userId);
+	    	
+	    	// 추가정보가 있다면 적용
+	    	if(hasAdditionalInfo) {
+	    		MemberInfo mi = mService.getMemberInfo(userNo);
+    			session.setAttribute("mi", mi);
+	    	}
+	    	
+	    	// bodyinfo 있다면 적용
+	    	if(hasBodyInfo) {
+	    		BodyInfo bi = mService.getBodyInfo(userId);
+	    		session.setAttribute("bi", bi);		
+	    	}
+	    	
 	    	// 세션에 추가 정보 입력 후 저장
 	    	session.setAttribute("hasAdditionalInfo", hasAdditionalInfo);
+	    	session.setAttribute("hasBodyInfo", hasBodyInfo);
 	    	
-	    	return "redirect:/"; 
+	    	return redirect; 
 	    } else {
 	    	throw new IOException("토큰에 접근하는데에 실패하였습니다, 응답 코드 : " + responseCode); 
 	    }
@@ -406,18 +456,25 @@ public class SocialMemberController {
 	        		? responseObj.get("gender").getAsString() 
 	        		: null;
 	        		
-	        // 휴대폰 번호(형식 : 010-0000-0000)
+	        // 휴대폰 번호(형식 : 010-0000-0000)(수정된 형식 : 01000000000)
 	        String mobile = responseObj.has("mobile") 
 	        		? responseObj.get("mobile").getAsString() 
 	        		: null;
+    		mobile = mobile.replaceAll("-", ""); 	// '-'를 제거
 	        
 	        // 네이버 고유 ID(DB의 API속성에 넣을 것임)
 	        String api = responseObj.get("id").getAsString();
 	        
     		String savedProfileImage = null;
     		// 프로필 이미지 다운로드 및 저장
-            if (profileImage == null) {
+            if (profileImage != null) {
             	savedProfileImage = downloadAndRenamePic(profileImage);  // 이미지 다운로드 및 파일명 수정
+            }else {
+            	if(gender.equals("F")) {
+            		savedProfileImage = "resources/profilePic/gymW.png";
+            	}else {
+            		savedProfileImage = "resources/profilePic/gymM.png";
+            	}
             }
             
             if(name == null || email == null || api == null) {
@@ -445,9 +502,17 @@ public class SocialMemberController {
             	
             	int result = mService.insertSocialMember(newUser);
             	if(result > 0) {
+            		// 등록되고난 후에 해당 사용자의 모든 데이터 가져오고 기본 추가정보 적용
+            		Member m = mService.selectMemberByUserId(naverRandomId);
+            		MemberInfo mi = defaultMemberInfoInsert(m.getUserNo());
+            		BodyInfo bi = defaultBodyInfoInsert(m.getUserId());
+            		
             		// 등록된 사용자 정보 세션에 저장
-            		session.setAttribute("loginUser", newUser);
-            		return "redirect:/";
+            		session.setAttribute("loginUser", m);
+            		session.setAttribute("mi", mi);
+            		session.setAttribute("bi", bi);
+            		
+            		return "redirect:dashboard.me";
             	}else {
             		// 등록 실패, 기존 로그인 창으로 리다이랙트
             		session.setAttribute("errorMsg", "로그인 실패");
@@ -456,7 +521,7 @@ public class SocialMemberController {
             }else{
             	// 기존 사용자 정보가 있을 경우 세션에 저장
             	session.setAttribute("loginUser", existingUser);
-            	return "redirect:/";
+            	return "redirect:dashboard.me";
             }
 	    }else {
 	    	session.setAttribute("errorMsg", "사용자 정보 데이터를 가져올 수 없습니다.");
@@ -541,17 +606,33 @@ public class SocialMemberController {
 	    	
 	    	JsonObject jsonRes = new Gson().fromJson(response.toString(), JsonObject.class);
 	    	String accessToken = jsonRes.get("access_token").getAsString();
-	    	// 사용자 정보 추출 
-	    	getGoogleUserProfile(accessToken, session, request);
+	    	// 사용자 정보 추출 및 리다이렉트 
+	    	String redirect = getGoogleUserProfile(accessToken, session, request);
 	    	
 	    	// 추가정보 확인하기
 	    	int userNo = ((Member)session.getAttribute("loginUser")).getUserNo();
 	    	boolean hasAdditionalInfo = mService.checkAdditionalInfo(userNo);
 	    	
+	    	// bodyInfo 유무 확인
+	    	String userId = ((Member)session.getAttribute("loginUser")).getUserId();
+	    	boolean hasBodyInfo = mService.checkBodyInfo(userId);
+	    	
+	    	// 추가정보가 있다면 적용
+	    	if(hasAdditionalInfo) {
+	    		MemberInfo mi = mService.getMemberInfo(userNo);
+    			session.setAttribute("mi", mi);
+	    	}
+	    	
+	    	if(hasBodyInfo) {
+	    		BodyInfo bi = mService.getBodyInfo(userId);
+	    		session.setAttribute("bi", bi);
+	    	}
+	    	
 	    	// 세션에 추가 정보 입력 후 저장
 	    	session.setAttribute("hasAdditionalInfo", hasAdditionalInfo);
+	    	session.setAttribute("hasBodyInfo", hasBodyInfo);
 	    	
-	    	return "redirect:/"; 
+	    	return redirect; 
 	    }else {
 	    	throw new IOException("토큰에 접근하는데에 실패하였습니다, 응답 코드 : " + responseCode);
 	    }
@@ -624,7 +705,7 @@ public class SocialMemberController {
 	        // 구글 고유 ID(DB의 API속성에 넣을 것임)
 	        String api = userProfile.get("resourceName").getAsString();
 	        
-	        // 휴대폰 번호
+	        // 휴대폰 번호 (형식 : 010-0000-0000)(수정된 형식 : 01000000000)
             String phoneNumber = userProfile.has("phoneNumbers") 
             		? userProfile.get("phoneNumbers")
             				.getAsJsonArray()
@@ -633,6 +714,7 @@ public class SocialMemberController {
             				.get("value")
             				.getAsString() 
             		: null;
+            phoneNumber = phoneNumber.replaceAll("-", "");
             // 주소 (사용자가 임의로 문자를 직접 입력하는 양식으로부터 가져오는 데이터라서, 우편번호까지 가져오는 것은 불가능함, 주석처리)
 //            String address = userProfile.has("addresses") 
 //            		? userProfile.get("addresses")
@@ -662,14 +744,25 @@ public class SocialMemberController {
             	newUser.setPhone(phoneNumber);
             	newUser.setApi(api);
             	
+            	String defPic = normGender.equals("F") ? "resources/profilePic/gymW.png" : "resources/profilePic/gymM.png";
+            	newUser.setProfilePic(defPic);
+            	
             	String qrPath = qrCreater(newUser);
             	newUser.setQr(qrPath);
             	
             	int result = mService.insertSocialMember(newUser);
             	if(result > 0) {
+            		// 등록되고난 후에 해당 사용자의 모든 데이터 가져오고 기본 추가정보 적용
+            		Member m = mService.selectMemberByUserId(googleRandomId);
+            		MemberInfo mi = defaultMemberInfoInsert(m.getUserNo());
+            		BodyInfo bi = defaultBodyInfoInsert(m.getUserId());
+            		
             		// 등록된 사용자 정보 세션에 저장
-            		session.setAttribute("loginUser", newUser);
-            		return "redirect:/";
+            		session.setAttribute("loginUser", m);
+            		session.setAttribute("mi", mi);
+            		session.setAttribute("bi", bi);
+            		
+            		return "redirect:dashboard.me";
             	}else {
             		// 등록 실패, 기존 로그인 창으로 리다이랙트
             		session.setAttribute("errorMsg", "로그인 실패");
@@ -678,7 +771,7 @@ public class SocialMemberController {
             }else{
             	// 기존 사용자 정보가 있을 경우 세션에 저장
             	session.setAttribute("loginUser", existingUser);
-            	return "redirect:/";
+            	return "redirect:dashboard.me";
             }
 	    }else {
 	    	session.setAttribute("errorMsg", "사용자 정보 데이터를 가져올 수 없습니다.");
@@ -801,33 +894,73 @@ public class SocialMemberController {
 		return password.toString();
 	}
 	
-	// 모달 창에서 '나중에 하기'를 눌렀을 경우
+	// 모달 창에서 '나중에 하기'를 눌렀을 경우, 임시적으로 모달 창을 비활성화 하게함
 	@ResponseBody
 	@RequestMapping("delayAdditionalInfo.me")
 	public void delayAdditionalInfo(HttpSession session) {
 		session.setAttribute("hasAdditionalInfo", true);
+		//session.setAttribute("hasBodyInfo", true);
 	}
 	
 	// 소셜 로그인 사용자를 위한 추가 정보 입력 기능
 	@ResponseBody
 	@RequestMapping(value = "addAdditionalInfo.me", produces = "text/plain; charset=UTF-8")
-	public String addAdditionalInfo(@RequestBody MemberInfo memberInfo, HttpSession session) {
+	public String addAdditionalInfo(@RequestBody MemberInfo memberInfo, BodyInfo bodyInfo, HttpSession session) {
 	    // 사용자 식별 번호를 가져오기 위한 작업
 	    Member loginMember = (Member)session.getAttribute("loginUser");
 
 	    // 사용자 번호 설정
 	    memberInfo.setUserNo(loginMember.getUserNo());
 	    
-	    int result = mService.addAdditionalInfo(memberInfo);
+	    // bodyInfo 정보 생성
+	    bodyInfo.setUserId(loginMember.getUserId());
+	    // bodyInfo 값 삽입 여부 판단
+	    int result1 = 0;
 	    
-	    if(result > 0) {
+	    // 성별에 따라 계산
+	    if(loginMember.getGender().equals("M")) { // 남자라면
+	    	double mAge = Double.parseDouble(loginMember.getAge());
+        	double mBmi = memberInfo.getWeight() / Math.pow(memberInfo.getHeight(), 2);
+        	double mSmm = 0.407 * memberInfo.getWeight() + 0.267 * memberInfo.getHeight() - 19.2;
+        	double mBfp = 1.20 * mBmi + 0.23 * mAge - 16.2;
+        	double mFat = memberInfo.getWeight() * (mBfp / 100);
+        	
+        	bodyInfo.setBmi(mBmi);
+        	bodyInfo.setSmm(mSmm);
+        	bodyInfo.setFat(mFat);
+        	
+        	result1 = mService.addBodyInfo(bodyInfo);
+        	
+	    }else { // 여자라면
+	    	double fAge = Double.parseDouble(loginMember.getAge());
+        	double fBmi = memberInfo.getWeight() / Math.pow(memberInfo.getHeight(), 2);
+        	double fSmm = 0.252 * memberInfo.getWeight() + 0.473 * memberInfo.getHeight() - 48.3;
+        	double fBfp = 1.20 * fBmi + 0.23 * fAge - 5.4;
+        	double fFat = memberInfo.getWeight() * (fBfp / 100);
+        	
+        	bodyInfo.setBmi(fBmi);
+        	bodyInfo.setSmm(fSmm);
+        	bodyInfo.setFat(fFat);
+        	
+        	result1 = mService.addBodyInfo(bodyInfo);
+	    }
+	    
+	    int result2 = mService.addAdditionalInfo(memberInfo);
+	    
+	    if(result1 > 0 && result2 > 0) {
+	    	// 세션에 입력하는 갱신된 추가정보 넣기
+	    	MemberInfo mi = mService.getMemberInfo(loginMember.getUserNo());
+	    	BodyInfo bi = mService.getBodyInfo(loginMember.getUserId());
+	    	session.setAttribute("mi", mi);
+	    	session.setAttribute("bi", bi);
+	    	
 	        return "success";
 	    } else {
 	        return "error";
 	    }
 	}
 	
-	// 기존 회원가입에서 가져와서 사용
+	// 기존 회원가입에서 가져와서 사용한 QR추가 기능
 	public String qrCreater(Member newUser) throws IOException {
 		QrInfo qr = new QrInfo();
 		String filePath = "";
@@ -865,4 +998,38 @@ public class SocialMemberController {
 		}
 		return filePath;
 	}
+	
+	// 사용자 추가 정보를 기본값으로 추가하기 위한 메소드
+	public MemberInfo defaultMemberInfoInsert(int userNo) {
+		MemberInfo mi = new MemberInfo();
+		mi.setUserNo(userNo);
+		mi.setHeight(0);
+		mi.setWeight(0);
+		mi.setDisease(null);
+		mi.setGoal("");
+		
+		int result = mService.defaultMemberInfoInsert(mi);
+		if(result > 0) {
+			return mi;
+		}else {
+			return null;
+		}
+	}
+	
+	// 사용자의 신체 추가정보를 기본값으로 추가하기 위한 메소드
+	public BodyInfo defaultBodyInfoInsert(String userId) {
+		BodyInfo bi = new BodyInfo();
+		bi.setUserId(userId);
+		bi.setBmi(0);
+		bi.setFat(0);
+		bi.setSmm(0);
+		
+		int result = mService.defaultBodyInfoInsert(bi);
+		if(result>0) {
+			return bi;
+		}else {
+			return null;
+		}
+	}
+	
 }

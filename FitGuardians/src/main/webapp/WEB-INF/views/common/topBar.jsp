@@ -13,6 +13,12 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.all.min.js"></script>
 	<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.min.css" rel="stylesheet">
 	
+	<!-- sumoselect -->
+	<link rel="stylesheet" href="resources/css/sumoselect.css">
+	<script defer src="resources/js/jquery.sumoselect.js"></script>
+	
+	<script src="resources/js/kakao.min.js"></script>
+	
 	<link rel="stylesheet" href="resources/css/topBar.css">
 </c:if>
 </head>
@@ -125,7 +131,6 @@
 								        
 								        </div>
 								
-								        <a class="dropdown-item text-center small text-gray-500" href="#">View All Chats</a>
 								    </div>
 								</li>
 
@@ -203,17 +208,18 @@
 		                            <!-- Dropdown - User Information -->
 		                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
 		                                aria-labelledby="userDropdown">
-		                                <a class="dropdown-item" href="#">
+		                                <a class="dropdown-item" href="mypage.me">
 		                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-		                                    Profile
+		                                    My Page
 		                                </a>
-		                                <a class="dropdown-item" href="#">
+		                                <a class="dropdown-item" onclick="uploadImg();">
 		                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
 		                                    Settings
+											<a id="qr" href="${loginUser.qr}"></a>
 		                                </a>
-		                                <a class="dropdown-item" href="#">
+		                                <a class="dropdown-item" href="sendQr.me">
 		                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-		                                    Activity Log
+		                                    QR코드 전송
 		                                </a>
 		                                <div class="dropdown-divider"></div>
 		                                <a class="dropdown-item" href="logout.me" data-toggle="modal" data-target="#logoutModal">
@@ -275,11 +281,15 @@
 	    var currentUserNo = userNo; // 현재 로그인한 유저 NO
 	    var selectedUserNo; // 상대방 유저 NO
 	    var chNo; // 채팅방 번호
+	    var lastMsgNo; // 전역 변수로 가장 큰 msgNo 저장
+	    var intervalId; // 새로운 채팅을 불러오기 위한 인터벌
+	    var chatMessagesContainer; // 채팅창을 자동으로 맨 아래로 내려오게 하기 위한 변수
 	
 	    // 모달을 열고 메시지를 로드하는 함수
 	    function openChatModal(participantName, userNo, chatRoomNo) {
 	        selectedUserNo = userNo; // 상대방 유저 NO
 	        chNo = chatRoomNo; // 채팅방 NO
+	        chatMessagesContainer = $('#chatMessages');
 	        
 	    	 // 디버깅을 위한 콘솔 로그 추가
 	        console.log('모달 열기 - 트레이너 이름:', participantName);
@@ -307,15 +317,66 @@
 	                
 	                // 모달 여는 코드 추가!
 	                $('#chatModal').modal('show');
+	                
+	             	// 이전의 setInterval 정리
+	                if (intervalId) {
+	                    clearInterval(intervalId);
+	                }
+
+	                // 2초마다 새로운 메시지 가져오기 시작
+	                intervalId = setInterval(() => {
+	                    fetchNewMessages(lastMsgNo);
+	                }, 2000);
+
 	            },
 	            error: function(xhr, status, error) {
 	                console.error("메시지 로드 오류:", error);
 	            }
 	        });
 	    }
+	    
+	 	// 모달이 열렸을 때 스크롤을 아래로 내리기
+	    $('#chatModal').on('shown.bs.modal', function() {
+	        chatMessagesContainer.scrollTop(chatMessagesContainer[0].scrollHeight);
+	    });
+	    
+	 	// 닫기 버튼 클릭 시 인터벌 해제
+	    $('.btn-close').on('click', function () {
+	        clearInterval(intervalId);
+	    });
+	    
+		// 채팅모달 닫을 시 인터벌 해제(잘 안되는것 같음)
+	    $('#chatModal').on('hidden.bs.modal', function () {
+	        clearInterval(intervalId);
+	    });
+
+	    
+	    // 새 메시지를 가져오는 함수
+	    function fetchNewMessages(lastMsgNo){
+	    	$.ajax({
+	    		
+	    		url: '/fitguardians/chat/newMessages/' + chNo,
+	    		method: 'GET',
+	    		data: {
+	    			senderNo: currentUserNo, // 로그인 유저 넘버임!
+	    			receiverNo: selectedUserNo, // 상대방 유저 넘버임!
+	    			lastMsgNo: lastMsgNo // 가장 큰 msgNo 전송
+	    		},
+	    		success: function(response) {
+	    			if(response && response.length > 0){
+	    				updateChatMessages(response); // 새 메시지 업데이트
+	    			}
+	    		},
+	    		error: function(xhr, status, error){
+	    			console.log("세 메시지 로드 오류", error);
+	    		}
+	    	})
+	    }
+	    
+	    
 	
 	    // 드롭다운 아이템 클릭 시
-	    $(document).on('click', '.dropdown-item', function() {
+	    $(document).on('click', '.chat-participant', function() {
 	        // 클릭한 참가자의 이름과 ID 가져오기
 	        var participantName = $(this).data('participant-name');
 	        var userNo = $(this).data('user-no'); // 상대방 유저 NO
@@ -328,7 +389,7 @@
 	 	// 채팅 메시지를 업데이트하는 함수
 	    function updateChatMessages(messages) {
 	        var chatMessagesContainer = $('#chatMessages');
-	        chatMessagesContainer.empty(); // 기존 메시지 삭제
+	        //chatMessagesContainer.empty(); // 기존 메시지 삭제
 
 	        var messagesToStatusUpdate = []; // 메시지들의 상태 업데이트를 담을 변수
 
@@ -375,7 +436,17 @@
 	            }
 
 	            chatMessagesContainer.append(messageElement); // 메시지를 컨테이너에 추가
+	            
+				
 	        });
+	        
+	    	// 스크롤을 맨 아래로 내리기
+	        chatMessagesContainer.scrollTop(chatMessagesContainer[0].scrollHeight);
+	        
+	     	// 가장 큰 msgNo 찾기
+            if (messages.length > 0) {
+                lastMsgNo = Math.max(...messages.map(msg => msg.msgNo));
+            }
 
 	        // 상태 업데이트 호출 (배열이 비어있지 않을 때만)
 	        if (messagesToStatusUpdate.length > 0) {
@@ -497,7 +568,7 @@
 	                        const statusClass = participant.participantStatus === 'Y' ? 'bg-success' : 'bg-danger';
 	
 	                        // 문자열 연결 방식으로 아이템 생성
-	                        items += '<a class="dropdown-item d-flex align-items-center" href="#" data-toggle="modal" data-target="#chatModal" data-user-no="' + participant.participantNo + '" data-chat-room-no="' + participant.chatRoomNo + '" data-participant-name="' + participant.participantName + '">' +
+	                        items += '<a class="dropdown-item chat-participant d-flex align-items-center" href="#" data-toggle="modal" data-target="#chatModal" data-user-no="' + participant.participantNo + '" data-chat-room-no="' + participant.chatRoomNo + '" data-participant-name="' + participant.participantName + '">' +
 	                            '<div class="dropdown-list-image mr-3">' +
 	                            '<img class="rounded-circle" src="' + image + '" alt="...">' +
 	                            '<div class="status-indicator ' + statusClass + '"></div>' +
@@ -510,7 +581,7 @@
 	
 	                    participantList.append(items); // participantList에 아이템 추가
 	                } else {
-	                    participantList.append('<a class="dropdown-item text-center">활성화된 참가자가 없습니다.</a>');
+	                    participantList.append('<a class="dropdown-item chat-participant text-center">활성화된 참가자가 없습니다.</a>');
 	                }
 	            },
 	            error: function(xhr, status, error) {
@@ -534,87 +605,95 @@
 
 	    });
 	</script>
+	
+	
+	
+	
+	
 	<c:choose>
 	    <c:when test="${not empty loginUser && not empty loginUser.api}">
-	        <c:if test="${!hasAdditionalInfo}">
+	        <c:if test="${not hasAdditionalInfo && not hasBodyInfo}">
 	            <script>
-		            Swal.fire({
-	                    title: '서비스 개선을 위해 추가 정보 입력해주세요!',
-	                    icon: 'info',
-	                    html: `
-				            <input type="number" id="height" name="height" class="swal2-input" placeholder="키 (cm)">
-				            <input type="number" id="weight" name="weight" class="swal2-input" placeholder="몸무게 (kg)">
-							
-							<select id="disease" name="disease" class="custom-select">
-								<option value="" hidden selected disabled>기저질환</option>
-								<option value="없음">없음</option>
-								<option value="혈압조절장애">혈압조절장애(고혈압, 저혈압)</option>
-								<option value="고지혈증">고지혈증</option>
-								<option value="당뇨">당뇨</option>
-								<option value="대사증후군">대사증후군</option>
-								<option value="디스크">디스크(목, 허리)</option>
-								<option value="천식">천식</option>
-								<option value="심혈관_질환">심혈관 질환</option>
-								<option value="골다공증">골다공증</option>
-								<option value="관절염">관절염(류마티스 등)</option>
-								<option value="편두통_혹은_만성두통">편두통 혹은 만성두통</option>
-								<option value="갑상선_장애">디스크(목, 허리)</option>
-							</select>
-							<select id="goal" class="custom-select">
-								<option value="" hidden selected disabled>운동 목표</option>
-								<option value="체중_감량">체중 감량</option>
-								<option value="근력_증가">근력 증가</option>
-								<option value="수술_후_재활">수술 후 재활</option>
-								<option value="유연성_운동">유연성 운동</option>
-								<option value="균형_증가">균형 증가</option>
-								<option value="심혈관_기능증진">심혈관 기능증진</option>
-							</select>
-							<input type="hidden" id="memberInfo" name="memberInfo">
-				        `,
-				        confirmButtonText: '저장',
-				        preConfirm: () => {
-				            return {
-				                height: $("#height").val(),
-				                weight: $("#weight").val(),
-				                disease: $("#disease").val(),
-				                goal: $("#goal").val(),
-				            }
-				        },
-						showCancelButton: true,
-						cancelButtonText: '나중에 하기',
-						customClass: {
-							popup: 'custom-popup',    // 팝업 전체에 커스텀 스타일 적용
-							content: 'custom-content' // 컨텐츠에 대한 스타일 적용
-						},
-					}).then((result) => {
-				        if (result.isConfirmed) {
-				            let info = result.value;
-				            if (info.height && info.weight && info.disease && info.goal) {
-				            	console.log(JSON.stringify(info))
-				            	$.ajax({
-				            	    type: 'POST',
-				            	    url: 'addAdditionalInfo.me',
-				            	    data: JSON.stringify(info),  // JSON 데이터로 전송
-				            	    contentType: 'application/json',
-				            	    success: function(response) {
-				            	        if (response === "success") {
-				            	            Swal.fire('저장되었습니다!', '', 'success');
-				            	        } else {
-				            	            Swal.fire('저장에 실패했습니다.', '', 'error');
-				            	        }
-				            	    }
-				            	});
-				            } else {
-				                Swal.fire('모든 정보를 입력해 주세요', '', 'error');
-				            }
-				        }else if (result.dismiss === Swal.DismissReason.cancel) {
-		                       // '나중에 하기' 버튼 클릭 시 세션에 값을 저장
-		                       $.ajax({
-		                           type: 'POST',
-		                           url: 'delayAdditionalInfo.me',
-		                       });
-		                   }
-				    });
+					$(function(){
+						Swal.fire({
+							title: '추가 정보 입력',
+							html: `
+								<input type="number" id="height" name="height" class="swal2-input" placeholder="키 (cm)">
+								<input type="number" id="weight" name="weight" class="swal2-input" placeholder="몸무게 (kg)">
+								
+								<select id="disease" name="disease" class="sumoselect_multiple mt-3" multiple=multiple>
+									<option value="" hidden selected disabled>기저질환</option>
+									<option value="없음">없음</option>
+									<option value="혈압조절장애">혈압조절장애(고혈압, 저혈압)</option>
+									<option value="고지혈증">고지혈증</option>
+									<option value="당뇨">당뇨</option>
+									<option value="대사증후군">대사증후군</option>
+									<option value="디스크">디스크(목, 허리)</option>
+									<option value="천식">천식</option>
+									<option value="심혈관_질환">심혈관 질환</option>
+									<option value="골다공증">골다공증</option>
+									<option value="관절염">관절염(류마티스 등)</option>
+									<option value="편두통_혹은_만성두통">편두통 혹은 만성두통</option>
+									<option value="갑상선_장애">디스크(목, 허리)</option>
+								</select>
+								<select id="goal" class="custom-select">
+									<option value="" hidden selected disabled>운동 목표</option>
+									<option value="체중_감량">체중 감량</option>
+									<option value="근력_증가">근력 증가</option>
+									<option value="수술_후_재활">수술 후 재활</option>
+									<option value="유연성_운동">유연성 운동</option>
+									<option value="균형_증가">균형 증가</option>
+									<option value="심혈관_기능증진">심혈관 기능증진</option>
+								</select>
+							`,
+							confirmButtonText: '저장',
+							customClass: {
+								popup: 'custom-popup',    // 팝업 전체에 커스텀 스타일 적용
+								content: 'custom-content' // 컨텐츠에 대한 스타일 적용
+							},
+							preConfirm: () => {
+								return {
+									height: $("#height").val(),
+									weight: $("#weight").val(),
+									disease: $("#disease").val(),
+									goal: $("#goal").val(),
+								}
+							},
+							showCancelButton: true,
+							cancelButtonText: '나중에 하기',
+						}).then((result) => {
+						        if (result.isConfirmed) {
+						            let info = result.value;
+						            if (info.height && info.weight && info.disease && info.goal) {
+						            	console.log(JSON.stringify(info))
+						            	$.ajax({
+						            	    type: 'POST',
+						            	    url: 'addAdditionalInfo.me',
+						            	    data: JSON.stringify(info),  // JSON 데이터로 전송
+						            	    contentType: 'application/json',
+						            	    success: function(response) {
+						            	        if (response === "success") {
+						            	            Swal.fire('저장되었습니다!', '', 'success');
+						            	        } else {
+						            	            Swal.fire('저장에 실패했습니다.', '', 'error');
+						            	        }
+						            	    }
+						            	});
+						            } else {
+						                Swal.fire('모든 정보를 입력해 주세요', '', 'error');
+						            }
+						        }else if (result.dismiss === Swal.DismissReason.cancel) {
+				                       // '나중에 하기' 버튼 클릭 시 세션에 값을 저장
+				                       $.ajax({
+				                           type: 'POST',
+				                           url: 'delayAdditionalInfo.me',
+				                       });
+				                   }
+						    });
+				            $(".sumoselect_multiple").SumoSelect({
+								placeholder: "Select options",
+							});
+					})
 	            </script>
 	        </c:if>
 	    </c:when>
@@ -631,6 +710,9 @@
 			</c:if>
 	    </c:otherwise>
 	</c:choose>
+
+
+
 
 </body>
 </html>

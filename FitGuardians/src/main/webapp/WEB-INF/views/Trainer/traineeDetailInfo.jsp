@@ -6,12 +6,12 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>회원 정보</title>
-<!-- Custom fonts for this template-->
+<title>회원 정보 조회</title>
+    <!-- Custom fonts for this template-->
     <link href="resources/templates/vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
     <link
-        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
-        rel="stylesheet">
+    href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+    rel="stylesheet">
 
     <!-- FullCalendar cdn -->
     <script src="
@@ -23,9 +23,10 @@
 
     <!-- 외부 자바스크립트 파일 : 캘린더 -->
     <script defer src ="./resources/js/exerciseCalendar.js"></script>
-    <!-- 외부 자바스크립트 파일 : 차트 -->
-    <script defer src ="./resources/js/traineeDetailInfo.js"></script>
 
+    <!-- sweetalert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.all.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.min.css" rel="stylesheet">
 
 </head>
 
@@ -93,12 +94,12 @@
                                     </table>
                                 </div>
                                 <script>
-                                    $(document).ready(function() {
-                                        
-                                        let userId = '${m.userId}';
+                                    window.isLevel = "${loginUser.userLevel}"; // 전역 변수로 정의 
+                                                                               // $(document).ready 밖에 작성해야 한다!
 
-                                        console.log(userId);
-            
+                                    $(document).ready(function() {
+                                        let userId = '${m.userId}';
+                                        console.log(window.isLevel);
                                         $.ajax({
                                             url : "selectTodayWorkoutforTrainer.ex",
                                             data : {
@@ -243,7 +244,7 @@
                    <div class="col-lg-6" style="display:inline;">
                        <div class="card shadow mb-4">
                            <div class="card-header py-3">
-                               <h6 class="m-0 font-weight-bold text-primary">${m.userName}님의 운동 일정 조회하기</h6>
+                               <h6 class="m-0 font-weight-bold text-primary">${m.userName}님이 기록한 운동 일정</h6>
                            </div>
                            <div class="card-body detail-view" id='calendar'>
                               
@@ -287,7 +288,7 @@
                         let userId = '${m.userId}';
                         if (userId) {
                             $.ajax({
-                                url: "selectWorkout.ex",
+                                url: "selectTraineeWorkoutList.ex",
                                 method: "post",
                                 data: { userId: userId },
                                 success: function(response) {
@@ -382,13 +383,30 @@
                             <form id="delteForm">
                                 <div class="bodyResult">
                                   <c:forEach var="b" items="${bi}">
-									    <div class="btn btn-light" style="display:flex;">
-									        <p style="font-weight:600;">측정일 <br /> <fmt:formatDate value="${b.measureDate}" pattern="yy/MM/dd" /></p> <br />
-									        <p>골격근량  ${b.smm}</p><br />
-									        <p>체질량지수(BMI)  ${b.bmi}</p><br />
-									        <p>체지방량  ${b.fat}</p>
-									        <div class="btn btn-danger btn-circle btn-sm deleteButton" data-body-info-no="${b.bodyInfoNo}"><i class="fas fa-trash"></i></div>
-									    </div>
+                                        <table class="table">
+                                            <thead>
+                                                <tr>
+                                                    <th>측정일</th>
+                                                    <th>골격근량</th>
+                                                    <th style="width:100px;">체질량<br />지수(BMI)</th>
+                                                    <th>체지방량</th>
+                                                    <th> </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td><fmt:formatDate value="${b.measureDate}" pattern="yy/MM/dd" /></td>
+                                                    <td><fmt:formatNumber value="${b.smm}" maxFractionDigits="1" /></td>
+                                                    <td><fmt:formatNumber value="${b.bmi}" maxFractionDigits="1" /></td>
+                                                    <td><fmt:formatNumber value="${b.fat}" maxFractionDigits="1" /></td>
+                                                    <td>
+                                                        <div class="btn btn-danger btn-circle btn-sm deleteButton" data-body-info-no="${b.bodyInfoNo}">
+                                                            <i class="fas fa-trash"></i>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
 									    <br />
 									</c:forEach>
                                 </div>

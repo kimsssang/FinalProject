@@ -79,8 +79,8 @@
                                                         <div class="row no-gutters align-items-center">
                                                             <div class="col mr-2">
                                                                 <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
-                                                                    이번달 PT횟수</div>
-                                                                <div class="h5 mb-0 font-weight-bold text-gray-800">4번 출석</div>
+                                                                    등록일</div>
+                                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="enroll-date">${ loginUser.enrollDate}</div>
                                                             </div>
                                                             <div class="col-auto">
                                                                 <i class="fas fa-calendar fa-2x text-gray-300"></i>
@@ -90,23 +90,56 @@
                                                 </div>
                                             </div>
                     
-                                            <!-- 이번달 자유운동 횟수 Example -->
+                                            <!-- d-day -->
                                             <div class="col-xl-3 col-md-6 mb-4">
                                                 <div class="card border-left-success shadow h-100 py-2">
                                                     <div class="card-body">
                                                         <div class="row no-gutters align-items-center">
                                                             <div class="col mr-2">
                                                                 <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
-                                                                    이번달 자유운동 횟수</div>
-                                                                <div class="h5 mb-0 font-weight-bold text-gray-800">10번 출석</div>
+                                                                    D-Day</div>
+                                                                <div class="h5 mb-0 font-weight-bold text-gray-800" id="d-day" data-enroll-date="${ loginUser.enrollDate }">+</div>
                                                             </div>
                                                             <div class="col-auto">
-                                                                <i class="fas fa-dollar-sign fa-2x text-gray-300"></i>
+                                                                <i class="fas fa-plus fa-2x text-gray-300"></i>
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
+                                            
+                                            <script>
+                                			// d-day 
+                                			document.addEventListener("DOMContentLoaded", ()=>{
+                                				const dDay = document.getElementById("d-day");
+                                				const enrollDate = new Date(dDay.getAttribute('data-enroll-date'));
+                                				const currentDate = new Date();
+                                				
+                                				const difTime = currentDate - enrollDate;
+                                				
+                                				const difDay = Math.ceil(difTime / (1000 * 60 * 60 * 24 ));
+                                				
+                                				if(difDay >= 0){
+                                					dDay.textContent = "+" + difDay;
+                                					
+                                				}else{
+                                					dDay.textContent = "미등록"
+                                				}
+                                				
+                                				// 등록일 
+                                				const enrollDay = "${loginUser.enrollDate}";
+                                				const eDate = new Date(enrollDay); 
+                                				// 날짜를 원하는 형식으로 포맷팅
+                                			    const year = eDate.getFullYear();
+                                			    const month = String(eDate.getMonth() + 1).padStart(2, '0'); // 월은 0부터 시작하므로 +1
+                                			    const day = String(eDate.getDate()).padStart(2, '0');
+
+                                			    const formattedDate = `\${year}년 \${month}월 \${day}일`;
+                                			    
+                                			    $("#enroll-date").text(formattedDate);
+                                				
+                                			})
+                                            </script>
                     
                                             <!-- Earnings (Monthly) Card Example -->
                                             <div class="col-xl-3 col-md-6 mb-4">
@@ -184,9 +217,10 @@
 
                                         <!-- 차트 호출 스크립트 -->
                                         <script>
-                                        let recentBi = "${recentBi}";
-
-                                        //console.log(recentBi);
+                                        let userId = "${loginUser.userId}";
+                                        window.recentBi = "${recentBi}";
+                                        console.log("회원 아이디 : "  + userId);
+                                        console.log(recentBi);
                                         </script>
                                         <script src="resources/js/traineeDetailInfo.js"></script>
                     
@@ -206,8 +240,8 @@
                                                             </a>
                                                             <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
                                                                 aria-labelledby="dropdownMenuLink">
-                                                                <a class="dropdown-item" href="#">운동 플랜 보러가기</a>
-                                                                <a class="dropdown-item" href="#">식단 플랜 보러가기</a>
+                                                                <a class="dropdown-item" href="traineeExercisePlanner.tn">운동 플랜 입력하기</a>
+                                                                <a class="dropdown-item" href="traineesnedMealplan.bo">식단 플랜 입력하기</a>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -335,41 +369,67 @@
                                                     </script>
                                                 </div>
                     
+                                                <!-- 트레이너가 설정한 스케줄 화면 -->
                                                 <div class="card shadow mb-4" style="width:40%; left:1%;">
-                                                    <!-- Card Header - Dropdown -->
                                                     <div
                                                         class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                                        <h6 class="m-0 font-weight-bold text-primary">스케줄</h6>
-                                                        <div class="dropdown no-arrow">
-                                                            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink"
-                                                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                                <i class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-                                                            </a>
-                                                            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-                                                                aria-labelledby="dropdownMenuLink">
-                                                                <a class="dropdown-item" href="#">스케줄 전체보기</a>
-                                                            </div>
-                                                        </div>
+                                                        <h6 class="m-0 font-weight-bold text-primary">${loginUser.userName}님의 스케줄</h6>
                                                     </div>
-                                                    <!-- Card Body -->
                                                     <div class="card-body" id='calendar'>
                                                     </div>
-                    
+                                                    
                                                     <script>
-                    
                                                         document.addEventListener('DOMContentLoaded', function() {
-                                                          const calendarEl = document.getElementById('calendar')
-                                                          const calendar = new FullCalendar.Calendar(calendarEl, {
-                                                            initialView: 'dayGridMonth'
-                                                          })
-                                                          calendar.render()
+                                                            window.isLevel = "${loginUser.userLevel}"; // 캘린더의 '일정추가' 버튼이 회원 jsp에선 보이면 안된다 - 사용자의 level을 외부 자바스크립트로 보냄(회원 === 2)
+                                                            // console.log("회원 화면", isLevel);
+                                                        });
+                                                    </script>
+
+                                                    <!-- 모달 - 스케줄 세부사항 -->
+                                                    <div class="modal fade" id="eventModal" tabindex="-1" role="dialog" aria-labelledby="eventModalLabel" aria-hidden="true">
+                                                        <div class="modal-dialog" role="document">
+                                                            <div class="modal-content">
+                                                                <div class="modal-header">
+                                                                    <h5 class="modal-title" id="eventModalLabel">운동 세부일정표</h5>
+                                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                        <span aria-hidden="true">&times;</span>
+                                                                    </button>
+                                                                </div>
+                                                                <div class="modal-body">
+                                                                    <p id="modalExerciseNo" style="display:none;"></p>
+                                                                    <p id="modalWorkoutTitle"></p>
+                                                                    <p id="modalWorkoutCategory"></p>
+                                                                    <p id="modalDifficulty"></p>
+                                                                    <p id="modalDescription"></p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>        
+                                                    
+                                                    <script>
+                                                        let memId = '${loginUser.userId}';
+
+                                                        document.addEventListener('DOMContentLoaded', function(){
+                                                            $.ajax({
+                                                                url:"selectWorkout.ex",
+                                                                method:"post",
+                                                                data:{userId:memId},
+                                                                success:function(response){
+                                                                    showWorkouts(response);
+                                                            },
+                                                                error:function(){},
+                                                            })
                                                         })
-                                                  
-                                                      </script>
-                                                                                 				    <script >
+                                                    </script>
+
+                                                      <script >
                                                       // 그날 보낸 식단 확인용 스크립트
+<<<<<<< HEAD
                                                       
                                                       //오늘날짜 확인
+=======
+                                                      // 오늘날짜 확인
+>>>>>>> fd7b46c6c0b8d32935f09a1b1da097cfe21013bf
 													    let today = new Date();
                                                       //날짜 형식 변경 함수
                                                       			
@@ -388,7 +448,11 @@
 														            	
 														            	   let value = "";
 														            	 if (data == ""){
+<<<<<<< HEAD
 														            		 value = "<tr><td>${loginUser.userName} 님이 " + '오늘' + " 보낸 식단이 없습니다<td></tr>";
+=======
+														            		 value = "<h2>${loginUser.userName} 님이 " + "오늘 보낸 식단이 없습니다</h2>";
+>>>>>>> fd7b46c6c0b8d32935f09a1b1da097cfe21013bf
 														            		 $('#mealtable').html(value);
 														            	 }
 														            	 else{

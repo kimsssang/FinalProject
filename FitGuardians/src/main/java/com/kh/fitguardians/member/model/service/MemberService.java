@@ -86,7 +86,6 @@ public interface MemberService {
 	
 	public int updateTrainerInfo(TrainerInfo trInfo);
 	
-	
 	// 소셜 회원 정보 조회
 	public Member selectMemberBySocialIdKey(String api);
 	
@@ -98,7 +97,20 @@ public interface MemberService {
 	
 	// 소셜 회원(추가 정보 입력)
 	public int addAdditionalInfo(MemberInfo addAdditionalInfo);
-	
-	
+
+	// 회원가입시 자동으로 bodyInfo 추가
+	int addBodyInfo(BodyInfo bi);
+
+	// id를 통해서 userNo 값 가져오기
+	public Member selectMemberByUserId(String userId);
+
+	// 기본 추가 정보 넣기
+	public int defaultMemberInfoInsert(MemberInfo mi);
+
+	// 신체 추가 정보 넣기
+	int defaultBodyInfoInsert(BodyInfo bi);
+
+	// 소셜 회원(신체정보 존재 유무 확인)
+	boolean checkBodyInfo(String userId);
 
 }

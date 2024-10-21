@@ -37,8 +37,9 @@
     
     <style>
     img{
-    width:100%;
-    height:100%;
+    width:98%;
+    height:98%;
+    margin:1%;
     cursor:pointer;
     }
     
@@ -48,7 +49,6 @@
 
 </head>
 <body>
-Main
 
 <jsp:include page="common/topBar.jsp" />
 

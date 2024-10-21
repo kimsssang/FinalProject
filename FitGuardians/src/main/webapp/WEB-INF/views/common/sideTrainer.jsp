@@ -1,4 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
+ <%@ page language="java" contentType="text/html; charset=UTF-8"
 pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -102,7 +102,7 @@ pageEncoding="UTF-8"%>
       <!-- Sidebar - Brand -->
       <a
         class="sidebar-brand d-flex align-items-center justify-content-center"
-        href="main.co"
+        href="traineeList.me"
       >
         <div class="sidebar-brand-icon rotate-n-15">
           <i class="fas fa-laugh-wink"></i>
@@ -154,9 +154,7 @@ pageEncoding="UTF-8"%>
         >
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item" href="calendar.tr">내 스케줄 설정</a>
-            <a class="collapse-item" href="utilities-border.html"
-              >회원 스케줄 설정</a
-            >
+            <a class="collapse-item" href="calendar.pt">회원 스케줄 설정</a>
           </div>
         </div>
       </li>

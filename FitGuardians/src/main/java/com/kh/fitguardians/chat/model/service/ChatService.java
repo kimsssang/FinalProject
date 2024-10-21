@@ -1,7 +1,6 @@
 package com.kh.fitguardians.chat.model.service;
 
 import java.util.ArrayList;
-import java.util.Map;
 
 import com.kh.fitguardians.chat.model.vo.Message;
 import com.kh.fitguardians.chat.model.vo.MessageParticipantDTO;
@@ -20,6 +19,9 @@ public interface ChatService {
 	
 	// 특정 채팅방의 메시지 조회
 	ArrayList<Message> getMessage(int chNo, int senderNo, int receiverNo);
+	
+	// 특정 채팅방의 새 메시지 조회
+	ArrayList<Message> fetchNewMessages(int chNo, int senderNo, int receiverNo, int lastMsgNo);
 	
 	// 메시지 상태 업데이트
 	int updateMessageStatus(ArrayList<Message> messagesToUpdate);

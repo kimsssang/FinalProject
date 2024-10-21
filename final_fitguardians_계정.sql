@@ -1,12 +1,12 @@
 INSERT INTO member (user_no, user_id, user_pwd, user_name, email, phone, gender, age, address, enroll_date, user_level, pt, status, api, qr, profile_pic, membership)
 VALUES
-(seq_mno.nextval, 'user01', 'Password!1', '±è¹Î¼ö', 'minsu.kim@example.com', '01012345678', 'M', 25, '¼­¿ï½Ã °­³²±¸ 123', SYSDATE, 1, 'Trainer A', 'Y', 'api_key_1', 'qr_code_path_1', 'profile_pic_path_1', 'Gold Membership');
+(seq_mno.nextval, 'user01', 'Password!1', 'ï¿½ï¿½Î¼ï¿½', 'minsu.kim@example.com', '01012345678', 'M', 25, 'ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 123', SYSDATE, 1, 'Trainer A', 'Y', 'api_key_1', 'qr_code_path_1', 'profile_pic_path_1', 'Gold Membership');
 INSERT INTO member (user_no, user_id, user_pwd, user_name, email, phone, gender, age, address, enroll_date, user_level, pt, status, api, qr, profile_pic, membership)
 VALUES
-(seq_mno.nextval, 'user02', 'SecurePassword2!', 'ÀÌ¼öÁø', 'sujin.lee@example.com', '01098765432', 'F', 30, 'ºÎ»ê½Ã ÇØ¿î´ë±¸ 456', SYSDATE, 2, 'Trainer B', 'Y', 'api_key_2', 'qr_code_path_2', 'profile_pic_path_2', 'Silver Membership');
+(seq_mno.nextval, 'user02', 'SecurePassword2!', 'ï¿½Ì¼ï¿½ï¿½ï¿½', 'sujin.lee@example.com', '01098765432', 'F', 30, 'ï¿½Î»ï¿½ï¿½ ï¿½Ø¿ï¿½ë±¸ 456', SYSDATE, 2, 'Trainer B', 'Y', 'api_key_2', 'qr_code_path_2', 'profile_pic_path_2', 'Silver Membership');
 INSERT INTO member (user_no, user_id, user_pwd, user_name, email, phone, gender, age, address, enroll_date, user_level, pt, status, api, qr, profile_pic, membership)
 VALUES
-(seq_mno.nextval, 'user03', 'StrongPwd3$', '¹ÚÁöÇö', 'jihyun.park@example.com', '01045678910', 'F', 28, '´ëÀü½Ã À¯¼º±¸ 789', SYSDATE, 2, 'Trainer C', 'Y', 'api_key_3', 'qr_code_path_3', 'profile_pic_path_3', 'Platinum Membership');
+(seq_mno.nextval, 'user03', 'StrongPwd3$', 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½', 'jihyun.park@example.com', '01045678910', 'F', 28, 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 789', SYSDATE, 2, 'Trainer C', 'Y', 'api_key_3', 'qr_code_path_3', 'profile_pic_path_3', 'Platinum Membership');
 
 commit;
 
@@ -48,7 +48,7 @@ select schedule_no
          
 select count(schedule_no)
 		  from schedule
-		 where schedule_title = 'ÀÏÁ¤Ãß°¡'
+		 where schedule_title = 'ï¿½ï¿½ï¿½ï¿½ï¿½ß°ï¿½'
 		   or start_date = '2024-10-15T04:21:00.000Z'
            ;
 select count(qr_no)
@@ -77,7 +77,7 @@ select qr_no
 
 update qrinfo
    set attendance = to_timestamp(sysdate,'YYYY-MM-DD"T"HH24:MI:SS.FF')
-     , att_status = 'Ãâ¼®'
+     , att_status = 'ï¿½â¼®'
  where id = 'qrtest02'
  ;
  
@@ -96,9 +96,6 @@ select qr_no
            and to_timestamp('2024-10-08T17:10:10.776433', 'YYYY-MM-DD"T"HH24:MI:SS.FF') between
            to_timestamp('2024-10-08T17:10:10.776433', 'YYYY-MM-DD"T"HH24:MI:SS.FF') and
            to_timestamp('2025-10-08T16:40:43.6191067', 'YYYY-MM-DD"T"HH24:MI:SS.FF') 
-<<<<<<< HEAD
-           ;
-=======
            ;
            
 insert 
@@ -116,10 +113,74 @@ values
        seq_trainer_info.nextval
      , 4
      , 5
-     , '´ëÈ¸ ¿ì½Â'
+     , 'ï¿½ï¿½È¸ ï¿½ï¿½ï¿½'
      , 'resources/trProfilePic/jang.jpg'
-     , 'ÀßºÎÅ¹µå¸³´Ï´Ù'
+     , 'ï¿½ßºï¿½Å¹ï¿½å¸³ï¿½Ï´ï¿½'
      )
      ;
      
->>>>>>> 0a7998ddf659c2159ef1594c24f904508cb294a9
+insert 
+  into schedule
+     (
+       schedule_no
+     , user_no
+     , schedule_title
+     , start_date
+     , end_date
+     , back_color
+     , pt_user
+     )
+values
+     (
+       seq_cno.nextval
+     , '4'
+     , 'È¸ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½×½ï¿½Æ®22'
+     , '2024-10-22T08:16:00.000Z'
+     , '2024-10-23T08:17:00.000Z'
+     , 'red'
+     , 'noinfo'
+     )     
+;
+
+	select schedule_no
+		     , schedule_title
+		     , start_date
+		     , end_date
+		     , back_color
+		  from schedule
+		 where user_no = 4
+		   and pt_user = 'noinfo'
+           ;
+           
+           select schedule_no
+		     , schedule_title
+		     , start_date
+		     , end_date
+		     , back_color
+             , pt_user
+		  from schedule
+		 where user_no = 4
+		   and pt_user is null
+           ;
+select count(schedule_no)
+		  from schedule
+		 where schedule_title = #{scheduleTitle}
+		   and start_date = #{startDate}
+		   and user_no = #{userNo}
+           ;
+           
+SELECT *FROM MEMBER m
+		JOIN BODY_INFO b ON m.USER_ID = b.USER_ID
+		JOIN MEMBER_INFO mi ON m.USER_NO = mi.USER_NO
+		WHERE m.STATUS = 'Y'
+			AND b.BI_STATUS = 'Y'
+			AND m.PT = 'jang10'
+			AND b.MEASURE_DATE = (
+				SELECT MAX(MEASURE_DATE)
+				FROM BODY_INFO
+				WHERE USER_ID = m.USER_ID
+				AND BI_STATUS = 'Y'
+			)           
+
+
+     

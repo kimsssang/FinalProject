@@ -68,7 +68,7 @@ pageEncoding="UTF-8"%>
       <!-- Sidebar - Brand -->
       <a
         class="sidebar-brand d-flex align-items-center justify-content-center"
-        href="index.html"
+        href="main.tn"
       >
         <div class="sidebar-brand-icon rotate-n-15">
           <i class="fas fa-laugh-wink"></i>
@@ -81,7 +81,7 @@ pageEncoding="UTF-8"%>
 
       <!-- Nav Item - Dashboard -->
       <li class="nav-item active">
-        <a class="nav-link" href="index.html">
+        <a class="nav-link" href="main.tn">
           <i class="fas fa-fw fa-tachometer-alt"></i>
           <span>대시보드</span></a
         >
@@ -120,33 +120,12 @@ pageEncoding="UTF-8"%>
       </li>
 
       <!-- Nav Item - Utilities Collapse Menu -->
+
       <li class="nav-item">
-        <a
-          class="nav-link collapsed"
-          href="#"
-          data-toggle="collapse"
-          data-target="#collapseUtilities"
-          aria-expanded="true"
-          aria-controls="collapseUtilities"
-        >
+        <a class="nav-link" href="mypage.me">
           <i class="fas fa-user"></i>
-          <span>내정보 변경</span>
-        </a>
-        <div
-          id="collapseUtilities"
-          class="collapse"
-          aria-labelledby="headingUtilities"
-          data-parent="#accordionSidebar"
+          <span>내 정보 변경</span></a
         >
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="utilities-color.html"
-              >개인정보 변경</a
-            >
-            <a class="collapse-item" href="utilities-border.html"
-              >신체 정보 변경</a
-            >
-          </div>
-        </div>
       </li>
 
       <!-- Divider -->
@@ -199,15 +178,26 @@ pageEncoding="UTF-8"%>
                 >받은 식단 확인</a
               >
             </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> fd7b46c6c0b8d32935f09a1b1da097cfe21013bf
           </div>
         </div>
       </li>
 
       <!-- Nav Item - Charts -->
       <li class="nav-item">
-        <a class="nav-link" href="javascript:void(0)">
+        <a class="nav-link" href="calendar.me">
           <i class="fas fa-fw fa-chart-area"></i>
-          <span>스케쥴러</span></a
+          <span>스케줄러</span></a
+        >
+      </li>
+      <li class="nav-item">
+        <!-- <a class="nav-link" href="calendar.kt"> -->
+        <a class="nav-link" href="calendar.kt">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>스케줄러테스트</span></a
         >
       </li>
 

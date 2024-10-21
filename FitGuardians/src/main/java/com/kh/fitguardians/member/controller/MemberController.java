@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -36,6 +37,7 @@ import com.google.zxing.client.j2se.MatrixToImageWriter;
 import com.google.zxing.common.BitMatrix;
 import com.google.zxing.qrcode.QRCodeWriter;
 import com.kh.fitguardians.common.model.vo.QrInfo;
+import com.kh.fitguardians.exercise.model.service.ExerciseServiceImpl;
 import com.kh.fitguardians.member.model.service.MemberServiceImpl;
 import com.kh.fitguardians.member.model.vo.BodyInfo;
 import com.kh.fitguardians.member.model.vo.Member;
@@ -49,6 +51,8 @@ public class MemberController {
 	@Autowired
 	private MemberServiceImpl mService = new MemberServiceImpl();
 	@Autowired
+	private ExerciseServiceImpl eService = new ExerciseServiceImpl();
+	@Autowired
 	private BCryptPasswordEncoder bcryptPasswordEncoder; 
 	@Autowired
 	private ServletContext servletContext;
@@ -58,6 +62,7 @@ public class MemberController {
 		return "Trainee/traineeDashboard";
 	}
 	
+	// 회원 상세정보 조회
     @RequestMapping("traineeDetail.me")
     public ModelAndView memberDetailView(@RequestParam("userId") String userId, ModelAndView mv) {
 
@@ -70,19 +75,34 @@ public class MemberController {
     	// 가장 최근 1개 데이터 조회문
     	BodyInfo lastBodyInfo = null;
     	
-    	for (BodyInfo bodyInfo : bi) {
-    	    lastBodyInfo = bodyInfo;
+    	// 가장 최근에 측정한 BodyInfo의 값을 가져옴
+    	for (BodyInfo bodyInfo : recentBi) {
+    		if(lastBodyInfo == null || bodyInfo.getMeasureDate().after(lastBodyInfo.getMeasureDate())) {
+    			lastBodyInfo = bodyInfo;
+    		}
     	}
-    	double lastSmm = lastBodyInfo.getSmm();
-    	double lastFat = lastBodyInfo.getFat();
-    	double lastBmi = lastBodyInfo.getBmi();
+    	
+    	// lastBodyInfo에 값이 없으면 NullPointerException이 발생할 수 있다.
+    	if(lastBodyInfo != null) {
+    		double lastSmm = lastBodyInfo.getSmm();
+    		double lastFat = lastBodyInfo.getFat();
+    		double lastBmi = lastBodyInfo.getBmi();
+    		
+    		mv.addObject("lastSmm", String.format("%.1f", lastSmm));
+    		mv.addObject("lastFat", String.format("%.1f", lastFat));
+    		mv.addObject("lastBmi", String.format("%.1f", lastBmi));
+    		
+    	}else { // lastBodyInfo가 없을 때 예외처리
+
+    		mv.addObject("lastSmm", 0.0);
+    		mv.addObject("lastFat", 0.0);
+    		mv.addObject("lastBmi", 0.0);
+    		
+    	}
     	
     	mv.addObject("m" , m);
     	mv.addObject("bi" , bi);
     	mv.addObject("mi", mi);
-    	mv.addObject("lastSmm", String.format("%.1f", lastSmm));
-    	mv.addObject("lastFat", String.format("%.1f", lastFat));
-    	mv.addObject("lastBmi", String.format("%.1f", lastBmi));
     	mv.addObject("recentBi", recentBi);
     	
     	mv.setViewName("Trainer/traineeDetailInfo");
@@ -120,7 +140,7 @@ public class MemberController {
 	
 	
 	@RequestMapping(value = "enroll.me", produces = "text/html; charset=UTF-8")
-	public String memberEnroll(Member m, String memberInfo, HttpServletRequest request) throws IOException {
+	public ModelAndView memberEnroll(Member m, String memberInfo, HttpServletRequest request, ModelAndView mv) throws IOException {
 		String encPwd = bcryptPasswordEncoder.encode(m.getUserPwd());
 		m.setUserPwd(encPwd);
 		
@@ -149,7 +169,9 @@ public class MemberController {
 				BitMatrix bitMatrix = qrCodeWriter.encode(qrData, BarcodeFormat.QR_CODE, 200, 200);
 				Path path = FileSystems.getDefault().getPath(filePath);
 				MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
-				m.setQr(filePath);
+				
+				String qrCodeUrl = "http://localhost:8282/fitguardians/resources/qrCodes/" + fileName;
+				m.setQr(qrCodeUrl);
 			} catch (WriterException e) {
 				e.printStackTrace();
 			}
@@ -164,7 +186,7 @@ public class MemberController {
         
         
 		// 회원 추가 정보가 있는지 확인
-        if (memberInfo != null && !memberInfo.isEmpty()) {
+        if (memberInfo != null && !memberInfo.isEmpty()) { // 회원 추가정보가 있다면
             // 추가 정보가 있으면 추가 정보 저장
             MemberInfo info = new Gson().fromJson(memberInfo, MemberInfo.class);
             
@@ -175,18 +197,88 @@ public class MemberController {
             
             int result = mService.insertMemberWithInfo(m, info);
             int result2 = mService.insertQrInfo(qr);
-            if (result > 0 && result2 > 0) {
+            if (result > 0 && result2 > 0) { // 성공적으로 회원가입을 한 경우
                 request.getSession().setAttribute("alertMsg", "회원가입이 완료되었습니다. 환영합니다!");
-                return "Trainee/traineeDashboard";
+                
+            	Member mem = mService.getTraineeDetails(m.getUserId());
+            	ArrayList<BodyInfo> bi = mService.getTraineeBodyInfo(m.getUserId());
+            	MemberInfo mi = mService.getTraineeInfo(m.getUserNo());
+            	// 최근 6개 데이터 조회문
+            	ArrayList<BodyInfo> recentBi = mService.getRecentInfo(m.getUserId());
+            	
+            	// 가장 최근 1개 데이터 조회문
+            	BodyInfo lastBodyInfo = null;
+            	
+            	for (BodyInfo bodyInfo : bi) {
+            	    lastBodyInfo = bodyInfo;
+            	}
+            	double lastSmm = lastBodyInfo.getSmm();
+            	double lastFat = lastBodyInfo.getFat();
+            	double lastBmi = lastBodyInfo.getBmi();
+            	
+            	mv.addObject("m" , mem);
+            	mv.addObject("bi" , bi);
+            	mv.addObject("mi", mi);
+            	mv.addObject("lastSmm", String.format("%.1f", lastSmm));
+            	mv.addObject("lastFat", String.format("%.1f", lastFat));
+            	mv.addObject("lastBmi", String.format("%.1f", lastBmi));
+            	mv.addObject("recentBi", recentBi);
+                
+            	mv.setViewName("Trainer/traineeDetailInfo");
+            	
+                return mv;
             }
-        } else {
+            
+            // BodyInfo테이블 하나 자동으로 생성하기 - 추가정보 입력한 경우
+            BodyInfo bi = new BodyInfo();
+            
+            if(m.getGender() == "M") { // 성별이 남성인 경우
+
+            	double mAge = Double.parseDouble(m.getAge());
+            	double mBmi = info.getWeight() / Math.pow(info.getHeight(), 2);
+            	double mSmm = 0.407 * info.getWeight() + 0.267 * info.getHeight() - 19.2;
+            	double mBfp = 1.20 * mBmi + 0.23 * mAge - 16.2;
+            	double mFat = info.getWeight() * (mBfp / 100);
+            	
+            	bi.setUserId(m.getUserId());
+            	bi.setBmi(mBmi);
+            	bi.setSmm(mSmm);
+            	bi.setFat(mFat);
+            	int biResult1 = mService.addBodyInfo(bi);
+            	
+            }else { // 성별이 여성인 경우
+            	
+            	double fAge = Double.parseDouble(m.getAge());
+            	double fBmi = info.getWeight() / Math.pow(info.getHeight(), 2);
+            	double fSmm = 0.252 * info.getWeight() + 0.473 * info.getHeight() - 48.3;
+            	double fBfp = 1.20 * fBmi + 0.23 * fAge - 5.4;
+            	double fFat = info.getWeight() * (fBfp / 100);
+            	
+            	bi.setUserId(m.getUserId());
+            	bi.setBmi(fBmi);
+            	bi.setSmm(fSmm);
+            	bi.setFat(fFat);
+            	int biResult2 = mService.addBodyInfo(bi);
+            	
+            }
+        } else { // 회원 추가정보가 없다면
             // 추가 정보가 없으면 기존 방식대로 회원가입 처리
+        	// MemberInfo가  0 or null
 			MemberInfo info = new MemberInfo();
 			info.setUserNo(m.getUserNo());
 			info.setHeight(0);
 			info.setWeight(0);
 			info.setDisease(null);
 			info.setGoal("");
+            
+            // BodyInfo테이블 하나 자동으로 생성하기 - 추가정보 입력 안한 경우 (BodyInfo가 0 혹은 null)
+            BodyInfo bi = new BodyInfo();
+            bi.setUserId(m.getUserId());
+            bi.setBmi(0);
+            bi.setSmm(0);
+            bi.setFat(0);
+            int biResult3 = mService.addBodyInfo(bi);
+            
             int result = mService.insertMemberWithInfo(m, info);
             int result2 = mService.insertQrInfo(qr);
             // 트레이너일때 기본 트레이너 정보 입력
@@ -203,11 +295,13 @@ public class MemberController {
             
             if (result > 0 && result2 > 0) {
                 request.getSession().setAttribute("alertMsg", "회원가입이 완료되었습니다. 환영합니다!");
-                return "Trainee/traineeDashboard";
+                mv.setViewName("common/loginForm");
+                return mv;
             }
         }
         request.getSession().setAttribute("errorMsg", "회원가입에 실패했습니다.");
-        return "common/loginForm";
+        mv.setViewName("common/loginForm");
+        return mv;
 	}
 	
 	@RequestMapping("login.me")
@@ -218,7 +312,13 @@ public class MemberController {
 			if(bcryptPasswordEncoder.matches(m.getUserPwd(), loginUser.getUserPwd())) {
 				
 				session.setAttribute("loginUser", loginUser);
+<<<<<<< HEAD
 			
+=======
+				System.out.println("회원 아이디 : " + loginUser.getUserId());
+				System.out.println("회원 정보 : " + loginUser);
+				
+>>>>>>> fd7b46c6c0b8d32935f09a1b1da097cfe21013bf
 				// 트레이너 정보 알아오기
 				String trainerId = loginUser.getPt();
 			
@@ -240,6 +340,8 @@ public class MemberController {
 					session.setAttribute("mi", mi);
 					session.setAttribute("bi", bi);
 					session.setAttribute("recentBi", recentBi);
+					
+					System.out.println("회원의 recentBi : " + recentBi);
 
 					return "Trainee/traineeDashboard";
 				}else {
@@ -364,8 +466,10 @@ public class MemberController {
 			MemberInfo mInfo = mService.selectMemberInfo(m.getUserNo());
 			Gson gson = new Gson();
 			String diseaseJson = gson.toJson(mInfo.getDisease());
+			BodyInfo bodyInfo = mService.getBodyInfo(m.getUserId());
 			request.setAttribute("memberInfo", mInfo);
 			request.setAttribute("disease", diseaseJson);
+			request.setAttribute("bodyInfo", bodyInfo);
 		}else {
 			TrainerInfo trInfo = mService.selectTrainerInfo(m.getUserNo());
 			request.setAttribute("trInfo", trInfo);
@@ -378,6 +482,7 @@ public class MemberController {
 	public String updateDisease(MemberInfo mInfo) {
 		
 		int result = mService.updateDisease(mInfo);
+		
 		if(result > 0) {
 			return "DDDY";
 		}else {
@@ -444,12 +549,15 @@ public class MemberController {
 	}
 	
 	@RequestMapping(value="calendar.pt", produces="application/json")
-	public String trainerCalender(HttpSession session, HttpServletRequest request) {
-		Member loginUser = (Member) session.getAttribute("loginUser");
+	public ModelAndView PtCalednar(HttpSession session, ModelAndView mv) {
+		String userId = ((Member)session.getAttribute("loginUser")).getUserId();
 		
-		ArrayList<Schedule> schedule = mService.selectSchedule(loginUser.getUserNo());
-		request.setAttribute("schedule", schedule);
-		return "Trainer/trainerCalendar";
+		ArrayList<Member> list = eService.getTrainee(userId);
+		
+		mv.addObject("list", list).setViewName("Trainer/PtCalendar");;
+		
+		return mv;
+	
 	}
 	
 	@RequestMapping(value="calendar.me", produces="application/json")
@@ -458,7 +566,7 @@ public class MemberController {
 		
 		ArrayList<Schedule> schedule = mService.selectSchedule(loginUser.getUserNo());
 		request.setAttribute("schedule", schedule);
-		return "Trainer/trainerCalendar";
+		return "Trainee/TraineeCalendar";
 	}
 	
 	@RequestMapping("changePicture.me")
@@ -519,6 +627,8 @@ public class MemberController {
 		return result > 0 ? "YYTR" : "NNTR";
 	}
 
+	
+	
 	
 	/**첨부파일 서버 폴더에 저장하는 역할
 	 * @param upfile

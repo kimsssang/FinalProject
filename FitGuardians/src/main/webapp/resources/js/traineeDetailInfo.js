@@ -9,21 +9,21 @@ $(document).ready(function(){
         let traineeAge = traineeData.age;
         
         let height = $("#height").val();
-        let heightMeter = height/100;
+        let heightMeter = height/100; // cm를 m로 변환
         let weight = $("#weight").val();
 
         let smm;
         let bmi;
         let fat;
         
-        if(traineeGender == 'F'){ // 여자 측정
+        if(traineeGender === 'F'){ // 여자 측정
             // smm - 골격근량
             smm = 0.252 * weight + 0.473 * height - 48.3;
             // bmi - 체질량지수
             bmi = weight / (heightMeter ** 2);
             // fat - 체지방량
             fat = 1.20 * bmi + 0.23 * traineeAge - 5.4;
-            
+                
             let value = traineeName + "의 측정 결과입니다. <br />"
                         + "<span class='result' style='margin:10px'> · 골격근량 : </span> <span>" + smm.toFixed(1) + " </span> <br/> "
                         + "<span class='result' style='margin:10px'> · BMI(체질량지수) : </span> <span>" + bmi.toFixed(1) + " </span> <br/>"
@@ -32,12 +32,12 @@ $(document).ready(function(){
             $('.bodyResult').attr('id', 'bodyResult');
             $('#bodyResult').html(value);
             $('#saveButton').text('저장하기');
-       
+
         }else{ // 남자 측정
             // smm - 골격근량
            smm = 0.407 * weight + 0.267 * height - 19.2;
             // bmi - 체질량지수
-           bmi = weight / (height ** 2);
+           bmi = weight / (heightMeter ** 2);
             // fat - 체지방량
            fat = 1.20 * bmi + 0.23 * traineeAge - 16.2;
 
@@ -56,7 +56,7 @@ $(document).ready(function(){
         // 데이터 DB에 저장하는 ajax
         if($(this).text()==='저장하기'){
             $(this).click(function(){
-             saveBodyInfo(traineeId, smm, bmi, fat);
+                saveBodyInfo(traineeId, smm, bmi, fat);
             })
         }
 
@@ -65,63 +65,85 @@ $(document).ready(function(){
     // bodyInfo 저장하는 ajax함수
     function saveBodyInfo(traineeId, smm, bmi, fat){
 
-        //console.log('saveBodyInfo 실행됨요');
-
-        $.ajax({
-            url : 'saveBodyInfo.me',
-            method :'post',
-            data : {
-                userId : traineeId,
-                smm : smm,
-                fat : fat,
-                bmi : bmi,
-            },
-            success : function(result){
-                console.log(result);
-                alert("성공적으로 저장하였습니다.");
-                
-                // 값 초기화
-                $('#height').val();
-                $('#weight').val();
-                $('.bodyResult').val();
-                
-                },
-            error : function(){
-                console.log('bodyInfo 삽입 실패');
-                },
+        Swal.fire({
+            title : "저장하시겠습니까?",
+            icon : "info",
+            showCancelButton : true,
+            confirmButtonColor:"#3085d6",
+            cancelButtonColor:"#d33",
+            confirmButtonText: "저장"
+        }).then((result) => {
+            if(result.isConfirmed){
+                // 저장 ajax 실행할 것
+                $.ajax({
+                    url : 'saveBodyInfo.me',
+                    method :'post',
+                    data : {
+                        userId : traineeId,
+                        smm : smm,
+                        fat : fat,
+                        bmi : bmi,
+                    },
+                    success : function(result){
+                        Swal.fire({
+                            title: "성공적으로 저장하였습니다!",
+                            icon: "success"
+                          });
+                        
+                        // 값 초기화
+                        $('#height').val('');
+                        $('#weight').val('');
+                        $('.bodyResult').val('');
+                        
+                        },
+                    error : function(){
+                        console.log('bodyInfo 삽입 실패');
+                        },
+                });
+            }
         });
     }
 
     // 신체기록 삭제 ajax함수
     $('.deleteButton').on('click', function(){
         let bodyInfoNo = $(this).data("body-info-no");
-        //console.log(bodyInfoNo); // 데이터 번호가 맞는지 확인함 (맞는걸 확인했음)
 
-        let yes = confirm("정말로 삭제하시겠습니까?");
-
-        if(yes){
-            // 삭제 ajax 실행할 것
-            $.ajax({
-                url : 'deleteBodyInfo.me',
-                method : 'post',
-                data : {bodyInfoNo : bodyInfoNo},
-                success: function(result){
-                   alert('성공적으로 삭제하였습니다.');
-                },
-                error : function(){
-                    console.log("error got occured");
-                },
-            });
-
-        };
-
+        Swal.fire({
+            title : "정말로 삭제하시겠습니까?",
+            text : "삭제 후 다시 복구할 수 없습니다.",
+            icon : "warning",
+            showCancelButton : true,
+            confirmButtonColor:"#d33",
+            cancelButtonColor:"#3085d6",
+            confirmButtonText: "삭제"
+        }).then((result) => {
+            if(result.isConfirmned){
+                // 삭제 ajax 실행할 것
+                $.ajax({
+                    url : 'deleteBodyInfo.me',
+                    method : 'post',
+                    data : {bodyInfoNo : bodyInfoNo},
+                    success: function(result){
+                        Swal.fire({
+                            title: "성공적으로 삭제하였습니다!",
+                            icon: "success"
+                          });
+                    },
+                    error : function(){
+                        console.log("error got occured");
+                    },
+                })
+            }
+        });
     })
 
    // 골격근량, 체질량지수, 체지방량 차트 표시(상위 6개의 데이터 얻을것)
 
-					
    // 1) 대괄호를 제거한다.    대괄호 제거(slice) BodyInfo객체로 분리(split)  "BodyInfo("제거(replace) 및 공백 제거(trim) 
    let bodyInfoArr = recentBi.slice(1,-1).split('),').map(item=>item.replace('BodyInfo(', '').trim());
+
+   console.log("recentBi :" , recentBi);
+   console.log("bodyInfoArr : ", bodyInfoArr);
    
    // 외부 자바스크립트에 있는 labels[]과 data[]에 값을 삽입할 것이다.
    let labels = []; // measureDate가 들어갈 배열

@@ -33,36 +33,6 @@ public class TrainerController {
 		return "Trainer/trainerCalendar";
 	}
 	
-	@ResponseBody
-	@RequestMapping("addCalendar.tr")
-	public String addTrainerCalendar(@RequestBody ArrayList<Schedule> schedules, HttpSession session) {
-		Member loginUser = (Member) session.getAttribute("loginUser");
-		boolean flag = false;
-		int count = 0;
-		for (Schedule schedule : schedules) {
-			schedule.setUserNo(loginUser.getUserNo() +"");
-			System.out.println(schedule);
-			
-			if(tService.isDuplicateSchedule(schedule)) {
-				flag = true; // 중복이 있을경우
-				System.out.println("중복된 일정: " + schedule); // 중복된 일정 로그
-			}else {
-				flag = false;
-				int result = tService.insertTrainerCalendar(schedule);
-				if(result > 0 ) {
-					count++;
-				}
-			}
-			
-		}
-		
-		if(flag) {
-			return "DDDC";
-		} else {
-			return count > 0 ? "YYYC" : "NNNC";
-		}
-		
-	}
 	
     // 담당회원의 스케줄 처리 기능들
 	@ResponseBody
@@ -82,6 +52,7 @@ public class TrainerController {
 		for (Schedule schedule : schedules) {
 			System.out.println(schedule);
 			
+			
 			if(tService.isDuplicateSchedule(schedule)) {
 				flag = true; // 중복이 있을경우
 				System.out.println("중복된 일정: " + schedule); // 중복된 일정 로그
@@ -96,6 +67,8 @@ public class TrainerController {
 					int result2 = tService.insertTrainerCalendar(schedule);
 				}
 			}
+			
+			
 			
 		}
 		

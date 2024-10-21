@@ -60,22 +60,29 @@
 							<c:forEach var="s" items="${schedule}">
 								<script>
 									sch.push({
-										title:"${s.scheduleTitle}",
+										id: "${s.id}",
+										title:"${s.title}",
 										start:"${s.startDate}",
 										end:"${s.endDate}",
-										backColor:"${s.backColor}"
+										allday: "${s.allDay}",
+										backColor:"${s.color}",
 									});
+									
 								</script>
 							</c:forEach>
 								<script>
 									document.addEventListener('DOMContentLoaded', function () {
 										
 										const eventDate = sch.map(event => ({
+											id: event.id,
 											title: event.title,
 											start: event.start,
 											end: event.end,
 											color: event.backColor,
+											allDay: event.allday,
 										}))
+										
+										console.log(eventDate[0].allDay);
 										
 										
 										$("input[id=allday]").on('change', ()=>{
@@ -106,12 +113,17 @@
 															const events = calendar.getEvents();
 															const eventsData = events.map(event=> ({
 																scheduleTitle: event.title,
-																startDate: event.start ? event.start.toISOString() : null,
-																endDate: event.end ? event.end.toISOString() : null,
+																startDate: event.start ? event.start: null,
+																endDate: event.end ? event.end : null,
 																backColor: event.backgroundColor,
+																allday: event.allDay,
+																scheduleDes: event.extendedProps.description,
 															}));
+															console.log(events);
 															console.log(eventsData);
-															$.ajax({
+															
+															
+															 $.ajax({
 																url:"addCalendar.tr",
 																type:"POST",
 																contentType: 'application/json',
@@ -129,7 +141,8 @@
 																error:()=>{
 																	console.log("add calendar ajax failed");
 																},
-															})
+															}) 
+															
 														}
 													}
 												},
@@ -140,8 +153,6 @@
 												},
 												height: '800px',
 												expandRows:true,
-												slotMinTime: '08:00',
-												slotMaxTime: '22:00',
 												themeSystem: 'bootstrap',
 												initialView: 'dayGridMonth',
 												selectable: true,
@@ -165,16 +176,16 @@
 											let allday = $("input[id=allday]").is(":checked");
 											
 											
-											
 											var eventData = {
 													title: $("#calendar_content").val(),
-													start: new Date(start_date + "T" + start_time),
-													end: new Date(end_date + "T" + end_time),
+													start: allday ? new Date(start_date) : new Date(start_date + "T" + start_time),
+												    end: allday ? new Date(end_date) : new Date(end_date + "T" + end_time),
 													color: $("#color").val(),
-													allday: allday,
+													allDay: allday,
+													description: $("#calendar_description").val(),
 											}
 											
-											console.log(eventData);
+											console.log("eventdata : " + eventData);
 											
 											if(eventData.title === null || eventData.title === ""){
 												Swal.fire({icon: 'warning', text: "내용을 입력해주세요"});
@@ -194,6 +205,8 @@
 												$("#calendar_end_date").val("");
 												$("#calendar_start_time").val("");
 												$("#calendar_end_time").val("");
+												$("#calendar_description").val("");
+												$("input[id=allday]").prop("checked", false);
 											}
 										})
 										
@@ -226,7 +239,7 @@
 								                <option value="indigo">남색</option>
 								                <option value="purple">보라색</option>
 								            </select>
-											<label for="taskId" class="col-form-label">일정 내용</label>
+											<label for="taskId" class="col-form-label">일정 제목</label>
 											<input type="text" class="form-control" id="calendar_content" name="calendar_content">
 											<label for="taskId" class="col-form-label">시작 날짜</label>
 											<input type="date" class="form-control" id="calendar_start_date" name="calendar_start_date">
@@ -237,7 +250,10 @@
 											<label for="taskId" class="col-form-label">종료 시간</label>
 											<input type="time" class="form-control" name="calendar_end_time" id="calendar_end_time">
 											<label for="taskId" class="col-form-label">하루종일</label>
-											<input type="checkbox" id="allday" name="allday"/> 
+											<input type="checkbox" id="allday" name="allday"/>
+											<br>
+											<label for=taskId class="col-form-label">상세 설명</label>
+											<textarea rows="3" cols="2" style="resize:none" class="form-control" id="calendar_description"></textarea>
 										</div>
 									</div>
 									<div class="modal-footer">

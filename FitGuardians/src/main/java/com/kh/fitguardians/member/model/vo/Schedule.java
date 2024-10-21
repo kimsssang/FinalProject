@@ -20,4 +20,5 @@ public class Schedule {
 	private String dow;
 	private String backColor;
 	private String allday;
+	private String kakaoCalendarId;
 }

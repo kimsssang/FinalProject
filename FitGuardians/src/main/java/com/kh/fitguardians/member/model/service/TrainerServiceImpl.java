@@ -32,6 +32,11 @@ public class TrainerServiceImpl implements TrainerService{
 	@Override
 	public boolean isDuplicateSchedule(Schedule schedule) {
 		int count = tDao.findDuplicate(sqlSession, schedule);
+		int i = 0;
+		System.out.println("=============Service===============");
+		System.out.println(schedule);
+		System.out.println(count);
+		System.out.println(count > 0);
 		return count > 0;
 	}
 

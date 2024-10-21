@@ -663,6 +663,8 @@
 		     , start_date
 		     , end_date
 		     , back_color
+		     , allday
+		     , kakao_calendar_id
 		     )
 		values
 		     (
@@ -673,6 +675,8 @@
 		     , #{startDate}
 		     , #{endDate}
 		     , #{backColor}
+		     , #{allday}
+		     , #{kakaoCalendarId}
 		     )
 	</insert>
 	

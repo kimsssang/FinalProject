@@ -142,8 +142,8 @@ $(document).ready(function(){
    // 1) 대괄호를 제거한다.    대괄호 제거(slice) BodyInfo객체로 분리(split)  "BodyInfo("제거(replace) 및 공백 제거(trim) 
    let bodyInfoArr = recentBi.slice(1,-1).split('),').map(item=>item.replace('BodyInfo(', '').trim());
 
-   console.log("recentBi :" , recentBi);
-   console.log("bodyInfoArr : ", bodyInfoArr);
+   //console.log("recentBi :" , recentBi);
+   //console.log("bodyInfoArr : ", bodyInfoArr);
    
    // 외부 자바스크립트에 있는 labels[]과 data[]에 값을 삽입할 것이다.
    let labels = []; // measureDate가 들어갈 배열

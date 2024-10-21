@@ -178,10 +178,6 @@ pageEncoding="UTF-8"%>
                 >받은 식단 확인</a
               >
             </div>
-
-
-
-
           </div>
         </div>
       </li>

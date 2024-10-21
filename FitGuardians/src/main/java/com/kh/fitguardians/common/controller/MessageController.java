@@ -137,11 +137,6 @@ public class MessageController {
 	private ArrayList<Events> getKakaoCalendarEvents(String accessToken, String calendarId) {
 	    ArrayList<Events> events = new ArrayList<>();
 
-	    if (accessToken == null || calendarId == null) {
-	        System.out.println("Access token or calendar ID is null");
-	        return events; // 빈 리스트 반환
-	    }
-
 	    RestTemplate restTemplate = new RestTemplate();
 	    HttpHeaders headers = new HttpHeaders();
 	    headers.set("Authorization", "Bearer " + accessToken);

@@ -121,11 +121,7 @@ pageEncoding="UTF-8"%>
       <li class="nav-item">
         <a
           class="nav-link collapsed"
-          href="#"
-          data-toggle="collapse"
-          data-target="#collapseUtilities"
-          aria-expanded="true"
-          aria-controls="collapseUtilities"
+          href="mypage.me"
         >
           <i class="fas fa-user"></i>
           <span>내정보 변경</span>

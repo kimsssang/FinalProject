@@ -121,30 +121,16 @@ pageEncoding="UTF-8"%>
       <li class="nav-item">
         <a
           class="nav-link collapsed"
-          href="#"
+          href="mypage.me"
           data-toggle="collapse"
           data-target="#collapseUtilities"
           aria-expanded="true"
           aria-controls="collapseUtilities"
         >
           <i class="fas fa-user"></i>
-          <span>내정보 변경</span>
+          <span> 내 정보 변경</span>
         </a>
-        <div
-          id="collapseUtilities"
-          class="collapse"
-          aria-labelledby="headingUtilities"
-          data-parent="#accordionSidebar"
-        >
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="utilities-color.html"
-              >개인정보 변경</a
-            >
-            <a class="collapse-item" href="utilities-border.html"
-              >신체 정보 변경</a
-            >
-          </div>
-        </div>
+
       </li>
 
       <!-- Divider -->

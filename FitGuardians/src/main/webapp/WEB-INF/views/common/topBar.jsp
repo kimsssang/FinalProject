@@ -277,7 +277,7 @@
 	
 	    // 변수 선언
 	    var userNo = ${sessionScope.loginUser.userNo}; // 세션에서 가져온 사용자 번호
-	    var userLevel = ${sessionScope.loginUser.userLevel}; // 세션에서 가져온 사용자 레벨
+	    var userLevel = ${sessionScope.loginUser.userLevel}; // 세션에서 가져온 사용자 레벨,
 	    var currentUserNo = userNo; // 현재 로그인한 유저 NO
 	    var selectedUserNo; // 상대방 유저 NO
 	    var chNo; // 채팅방 번호

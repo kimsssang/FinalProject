@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+      <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"  %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -63,6 +64,24 @@
 .mealReMsg{
 	margin-bottom: 20px;
 }
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden; /* 전체 페이지에 스크롤이 발생하지 않도록 설정 */
+}
+
+#wrapper {
+    height: 100vh; /* 뷰포트의 높이에 맞게 설정 */
+    overflow: auto; /* 콘텐츠가 넘칠 경우에만 스크롤 발생 */
+}
+
+#content-wrapper {
+    height: 100%; /* 컨텐츠 래퍼에 높이를 명확하게 설정 */
+    display: flex;
+    flex-direction: column; /* 요소들이 세로로 배치되도록 설정 */
+}
+
 </style>
 </head>
 <body>
@@ -74,8 +93,19 @@
          <!-- Main Content -->
                   <div id="content">
                  <jsp:include page="../common/topBar.jsp"/>
-				 <div class=" card shadow mb-4" style="align-items: center; width:100%; height: 1000px;" align="center">
-				 <div class="card-header py-3 selecttrainee" style=" margin-left: 10px; display: flex; width: 100%;  ">
+				 <div class=" card shadow mb-4" style="align-items: center; width:98%; height: 100%; margin-left: 10px" align="center">
+				 
+				 			<c:choose>
+				<c:when test="${empty loginUser }">
+					<h2>로그인 후 이용 가능합니다</h2>
+				</c:when>
+				<c:otherwise>
+				 
+				 
+				 
+				 
+				 
+				 <div class="card-header py-3 selecttrainee" style="display: flex; width: 100%;  ">
 					<select class="traineeList">
 					</select>
 						<h3 class="m-0 font-weight-bold text-primary">
@@ -116,10 +146,7 @@
 					<div class="mealMsg"></div>
 					<div class="mealReMsg"></div>
 					<button id="pdfgo" class="btn btn-primary btn-icon-split btn-lg">  Excel로 저장  </button>
-				</div>
-			</div>
-		   </div>
-		   </div>
+
 				<script>
 			    // 오늘날짜 확인
 			    let today = new Date();
@@ -268,8 +295,16 @@
 			        });
 			    }
 			</script>
+							</c:otherwise>
+			</c:choose>
+             
 			
-
+			
+			
+				</div>
+			</div>
+		   </div>
+		   </div>
 
              
 

@@ -64,8 +64,10 @@ public class ExerciseController {
 	@RequestMapping("exercise.bo")
 	public ModelAndView showExercisePage(HttpSession session, ModelAndView mv) {
 		String userId = ((Member)session.getAttribute("loginUser")).getUserId();
+		
 		// 1. 페이지가 로드 되자마자 트레이너의 담당 회원이 조회되야 한다.
 		ArrayList<Member> list = eService.getTrainee(userId);
+		
 		
 		mv.addObject("list", list).setViewName("exercise/trainerExercise");;
 		

@@ -28,7 +28,7 @@
     left: 500px; /* 왼쪽에서부터 50px 떨어짐 */
     width: 50%;
     height: 50%;
-    background-color: rgba(255, 255, 255, 1); /* 반투명 빨간색 */
+    background-color: rgba(255, 255, 255, 1); 
     z-index: 4; /* z-index 설정 */
     display: none;
     }
@@ -41,7 +41,26 @@
  	display: none;
  	
  }
-    
+ .topdiv div{
+ 	border: 1px solid black;
+ }
+ .membershiplistdiv{
+     display: flex; /* 플렉스 레이아웃 적용 */
+    flex-direction: row;
+ width:100%;
+ height: 80%;
+
+ }
+ .membershiplistdiv div{
+ width: 25%;
+ height: 100%;
+ }
+ .buydiv{
+ height: 20%
+ }
+ .selected {
+    background-color: rgb(230,230,230);
+}
  </style>
 </head>
 <body>
@@ -67,9 +86,98 @@
                 	 -->
                   <div class="row container-fluid">
               
-		         	<div class="topdiv"></div>
-				        
-				    
+		         	<div class="topdiv">
+		         		<div class="membershiplistdiv">
+			         		<div class="3pt ptcheck">pt3회권
+			         			<input class="ptval" type="hidden" value="3"> 
+			         		</div> 
+			         		<div class="5pt ptcheck">pt5회권
+			         		<input class="ptval" type="hidden" value="5"> </div>
+			         		<div  class="10p ptcheck">pt10회권
+			         		<input class="ptval" type="hidden" value="10"> </div>
+			         		<div class="20p ptcheck">pt20회권
+			         		<input class="ptval" type="hidden" value="20"> </div>
+		         		</div>
+		         		<div class="buydiv">구매버튼 예정</div>
+		         	</div>
+		         	<script >
+		         	
+		         	function onReceivePaymentData(paymentData) {
+		     
+		         	    console.log("결제 완료 데이터:", paymentData);
+		         		if(paymentData == "결제성공"){
+		         		
+		         			success();
+		         		
+		         		}else{
+		         			fail();
+		         		}
+		         	    // 이곳에서 결제 데이터를 처리합니다.
+		         	
+		         	}
+		         	function success(){
+		         		successupdateajax();
+		         	   $('topdiv').css('display','none');
+		         		alert("결제가 성공적으로 완료되었습니다");
+		         		//location.reload();
+		         	}
+		         	function fail(){
+			         	   $('topdiv').css('display','none');
+			         		alert("결제가 실패했습니다 다시 시도해주세요");
+			         		location.reload();
+			         	}
+		         	function successupdateajax(){
+						console.log($('.newtrainerid').val());//선택 트레이너 아이디
+						console.log($('.selected .ptval').val()); //선택한 pt 횟수
+						$.ajax({
+							url : 'membershippt.bo' ,
+							  data: { pttime: $('.selected .ptval').val() , pt : $('.newtrainerid').val() },
+							  success : function(date){
+								 
+							  },
+							  error : function(date){
+								  alert(date)
+							  }
+						})
+		         	}
+		         	let isSelected = false;
+
+		         // .ptcheck 클릭 시 클래스 추가/제거로 선택 상태 업데이트
+		         $('.ptcheck').on('click', function() {
+		             // 모든 ptcheck 요소의 선택 클래스를 제거
+		             $('.ptcheck').removeClass('selected');
+		             
+		             // 클릭된 요소에만 선택 클래스 추가
+		             $(this).addClass('selected');
+		          
+		             // isSelected 상태 업데이트
+		             isSelected = false; // 초기화
+		             $('.ptcheck').each(function() {
+		                 if ($(this).hasClass('selected')) {
+		                     isSelected = true; // 하나라도 선택된 경우
+		                 }
+		             });
+		         });
+				
+		         // .buydiv 클릭 시 동작
+		         $('.buydiv').on('click', function() {
+		        	console.log($('.selected .ptval').val());
+		        	
+		        	
+		             if (isSelected) {
+		               let num = ($('.selected .ptval').val());
+		                 window.open('shop.do?orderpt='+ num, '_blank', 'width=800,height=600');
+		             } else {
+		                 alert("회원권을 선택해주세요");
+		             }
+		         });
+
+		         	</script>
+				        <div style="width: 100%">
+				    		<h2 class="trname">비회원입니다</h2>
+				    		<h2 class="pttime"></h2>
+				    		<br>
+				        </div>
 				             <c:forEach var="t" items="${list}" > 
 				             <div class="col-lg-6">
 				             <div class="card mb-4 py-3 border-left-primary test" style="height: 200px;   margin-top: 20px;">
@@ -107,7 +215,7 @@
 				             			
 				                		</div>
 				             			<div style="width: 12%; height: 100%"> 
-
+											<input class="newtrainerid" type="hidden" value="${ t.userId }">
 				             			<button class="ptchosebtn">회원권(pt)신청</button>
 				             			
 				           		
@@ -119,7 +227,7 @@
 				               </c:forEach>
 				               
 				               	
-            <div id="pagingArea">
+            <div id="pagingArea" style="width: 100%">
                 <ul class="pagination">
                 	
                 	
@@ -163,24 +271,51 @@
         </div>
   </div>
   
-  		<script>
-  		//pt신청 버튼 클릭시
-$('.ptchosebtn').on('click', function() {
-    $('.topdiv').fadeIn(500); // 0.5초 동안 천천히 나타남
-    $('.backdiv').fadeIn(500);
-});
+				  		<script>
+				  	  var loginUser = "${loginUser}"
 
-$('.backdiv').on('click', function() {
-    $('.topdiv').fadeOut(500); // 0.5초 동안 천천히 사라짐
-    $('.backdiv').fadeOut(500);
-});
-  		//만약 검색기능까지 할 짬이 날 경우 사용할 예정
-  	/*	$('.searchbtn').on('click', function() {
-  		    $('.page-item a').each(function() {
-  		        console.log($(this).attr('href')); // 각 <a> 태그의 href 속성을 가져와 출력
-  		    });
-  		}); */
-  		</script>
+				  		 if (loginUser === "" || loginUser === "null")
+				  		 {}else{
+				  			
+				  					//트레이너명과 pt횟수 표기
+				  					$.ajax({
+				  						url : 'trainermatchingsearch.bo',
+				  					
+				  						success : function(date){
+				  							console.log("성공?");
+				  							
+				  								$('.trname').text('현재 트레이너 '+date.pt)
+				  								$('.pttime').text('남은 PT 횟수 : '+date.ptTime)
+				  							console.log(date)
+				  							console.log(date.pt);
+				  							console.log(date.ptTime)
+				  						},
+				  						error : function(){
+				  							console.log("실패?")
+				  						}
+				  					})
+				  		
+				  		}
+				  		
+				  		
+							  		//pt신청 버튼 클릭시
+							$('.ptchosebtn').on('click', function() {
+							    $('.topdiv').fadeIn(500); // 0.5초 동안 천천히 나타남
+							    $('.backdiv').fadeIn(500);
+							    $('topdiv').css('display','flex');
+							});
+							
+							$('.backdiv').on('click', function() {
+							    $('.topdiv').fadeOut(500); // 0.5초 동안 천천히 사라짐
+							    $('.backdiv').fadeOut(500);
+							});
+							  		//만약 검색기능까지 할 짬이 날 경우 사용할 예정
+							  	/*	$('.searchbtn').on('click', function() {
+							  		    $('.page-item a').each(function() {
+							  		        console.log($(this).attr('href')); // 각 <a> 태그의 href 속성을 가져와 출력
+							  		    });
+							  		}); */
+				  		</script>
 
 </body>
 </html>

@@ -49,8 +49,10 @@ public class MealPlanDao {
 		return sqlSession.insert("mealplanMapper.insertMealtraineePlan" ,m);
 	}
 	public  ArrayList<MealPlan> selectMealPlantrainerList(SqlSession sqlSession, MealPlan m) {
-		
-		return  (ArrayList)sqlSession.selectList("mealplanMapper.selectMealPlantrainerList", m);
+
+		ArrayList<MealPlan> list = 	(ArrayList)sqlSession.selectList("mealplanMapper.selectMealPlantrainerList", m);
+	
+		return   list;
 	}
 	public  ArrayList<MealPlan> checkmealPlan(SqlSession sqlSession, MealPlan m) {
 		

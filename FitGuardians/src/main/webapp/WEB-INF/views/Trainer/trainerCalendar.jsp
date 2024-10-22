@@ -11,8 +11,8 @@
             <!-- calendar -->
             <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 			<!-- sweetalert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.all.min.js"></script>
-	<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.min.css" rel="stylesheet">
+    		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.all.min.js"></script>
+			<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.min.css" rel="stylesheet">
         </head>
         <body>
             <c:if test="${ not empty alertMsg }">
@@ -62,7 +62,9 @@
 										title:"${s.scheduleTitle}",
 										start:"${s.startDate}",
 										end:"${s.endDate}",
-										backColor:"${s.backColor}"
+										backColor:"${s.backColor}",
+										allday:"${s.allday}",
+										
 									});
 								</script>
 							</c:forEach>
@@ -74,6 +76,7 @@
 											start: event.start,
 											end: event.end,
 											color: event.backColor,
+											allday: event.allday
 										}))
 										
 										
@@ -108,10 +111,14 @@
 																startDate: event.start ? event.start.toISOString() : null,
 																endDate: event.end ? event.end.toISOString() : null,
 																backColor: event.backgroundColor,
+																allday: event.allDay,
+																scheduleDes: event.extendedProps.description,
 															}));
+															
+															console.log(events);
 															console.log(eventsData);
 															$.ajax({
-																url:"addCalendar.tr",
+																url:"addCalendar.pt",
 																type:"POST",
 																contentType: 'application/json',
 																data: JSON.stringify(eventsData),
@@ -170,7 +177,8 @@
 													start: new Date(start_date + "T" + start_time),
 													end: new Date(end_date + "T" + end_time),
 													color: $("#color").val(),
-													allday: allday,
+													allDay: $("input[id=allday]").is(":checked"),
+													description: $("#calendar_description").val(),
 											}
 											
 											console.log(eventData);
@@ -193,6 +201,8 @@
 												$("#calendar_end_date").val("");
 												$("#calendar_start_time").val("");
 												$("#calendar_end_time").val("");
+												$("#calendar_description").val("");
+												$("input[id=allday]").prop("checked", false);
 											}
 										})
 										
@@ -236,7 +246,10 @@
 											<label for="taskId" class="col-form-label">종료 시간</label>
 											<input type="time" class="form-control" name="calendar_end_time" id="calendar_end_time">
 											<label for="taskId" class="col-form-label">하루종일</label>
-											<input type="checkbox" id="allday" name="allday"/> 
+											<input type="checkbox" id="allday" name="allday"/>
+											<br>
+											<label for=taskId class="col-form-label">상세 설명</label>
+											<textarea rows="3" cols="2" style="resize:none" class="form-control" id="calendar_description"></textarea> 
 										</div>
 									</div>
 									<div class="modal-footer">

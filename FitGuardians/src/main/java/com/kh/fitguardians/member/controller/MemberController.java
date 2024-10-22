@@ -561,7 +561,10 @@ public class MemberController {
 	public String traineeCalender(HttpSession session, HttpServletRequest request) {
 		Member loginUser = (Member) session.getAttribute("loginUser");
 		
-		ArrayList<Schedule> schedule = mService.selectSchedule(loginUser.getUserNo());
+		Member m = new Member();
+		m.setUserNo(mService.selectMemberByUserId(loginUser.getPt()).getUserNo());
+		m.setUserId(loginUser.getUserId());
+		ArrayList<Schedule> schedule = mService.selectTpSchedule(m);
 		request.setAttribute("schedule", schedule);
 		return "Trainee/TraineeCalendar";
 	}
@@ -586,10 +589,10 @@ public class MemberController {
 			Member updateMember = mService.loginMember(m);
 			session.setAttribute("loginUser", updateMember);
 			session.setAttribute("alertMsg", "프로필사진이 변경 되었습니다!");
-			return "redirect:/";
+			return "redirect:dashboard.me";
 		}else {
 			session.setAttribute("errorMsg", "프로필사진 변경 실패");
-			return "redirect:/";
+			return "redirect:dashboard.me";
 		}
 		
 	}

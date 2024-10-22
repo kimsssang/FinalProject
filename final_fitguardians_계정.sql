@@ -1,9 +1,9 @@
 INSERT INTO member (user_no, user_id, user_pwd, user_name, email, phone, gender, age, address, enroll_date, user_level, pt, status, api, qr, profile_pic, membership)
 VALUES
-(seq_mno.nextval, 'user01', 'Password!1', 'ï¿½ï¿½Î¼ï¿½', 'minsu.kim@example.com', '01012345678', 'M', 25, 'ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 123', SYSDATE, 1, 'Trainer A', 'Y', 'api_key_1', 'qr_code_path_1', 'profile_pic_path_1', 'Gold Membership');
+(seq_mno.nextval, 'user01', 'Password!1', 'ï¿½ï¿½Î¼ï¿?', 'minsu.kim@example.com', '01012345678', 'M', 25, 'ï¿½ï¿½ï¿½ï¿½ï¿? ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 123', SYSDATE, 1, 'Trainer A', 'Y', 'api_key_1', 'qr_code_path_1', 'profile_pic_path_1', 'Gold Membership');
 INSERT INTO member (user_no, user_id, user_pwd, user_name, email, phone, gender, age, address, enroll_date, user_level, pt, status, api, qr, profile_pic, membership)
 VALUES
-(seq_mno.nextval, 'user02', 'SecurePassword2!', 'ï¿½Ì¼ï¿½ï¿½ï¿½', 'sujin.lee@example.com', '01098765432', 'F', 30, 'ï¿½Î»ï¿½ï¿½ ï¿½Ø¿ï¿½ë±¸ 456', SYSDATE, 2, 'Trainer B', 'Y', 'api_key_2', 'qr_code_path_2', 'profile_pic_path_2', 'Silver Membership');
+(seq_mno.nextval, 'user02', 'SecurePassword2!', 'ï¿½Ì¼ï¿½ï¿½ï¿½', 'sujin.lee@example.com', '01098765432', 'F', 30, 'ï¿½Î»ï¿½ï¿? ï¿½Ø¿ï¿½ë±? 456', SYSDATE, 2, 'Trainer B', 'Y', 'api_key_2', 'qr_code_path_2', 'profile_pic_path_2', 'Silver Membership');
 INSERT INTO member (user_no, user_id, user_pwd, user_name, email, phone, gender, age, address, enroll_date, user_level, pt, status, api, qr, profile_pic, membership)
 VALUES
 (seq_mno.nextval, 'user03', 'StrongPwd3$', 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½', 'jihyun.park@example.com', '01045678910', 'F', 28, 'ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ 789', SYSDATE, 2, 'Trainer C', 'Y', 'api_key_3', 'qr_code_path_3', 'profile_pic_path_3', 'Platinum Membership');
@@ -113,7 +113,7 @@ values
        seq_trainer_info.nextval
      , 4
      , 5
-     , 'ï¿½ï¿½È¸ ï¿½ï¿½ï¿½'
+     , 'ï¿½ï¿½È¸ ï¿½ï¿½ï¿?'
      , 'resources/trProfilePic/jang.jpg'
      , 'ï¿½ßºï¿½Å¹ï¿½å¸³ï¿½Ï´ï¿½'
      )
@@ -181,6 +181,29 @@ SELECT *FROM MEMBER m
 				WHERE USER_ID = m.USER_ID
 				AND BI_STATUS = 'Y'
 			)           
+;
+select count(schedule_no)
+		  from schedule
+		 where schedule_title = 'test'
+		   and start_date = '2024-10-27T00:00:00.000Z'
+		   and user_no = 30
+           ;
 
+select count(schedule_no)
+		  from schedule
+		 where schedule_title = 'ÀÏÁ¤ 1'
+		   and start_date = '2024-10-21T00:00:00.00Z'
+		   and user_no = '30'
+;
 
-     
+select schedule_no
+		     , schedule_title
+		     , schedule_des
+		     , start_date
+		     , end_date
+		     , back_color
+		     , allday
+		  from schedule
+		 where user_no = '4'
+		   and pt_user = 'noinfo'
+           ;

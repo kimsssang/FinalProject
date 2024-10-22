@@ -12,6 +12,8 @@ public class Events {
 	
 	private String id;
 	private String calendarId;
+	private String title;
+	private String type; 
 	private String startDate;
 	private String endDate;
 	private boolean allDay;

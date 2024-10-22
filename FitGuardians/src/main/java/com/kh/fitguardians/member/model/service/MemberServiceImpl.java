@@ -212,8 +212,7 @@ public class MemberServiceImpl implements MemberService{
 
 	@Override
 	public int addAdditionalInfo(MemberInfo addAdditionalInfo) {
-		// mDao 재사용
-		return mDao.insertMemberInfo(sqlSession, addAdditionalInfo); // MEMBER_INFO에 데이터 삽입;
+		return mDao.insertMemberInfo(sqlSession, addAdditionalInfo); 
 	}
 
 	@Override
@@ -249,6 +248,11 @@ public class MemberServiceImpl implements MemberService{
 	@Override
 	public int addSocialMemberBodyInfo(BodyInfo bodyInfo) {
 		return mDao.addSocialMemberBodyInfo(sqlSession, bodyInfo);
+	}
+
+	@Override
+	public ArrayList<Schedule> selectTpSchedule(Member m) {
+		return mDao.selectTpShedule(sqlSession, m);
 	}
 
 	

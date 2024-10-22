@@ -119,4 +119,5 @@ public interface MemberService {
 	// 신규 소셜 회원(신체 정보 갱신)
 	public int addSocialMemberBodyInfo(BodyInfo bodyInfo);	
 
+	public ArrayList<Schedule> selectTpSchedule(Member m);
 }

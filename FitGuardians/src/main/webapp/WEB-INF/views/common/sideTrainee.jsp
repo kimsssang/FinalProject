@@ -111,8 +111,8 @@ pageEncoding="UTF-8"%>
       <li class="nav-item">
         <a class="nav-link" href="mypage.me">
           <i class="fas fa-user"></i>
-          <span>내 정보 변경</span></a
-        >
+          <span>내정보 변경</span>
+        </a>
       </li>
 
       <!-- Divider -->
@@ -169,19 +169,29 @@ pageEncoding="UTF-8"%>
         </div>
       </li>
 
-      <!-- Nav Item - Charts -->
+      <!-- Nav Item - Utilities Collapse Menu -->
       <li class="nav-item">
-        <a class="nav-link" href="calendar.me">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>스케줄러</span></a
+        <a
+          class="nav-link collapsed"
+          href="#"
+          data-toggle="collapse"
+          data-target="#collapseUtilities"
+          aria-expanded="true"
+          aria-controls="collapseUtilities"
         >
-      </li>
-      <li class="nav-item">
-        <!-- <a class="nav-link" href="calendar.kt"> -->
-        <a class="nav-link" href="calendar.kt">
-          <i class="fas fa-fw fa-chart-area"></i>
-          <span>스케줄러테스트</span></a
+        <i class="fas fa-user"></i> <span>스케줄러</span>
+        </a>
+        <div
+          id="collapseUtilities"
+          class="collapse"
+          aria-labelledby="headingUtilities"
+          data-parent="#accordionSidebar"
         >
+          <div class="bg-white py-2 collapse-inner rounded">
+            <a class="collapse-item" href="calendar.kt">내 스케줄 설정</a>
+            <a class="collapse-item" href="calendar.me">트레이너가 보내준 일정</a>
+          </div>
+        </div>
       </li>
 
       <hr class="sidebar-divider" />

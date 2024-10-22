@@ -288,7 +288,7 @@
 		                                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
 		                                    My Page
 		                                </a>
-		                                <a class="dropdown-item" onclick="uploadImg();">
+		                                <a class="dropdown-item" onclick="changePicture();">
 		                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
 		                                    Settings
 											<a id="qr" href="${loginUser.qr}"></a>
@@ -338,6 +338,38 @@
 			            </div>
 			        </div>
 			    </div>
+			    
+			    			    <!-- 사진변경 모달 -->
+			     <div class="modal fade" id="changePictureModal" tabindex="-1" role="dialog" aria-labelledby="changePictureModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="changePictureModalLabel">사진 변경</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="changePictureForm" action="changePicture.me" method="post" enctype="multipart/form-data">
+                                    <div id="productImages"></div>
+                                    <div class='d-flex justify-content-center'>
+	                                    <div class="btn-group">
+		                                    <label class="btn btn-warning mb-0" for="input-files" >
+		                                        사진 업로드
+		                                    </label>
+		                                    <input class="btn btn-info" type="file" id="input-files" name="upfile" accept="image/*" style="display: none;" required>
+		                                    <input type="hidden" id="userNo" name="userNo" value="${loginUser.userNo}">
+		                                    <input type="hidden" id="userId" name="userId" value="${loginUser.userId}">
+		                                    <input type="hidden" id="profilePic" name="profilePic" value="${loginUser.profilePic}">
+		                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		                                    <button type="submit" class="btn btn-primary">사진 변경</button>
+	                                    </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 	<script>
 	    // 현재 시간을 가져오는 함수
 	    var getCurrentTime = function() {
@@ -863,8 +895,52 @@
 			</c:if>
 	    </c:otherwise>
 	</c:choose>
-
-
+		<script>
+	 	// 사진 변경
+        function changePicture(){
+            // 모달 띄우기
+            $('#changePictureModal').modal('show');
+		}
+	 	
+	 	$(function (){
+	 	// 파일 미리보기
+	 	    $("#input-file").change(function (event) {
+	 	        var reader = new FileReader();
+	 	        reader.onload = function (event) {
+	 	            var img = $("#productImage img");
+	 	            if(img.length === 0){
+	 	                var img = $("<img>");
+	 	                $("#productImage").append(img);
+	 	            }
+	 	            img.attr("src", event.target.result);
+	 	        };
+	 	        reader.readAsDataURL(event.target.files[0]);
+	 	        console.log(event);
+	 	    });
+	 	    $("#input-files").change(function (event) {
+	 	        var reader = new FileReader();
+	 	        reader.onload = function (event) {
+	 	            var img = $("#productImages img");
+	 	            if(img.length === 0){
+	 	                var img = $("<img>");
+	 	                $("#productImages").append(img);
+	 	            }
+	 	            img.attr("src", event.target.result);
+	 	        };
+	 	        reader.readAsDataURL(event.target.files[0]);
+	 	        console.log(event);
+	 	    });
+	 	    
+	 	    // 태그가 추가되면 이벤트 발생
+	 	    $("#tag").on('change', function() {
+	 	        console.log(tagify.detail.value);
+	 	    });
+	 	    $(".openTag").click(function(){
+	 	        $(".detailCategory").css("display", "block");
+	 	        $(this).css("display", "none")
+	 	    });
+	 	})
+	</script>
 
 
 </body>

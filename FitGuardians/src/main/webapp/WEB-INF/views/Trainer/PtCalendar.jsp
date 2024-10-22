@@ -11,8 +11,9 @@
             <!-- calendar -->
             <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
 			<!-- sweetalert2 -->
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.all.min.js"></script>
-	<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.min.css" rel="stylesheet">
+    		<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.all.min.js"></script>
+			<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.min.css" rel="stylesheet">
+			<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
         </head>
         <body>
             <c:if test="${ not empty alertMsg }">
@@ -67,6 +68,7 @@
 										title:"${s.scheduleTitle}",
 										start:"${s.startDate}",
 										end:"${s.endDate}",
+										allDay: "${s.allDay}",
 										backColor:"${s.backColor}"
 									});
 								</script>
@@ -81,6 +83,7 @@
 										start: event.start,
 										end: event.end,
 										color: event.backColor,
+										allDay: event.allDay === 'true' ? true : false,
 									}))
 									
 									
@@ -103,7 +106,12 @@
 												addEventButton:{
 													text:"일정 추가",
 													click: ()=>{
-														$("#calendarModal").modal("show");
+														if($("#selectTrainee").val()=== "none"){
+															Swal.fire({icon:"warning", title:"회원을 선택해주세요"})
+															
+														}else{
+															$("#calendarModal").modal("show");
+														}
 													}
 												},
 												saveButton:{
@@ -166,6 +174,7 @@
 								
 									// 캘린더에 추가
 									$("#addCalendar").on("click",()=>{
+										
 										let start_date = $("#calendar_start_date").val();
 										let end_date = $("#calendar_end_date").val();
 										let start_time = $("#calendar_start_time").val();
@@ -182,7 +191,6 @@
 												allday: allday,
 										}
 										
-										console.log(eventData);
 										
 										if(eventData.title === null || eventData.title === ""){
 											Swal.fire({icon: 'warning', text: "내용을 입력해주세요"});
@@ -202,6 +210,8 @@
 											$("#calendar_end_date").val("");
 											$("#calendar_start_time").val("");
 											$("#calendar_end_time").val("");
+											$("#calendar_description").val("");
+											$("input[id=allday]").prop("checked", false);
 										}
 									})
 
@@ -225,7 +235,9 @@
 														title: event.scheduleTitle,
 														start: event.startDate,
 														end:event.endDate,
-														color:event.backColor
+														color:event.backColor,
+														allDay:event.allDay,
+														
 													});
 												}
 												
@@ -246,6 +258,26 @@
 											}
 										})
 									})
+									
+									flatpickr("#calendar_start_time", {
+							            enableTime: true,
+							            noCalendar: true,
+							            dateFormat: "H:i",
+							            minTime: "00:00",
+							            maxTime: "23:55",
+							            minuteIncrement: 5 // 5분 단위로 증가
+							        });
+									
+									flatpickr("#calendar_end_time", {
+							            enableTime: true,
+							            noCalendar: true,
+							            dateFormat: "H:i",
+							            minTime: "00:00",
+							            maxTime: "23:55",
+							            minuteIncrement: 5 // 5분 단위로 증가
+							        });
+									
+									
 								})
 								
 							</script>
@@ -282,9 +314,9 @@
 											<label for="taskId" class="col-form-label">종료 날짜</label>
 											<input type="date" class="form-control" id="calendar_end_date" name="calendar_end_date">
 											<label for="taskId" class="col-form-label">시작 시간</label>
-											<input type="time" class="form-control" name="calendar_start_time" id="calendar_start_time">
+											<input type="text" class="form-control" name="calendar_start_time" id="calendar_start_time">
 											<label for="taskId" class="col-form-label">종료 시간</label>
-											<input type="time" class="form-control" name="calendar_end_time" id="calendar_end_time">
+											<input type="text" class="form-control" name="calendar_end_time" id="calendar_end_time">
 											<label for="taskId" class="col-form-label">하루종일</label>
 											<input type="checkbox" id="allday" name="allday"/> 
 										</div>
@@ -301,5 +333,6 @@
 				</div>
 			</div>
 		</div>
+		<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 	</body>
 </html>

@@ -144,7 +144,7 @@ pageEncoding="UTF-8"%>
           aria-expanded="true"
           aria-controls="collapseUtilities"
         >
-          <i class="fas fa-user"></i> <span>스케줄러</span>
+        <i class="fas fa-user"></i> <span>스케줄러</span>
         </a>
         <div
           id="collapseUtilities"
@@ -153,7 +153,7 @@ pageEncoding="UTF-8"%>
           data-parent="#accordionSidebar"
         >
           <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="calendar.tr">내 스케줄 설정</a>
+            <a class="collapse-item" href="calendar.kt">내 스케줄 설정</a>
             <a class="collapse-item" href="calendar.pt">회원 스케줄 설정</a>
           </div>
         </div>

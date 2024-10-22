@@ -10,6 +10,7 @@
             <title>Trainer Calendar</title>
             <!-- calendar -->
             <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 			<!-- bootstrap	
 			<link href='https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.css' rel='stylesheet'>
 			<link href='https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.1/css/all.css' rel='stylesheet'>
@@ -60,10 +61,12 @@
 							<c:forEach var="s" items="${schedule}">
 								<script>
 									sch.push({
-										title:"${s.scheduleTitle}",
+										id: "${s.id}",
+										title:"${s.title}",
 										start:"${s.startDate}",
 										end:"${s.endDate}",
-										backColor:"${s.backColor}"
+										allDay: "${s.allDay}",
+										backColor:"${s.color}",
 									});
 								</script>
 							</c:forEach>
@@ -71,11 +74,15 @@
 									document.addEventListener('DOMContentLoaded', function () {
 										
 										const eventDate = sch.map(event => ({
+											id: event.id,
 											title: event.title,
 											start: event.start,
 											end: event.end,
 											color: event.backColor,
+											allDay: event.allDay === 'true' ? true : false,
 										}))
+										
+										console.log(eventDate);
 										
 										
 										$("input[id=allday]").on('change', ()=>{
@@ -106,12 +113,17 @@
 															const events = calendar.getEvents();
 															const eventsData = events.map(event=> ({
 																scheduleTitle: event.title,
-																startDate: event.start ? event.start.toISOString() : null,
-																endDate: event.end ? event.end.toISOString() : null,
+																startDate: event.start ? event.start : null,
+																endDate: event.end ? event.end : null,
 																backColor: event.backgroundColor,
+																allDay: event.allDay,
+																scheduleDes: event.extendedProps.description,
 															}));
+															console.log(events);
 															console.log(eventsData);
-															$.ajax({
+															
+															
+															 $.ajax({
 																url:"addCalendar.tr",
 																type:"POST",
 																contentType: 'application/json',
@@ -129,7 +141,8 @@
 																error:()=>{
 																	console.log("add calendar ajax failed");
 																},
-															})
+															}) 
+															
 														}
 													}
 												},
@@ -140,8 +153,6 @@
 												},
 												height: '800px',
 												expandRows:true,
-												slotMinTime: '08:00',
-												slotMaxTime: '22:00',
 												themeSystem: 'bootstrap',
 												initialView: 'dayGridMonth',
 												selectable: true,
@@ -149,9 +160,9 @@
 												displayEventTime: true,
 												events:eventDate,											
 											}
-											
+										
 										)
-										calendar.render()
+										calendar.render();
 										calendar.on('eventClick', (info)=>{
 											console.log(info);
 										})
@@ -164,17 +175,14 @@
 											let end_time = $("#calendar_end_time").val();
 											let allday = $("input[id=allday]").is(":checked");
 											
-											
-											
 											var eventData = {
 													title: $("#calendar_content").val(),
-													start: new Date(start_date + "T" + start_time),
-													end: new Date(end_date + "T" + end_time),
+													start: allday ? new Date(start_date) : new Date(start_date + "T" + start_time),
+												    end: allday ? new Date(end_date) : new Date(end_date + "T" + end_time),
 													color: $("#color").val(),
-													allday: allday,
+													allDay: allday,
+													description: $("#calendar_description").val(),
 											}
-											
-											console.log(eventData);
 											
 											if(eventData.title === null || eventData.title === ""){
 												Swal.fire({icon: 'warning', text: "내용을 입력해주세요"});
@@ -194,12 +202,31 @@
 												$("#calendar_end_date").val("");
 												$("#calendar_start_time").val("");
 												$("#calendar_end_time").val("");
+												$("#calendar_description").val("");
+												$("input[id=allday]").prop("checked", false);
 											}
 										})
 										
+										flatpickr("#calendar_start_time", {
+								            enableTime: true,
+								            noCalendar: true,
+								            dateFormat: "H:i",
+								            minTime: "00:00",
+								            maxTime: "23:55",
+								            minuteIncrement: 5 // 5분 단위로 증가
+								        });
+										
+										flatpickr("#calendar_end_time", {
+								            enableTime: true,
+								            noCalendar: true,
+								            dateFormat: "H:i",
+								            minTime: "00:00",
+								            maxTime: "23:55",
+								            minuteIncrement: 5 // 5분 단위로 증가
+								        });
+										
 									})
 									
-								
 								
 								</script>
 							<%-- </c:if> --%>
@@ -219,25 +246,31 @@
 											<label for=taskId class="col-form-label">색상</label>
 											<select id="color" class="form-control">
 								                <option value="blue">파랑색</option>
+												<option value="royal_blue">로얄블루</option>
+								                <option value="navy_blue">남색</option>
 								                <option value="red">빨강색</option>
+												<option value="pink">분홍색</option>
 								                <option value="orange">주황색</option>
-								                <option value="yellow">노랑색</option>
-	   							                <option value="green">초록색</option>
-								                <option value="indigo">남색</option>
-								                <option value="purple">보라색</option>
+								                <option value="green">초록색</option>
+	   							                <option value="mint">민트색</option>
+								                <option value="magenta">마젠타</option>
+												<option value="lavender">라벤다</option>
 								            </select>
-											<label for="taskId" class="col-form-label">일정 내용</label>
+											<label for="taskId" class="col-form-label">일정 제목</label>
 											<input type="text" class="form-control" id="calendar_content" name="calendar_content">
 											<label for="taskId" class="col-form-label">시작 날짜</label>
 											<input type="date" class="form-control" id="calendar_start_date" name="calendar_start_date">
 											<label for="taskId" class="col-form-label">종료 날짜</label>
 											<input type="date" class="form-control" id="calendar_end_date" name="calendar_end_date">
 											<label for="taskId" class="col-form-label">시작 시간</label>
-											<input type="time" class="form-control" name="calendar_start_time" id="calendar_start_time">
+											<input type="text" step="300" class="form-control" name="calendar_start_time" id="calendar_start_time">
 											<label for="taskId" class="col-form-label">종료 시간</label>
-											<input type="time" class="form-control" name="calendar_end_time" id="calendar_end_time">
+											<input type="text" step="300" class="form-control" name="calendar_end_time" id="calendar_end_time">
 											<label for="taskId" class="col-form-label">하루종일</label>
-											<input type="checkbox" id="allday" name="allday"/> 
+											<input type="checkbox" id="allday" name="allday"/>
+											<br>
+											<label for=taskId class="col-form-label">상세 설명</label>
+											<textarea rows="3" cols="2" style="resize:none" class="form-control" id="calendar_description"></textarea>
 										</div>
 									</div>
 									<div class="modal-footer">
@@ -252,5 +285,6 @@
 				</div>
 			</div>
 		</div>
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 	</body>
 </html>

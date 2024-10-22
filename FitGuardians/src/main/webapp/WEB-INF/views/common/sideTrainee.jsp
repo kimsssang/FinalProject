@@ -97,26 +97,13 @@ pageEncoding="UTF-8"%>
       <li class="nav-item">
         <a
           class="nav-link collapsed"
-          href="#"
-          data-toggle="collapse"
-          data-target="#collapseTwo"
-          aria-expanded="true"
-          aria-controls="collapseTwo"
+          href="trainermatching.bo"
+
         >
-          <i class="fas fa-fw fa-cog"></i>
-          <span>회원권 관리</span>
+          <i class="fas  fa-user"></i>
+          <span>트레이너 매칭</span>
         </a>
-        <div
-          id="collapseTwo"
-          class="collapse"
-          aria-labelledby="headingTwo"
-          data-parent="#accordionSidebar"
-        >
-          <div class="bg-white py-2 collapse-inner rounded">
-            <a class="collapse-item" href="trainermatching.bo">회원권 신청</a>
-            <a class="collapse-item" href="cards.html">트레이너 조회</a>
-          </div>
-        </div>
+
       </li>
 
       <!-- Nav Item - Utilities Collapse Menu -->

@@ -22,10 +22,10 @@
  }
 .topdiv{
     position: absolute; /* 절대 위치 설정 */
-    top: 200px; /* 위에서부터 50px 내려옴 */
+    top: 200px; 
     left: 500px; 
-    width: 50%;
-    height: 180px;
+    width: 700px;
+    height: 300px;
     background-color: rgba(255, 255, 255, 1); 
     z-index: 4; /* z-index 설정 */
     display: none;
@@ -54,12 +54,12 @@
  }
  .membershiplistdiv div{
  border-radius: 10px;
- width: 20%;
+ width: 50%;
  height: 80%;
  margin-left: 10px;
  margin-right: 10px;
 border : 1px solid black;
-
+	color: black;
      text-align: center;
      vertical-align: middle;
  }
@@ -78,8 +78,14 @@ border : 1px solid black;
     display: flex;
     align-items: center;  /* 수직 중앙 정렬 */
     justify-content: center; 
-    margin-top: 20px;
+  
 }
+.ptchosebtn{
+width: 70px;
+height: 70px;
+font-size: 5px;
+     text-align: center;
+     vertical-align: middle;}
 
 
  </style>
@@ -109,14 +115,15 @@ border : 1px solid black;
               
 		         	<div class="topdiv">
 		         		<div class="membershiplistdiv">
-			         		<div class="3pt ptcheck">pt3회권 <br> 15만원
+			         		<div class="3pt ptcheck border-left-primary">pt3회권 <br>  <br> 15만원
 			         			<input class="ptval" type="hidden" value="3"> 
 			         		</div> 
-			         		<div class="5pt ptcheck">pt5회권 <br> 20만원
-			         		<input class="ptval" type="hidden" value="5"> </div>
-			         		<div  class="10p ptcheck">pt10회권 <br> 35만원
+			         		<div class="5pt ptcheck border-left-primary">pt5회권 <br> <br> 20만원
+			         		<input class="ptval" type="hidden" value="5"> </div></div>
+			         		<div class="membershiplistdiv">
+			         		<div  class="10p ptcheck border-left-primary">pt10회권 <br> <br> 35만원
 			         		<input class="ptval" type="hidden" value="10"> </div>
-			         		<div class="20p ptcheck">pt20회권 <br> 60만원
+			         		<div class="20p ptcheck border-left-primary">pt20회권 <br> <br> 60만원
 			         		<input class="ptval" type="hidden" value="20"> </div>
 		         		</div>
 		         		<div class="buydiv "> <button  class="buybtn  btn btn-primary btn-icon-split btn-lg" type="button">구매하기</button></div>
@@ -165,6 +172,14 @@ border : 1px solid black;
 
 		         // .ptcheck 클릭 시 클래스 추가/제거로 선택 상태 업데이트
 		         $('.ptcheck').on('click', function() {
+		        	 
+		       	  if ($(this).hasClass('selected')) {
+	        		    $('.ptcheck').removeClass('selected');
+	        		    return false;
+	        	  }
+		        	 
+		        	 
+		        	 
 		             // 모든 ptcheck 요소의 선택 클래스를 제거
 		             $('.ptcheck').removeClass('selected');
 		             
@@ -207,7 +222,7 @@ border : 1px solid black;
 		         });
 
 		         	</script>
-				        <div style="width: 100%">
+				        <div style="width: 100% ; margin-top: 30px;">
 				    		<h2 class="trname">비회원입니다</h2>
 				    		<h2 class="pttime"></h2>
 				    		<input type="hidden" class="pId">
@@ -251,7 +266,7 @@ border : 1px solid black;
 				                		</div>
 				             			<div class="btncssdiv" style="width: 12%; height: 100%"> 
 											<input class="newtrainerid" type="hidden" value="${ t.userId }">
-				             			<button style="" class="ptchosebtn btn btn-primary btn-icon-split btn-lg">회원권(pt)신청</button>
+				             			<button style="font-size: 15px; align-items: center; " class="ptchosebtn btn btn-primary btn-icon-split btn-lg">회원권 <br>(pt)신청</button>
 				             			
 				           		
 				             			</div>
@@ -339,6 +354,7 @@ border : 1px solid black;
 							});
 							
 							$('.backdiv').on('click', function() {
+								   $('.ptcheck').removeClass('selected');
 							    $('.topdiv').fadeOut(500); // 0.5초 동안 천천히 사라짐
 							    $('.backdiv').fadeOut(500);
 							});

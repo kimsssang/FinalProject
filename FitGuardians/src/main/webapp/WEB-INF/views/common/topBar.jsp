@@ -25,14 +25,32 @@
 <style>
 	/* 파일 링크 스타일 */
 	.file-link {
-	    color: black; /* 텍스트 색상 (기본 메시지 색상과 동일) */
-	    text-decoration: underline; /* 링크 밑줄 */
-	    cursor: pointer; /* 포인터 커서 */
+	    color: black;
+	    text-decoration: underline;
+	    cursor: pointer;
 	}
 	
-	/* 링크 호버 효과 (선택적) */
+	/* 링크 호버 효과*/
 	.file-link:hover {
-	    color: #FFD700; /* 호버 시 색상 변경 (금색) */
+	    color: #FFD700;
+	}
+	
+	#weather {
+	    display: flex;
+	    align-items: center;
+	    justify-content: center;
+	    font-size: 20px;
+	    color: #333;
+	    margin: 10px;
+	    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+	    font-family: 'Arial', sans-serif;
+	    transition: all 0.3s ease;
+	}
+	
+	#weather:hover {
+	    color: #007BFF;
+	    transform: scale(1.05);
+	    
 	}
 </style>
 </head>
@@ -47,6 +65,34 @@
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
+                    <div id="weather">날씨정보 가져와볼까?</div>
+                    <div id="weather"></div>
+
+					<script>
+				    $(document).ready(function() {
+				        if (navigator.geolocation) {
+				            navigator.geolocation.getCurrentPosition(function(position) {
+				                $.ajax({
+				                    url: "https://api.openweathermap.org/data/2.5/weather?lat=" + position.coords.latitude + "&lon=" + position.coords.longitude + "&appid=26f63825b5ad487da0d03e384708dc2a&units=metric&lang=kr",
+				                    method: 'GET',
+				                    success: function(data) {
+				                        const icon = data.weather[0].icon; // 날씨 아이콘 코드
+				                        const iconUrl = "https://openweathermap.org/img/wn/" + icon + ".png"; // 아이콘 URL
+				                        $('#weather').html('<img src="' + iconUrl + '" alt="' + data.weather[0].description + '">현재 위치의 날씨: ' + data.weather[0].description + ', 온도: ' + data.main.temp.toFixed(1) + '°C');
+				                    },
+				                    error: function() {
+				                        $('#weather').text('날씨 정보를 불러오지 못했습니다.');
+				                    }
+				                });
+				            }, function() {
+				                $('#weather').text('위치 정보를 불러오지 못했습니다.');
+				            });
+				        } else {
+				            $('#weather').text('브라우저에서 위치 정보를 사용할 수 없습니다.');
+				        }
+				    });
+				    </script>
+
 
 						<c:choose>
 							<c:when test="${ not empty loginUser }">

@@ -968,7 +968,7 @@ public class SocialMemberController {
 	@RequestMapping("delayAdditionalInfo.me")
 	public void delayAdditionalInfo(HttpSession session) {
 		session.setAttribute("hasAdditionalInfo", true);
-		//session.setAttribute("hasBodyInfo", true);
+		session.setAttribute("hasBodyInfo", true);
 	}
 	
 	// 소셜 로그인 사용자를 위한 추가 정보 입력 기능
@@ -1022,6 +1022,9 @@ public class SocialMemberController {
 	    	BodyInfo bi = mService.getBodyInfo(loginMember.getUserId());
 	    	session.setAttribute("mi", mi);
 	    	session.setAttribute("bi", bi);
+	    	
+	    	// 추가정보와 신체정보가 반영되었으니, 세션에 반영되었다는 것을 저장(위의 메소드 재활용)
+	    	delayAdditionalInfo(session);
 	    	
 	        return "success";
 	    } else {

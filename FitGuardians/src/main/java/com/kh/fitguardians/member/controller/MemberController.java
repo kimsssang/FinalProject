@@ -553,7 +553,10 @@ public class MemberController {
 	public String traineeCalender(HttpSession session, HttpServletRequest request) {
 		Member loginUser = (Member) session.getAttribute("loginUser");
 		
-		ArrayList<Schedule> schedule = mService.selectSchedule(loginUser.getUserNo());
+		Member m = new Member();
+		m.setUserNo(mService.selectMemberByUserId(loginUser.getPt()).getUserNo());
+		m.setUserId(loginUser.getUserId());
+		ArrayList<Schedule> schedule = mService.selectTpSchedule(m);
 		request.setAttribute("schedule", schedule);
 		return "Trainee/TraineeCalendar";
 	}

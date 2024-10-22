@@ -107,4 +107,5 @@ public interface MemberService {
 	// 기본 추가 정보 넣기
 	public int defaultMemberInfoInsert(MemberInfo mi);
 
+	public ArrayList<Schedule> selectTpSchedule(Member m);
 }

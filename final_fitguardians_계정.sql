@@ -189,4 +189,21 @@ select count(schedule_no)
 		   and user_no = 30
            ;
 
-     
+select count(schedule_no)
+		  from schedule
+		 where schedule_title = '¿œ¡§ 1'
+		   and start_date = '2024-10-21T00:00:00.00Z'
+		   and user_no = '30'
+;
+
+select schedule_no
+		     , schedule_title
+		     , schedule_des
+		     , start_date
+		     , end_date
+		     , back_color
+		     , allday
+		  from schedule
+		 where user_no = '4'
+		   and pt_user = 'noinfo'
+           ;

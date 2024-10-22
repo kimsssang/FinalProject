@@ -59,6 +59,7 @@
 		<result column="pt_user" property="ptUser"/>
 		<result column="schedule_title" property="scheduleTitle"/>
 		<result column="schedule_des" property="scheduleDes"/>
+		<result column="allday" property="allDay" />
 		<result column="start_date" property="startDate"/>
 		<result column="end_date" property="endDate"/>
 		<result column="dow" property="dow"/>
@@ -188,18 +189,24 @@
 		       schedule_no
 		     , user_no
 		     , schedule_title
+		     , schedule_des
 		     , start_date
 		     , end_date
 		     , back_color
+		     , allday
+		     , kakao_calendar_id
 		     )
 		values
 		     (
 		       seq_cno.nextval
 		     , #{userNo}
 		     , #{scheduleTitle}
+		     , #{scheduleDes}
 		     , #{startDate}
 		     , #{endDate}
 		     , #{backColor}
+		     , #{allDay}
+		     , #{kakaoCalendarId}
 		     )
 	</insert>
 	
@@ -644,9 +651,24 @@
 	<select id="selectPtSchedule" resultMap="scheduleResult">
 		select schedule_no
 		     , schedule_title
+		     , schedule_des
 		     , start_date
 		     , end_date
 		     , back_color
+		     , allday
+		  from schedule
+		 where user_no = #{userNo}
+		   and pt_user = #{userId}
+	</select>
+	
+	<select id="selectTpSchedule" resultMap="scheduleResult">
+		select schedule_no
+		     , schedule_title
+		     , schedule_des
+		     , start_date
+		     , end_date
+		     , back_color
+		     , allday
 		  from schedule
 		 where user_no = #{userNo}
 		   and pt_user = #{userId}
@@ -675,7 +697,7 @@
 		     , #{startDate}
 		     , #{endDate}
 		     , #{backColor}
-		     , #{allday}
+		     , #{allDay}
 		     , #{kakaoCalendarId}
 		     )
 	</insert>

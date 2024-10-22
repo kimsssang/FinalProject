@@ -10,6 +10,7 @@
             <title>Trainer Calendar</title>
             <!-- calendar -->
             <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
 			<!-- bootstrap	
 			<link href='https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.css' rel='stylesheet'>
 			<link href='https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.1/css/all.css' rel='stylesheet'>
@@ -64,10 +65,9 @@
 										title:"${s.title}",
 										start:"${s.startDate}",
 										end:"${s.endDate}",
-										allday: "${s.allDay}",
+										allDay: "${s.allDay}",
 										backColor:"${s.color}",
 									});
-									
 								</script>
 							</c:forEach>
 								<script>
@@ -79,10 +79,10 @@
 											start: event.start,
 											end: event.end,
 											color: event.backColor,
-											allDay: event.allday,
+											allDay: event.allDay === 'true' ? true : false,
 										}))
 										
-										console.log(eventDate[0].allDay);
+										console.log(eventDate);
 										
 										
 										$("input[id=allday]").on('change', ()=>{
@@ -113,10 +113,10 @@
 															const events = calendar.getEvents();
 															const eventsData = events.map(event=> ({
 																scheduleTitle: event.title,
-																startDate: event.start ? event.start: null,
+																startDate: event.start ? event.start : null,
 																endDate: event.end ? event.end : null,
 																backColor: event.backgroundColor,
-																allday: event.allDay,
+																allDay: event.allDay,
 																scheduleDes: event.extendedProps.description,
 															}));
 															console.log(events);
@@ -160,9 +160,9 @@
 												displayEventTime: true,
 												events:eventDate,											
 											}
-											
+										
 										)
-										calendar.render()
+										calendar.render();
 										calendar.on('eventClick', (info)=>{
 											console.log(info);
 										})
@@ -175,7 +175,6 @@
 											let end_time = $("#calendar_end_time").val();
 											let allday = $("input[id=allday]").is(":checked");
 											
-											
 											var eventData = {
 													title: $("#calendar_content").val(),
 													start: allday ? new Date(start_date) : new Date(start_date + "T" + start_time),
@@ -184,8 +183,6 @@
 													allDay: allday,
 													description: $("#calendar_description").val(),
 											}
-											
-											console.log("eventdata : " + eventData);
 											
 											if(eventData.title === null || eventData.title === ""){
 												Swal.fire({icon: 'warning', text: "내용을 입력해주세요"});
@@ -210,9 +207,26 @@
 											}
 										})
 										
+										flatpickr("#calendar_start_time", {
+								            enableTime: true,
+								            noCalendar: true,
+								            dateFormat: "H:i",
+								            minTime: "00:00",
+								            maxTime: "23:55",
+								            minuteIncrement: 5 // 5분 단위로 증가
+								        });
+										
+										flatpickr("#calendar_end_time", {
+								            enableTime: true,
+								            noCalendar: true,
+								            dateFormat: "H:i",
+								            minTime: "00:00",
+								            maxTime: "23:55",
+								            minuteIncrement: 5 // 5분 단위로 증가
+								        });
+										
 									})
 									
-								
 								
 								</script>
 							<%-- </c:if> --%>
@@ -232,12 +246,15 @@
 											<label for=taskId class="col-form-label">색상</label>
 											<select id="color" class="form-control">
 								                <option value="blue">파랑색</option>
+												<option value="royal_blue">로얄블루</option>
+								                <option value="navy_blue">남색</option>
 								                <option value="red">빨강색</option>
+												<option value="pink">분홍색</option>
 								                <option value="orange">주황색</option>
-								                <option value="yellow">노랑색</option>
-	   							                <option value="green">초록색</option>
-								                <option value="indigo">남색</option>
-								                <option value="purple">보라색</option>
+								                <option value="green">초록색</option>
+	   							                <option value="mint">민트색</option>
+								                <option value="magenta">마젠타</option>
+												<option value="lavender">라벤다</option>
 								            </select>
 											<label for="taskId" class="col-form-label">일정 제목</label>
 											<input type="text" class="form-control" id="calendar_content" name="calendar_content">
@@ -246,9 +263,9 @@
 											<label for="taskId" class="col-form-label">종료 날짜</label>
 											<input type="date" class="form-control" id="calendar_end_date" name="calendar_end_date">
 											<label for="taskId" class="col-form-label">시작 시간</label>
-											<input type="time" class="form-control" name="calendar_start_time" id="calendar_start_time">
+											<input type="text" step="300" class="form-control" name="calendar_start_time" id="calendar_start_time">
 											<label for="taskId" class="col-form-label">종료 시간</label>
-											<input type="time" class="form-control" name="calendar_end_time" id="calendar_end_time">
+											<input type="text" step="300" class="form-control" name="calendar_end_time" id="calendar_end_time">
 											<label for="taskId" class="col-form-label">하루종일</label>
 											<input type="checkbox" id="allday" name="allday"/>
 											<br>
@@ -268,5 +285,6 @@
 				</div>
 			</div>
 		</div>
+	<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 	</body>
 </html>

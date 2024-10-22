@@ -45,6 +45,7 @@
 	    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 	    font-family: 'Arial', sans-serif;
 	    transition: all 0.3s ease;
+	    white-space: nowrap;
 	}
 	
 	#weather:hover {
@@ -52,6 +53,12 @@
 	    transform: scale(1.05);
 	    
 	}
+	
+	#weather img {
+    	width: 50px;
+    	height: 50px;
+    	margin-right: 10px;
+    }
 </style>
 </head>
 <body>

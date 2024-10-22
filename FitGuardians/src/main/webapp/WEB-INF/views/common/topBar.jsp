@@ -72,7 +72,6 @@
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
-                    <div id="weather">날씨정보 가져와볼까?</div>
                     <div id="weather"></div>
 
 					<script>

@@ -175,4 +175,12 @@ public class MemberDao {
 		}
 	}
 
+	public int addAdditionalSocialMemberInfo(SqlSessionTemplate sqlSession, MemberInfo addAdditionalInfo) {
+		return sqlSession.update("memberMapper.addAdditionalSocialMemberInfo", addAdditionalInfo);
+	}
+	
+	public int addSocialMemberBodyInfo(SqlSessionTemplate sqlSession, BodyInfo bodyInfo) {
+		return sqlSession.update("memberMapper.addSocialMemberBodyInfo", bodyInfo);
+	}
+
 }

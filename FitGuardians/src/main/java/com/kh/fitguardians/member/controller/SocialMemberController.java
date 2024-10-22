@@ -222,7 +222,7 @@ public class SocialMemberController {
 			                ? kakaoAccount.get("phone_number")
 			                		.getAsString()
 			                : null;
-			if(phoneNumber.startsWith("+82")) {
+			if(phoneNumber != null && phoneNumber.startsWith("+82")) {
 				phoneNumber = phoneNumber.replace("+82 ", "0") // '+82 '를 0으로 변환(외국인이 회원가입하려고하면 어떡하지)
 							.replaceAll("-", ""); 			   // '-'를 제거
 			}
@@ -241,17 +241,7 @@ public class SocialMemberController {
                     ? userProfile.get("properties").getAsJsonObject().get("profile_image").getAsString()
                     : null;
             
-            String savedProfileImage = null;
-            // 프로필 이미지 다운로드 및 저장
-            if (profileImage != null) {
-            	savedProfileImage = downloadAndRenamePic(profileImage);  // 이미지 다운로드 및 파일명 수정
-            }else {
-            	if(normGender.equals("F")) {
-            		savedProfileImage = "resources/profilePic/gymW.png";
-            	}else {
-            		savedProfileImage = "resources/profilePic/gymM.png";
-            	}
-            }
+            
             
             if(name == null || email == null || api == null) {
             	// 이름, 이메일 = NOT NULL / api키 = 소셜로그인에 있어서 반드시 필요함
@@ -272,6 +262,18 @@ public class SocialMemberController {
             	newUser.setPhone(phoneNumber);
             	newUser.setAge(age);
             	newUser.setApi(api);
+            	
+            	// 프로필 사진 (중복 방지용 로직 포함)
+            	String savedProfileImage = null;
+                if (profileImage != null) {
+                	savedProfileImage = downloadAndRenamePic(profileImage);  // 이미지 다운로드 및 파일명 수정
+                }else {
+                	if(normGender.equals("F")) {
+                		savedProfileImage = "resources/profilePic/gymW.png";
+                	}else {
+                		savedProfileImage = "resources/profilePic/gymM.png";
+                	}
+                }
             	newUser.setProfilePic(savedProfileImage);
             	
             	String qrPath = qrCreater(newUser);
@@ -483,22 +485,10 @@ public class SocialMemberController {
 	        String mobile = responseObj.has("mobile") 
 	        		? responseObj.get("mobile").getAsString() 
 	        		: null;
-    		mobile = mobile.replaceAll("-", ""); 	// '-'를 제거
+    		mobile = mobile != null ? mobile.replaceAll("-", "") : null; 	// '-'를 제거
 	        
 	        // 네이버 고유 ID(DB의 API속성에 넣을 것임)
 	        String api = responseObj.get("id").getAsString();
-	        
-    		String savedProfileImage = null;
-    		// 프로필 이미지 다운로드 및 저장
-            if (profileImage != null) {
-            	savedProfileImage = downloadAndRenamePic(profileImage);  // 이미지 다운로드 및 파일명 수정
-            }else {
-            	if(gender.equals("F")) {
-            		savedProfileImage = "resources/profilePic/gymW.png";
-            	}else {
-            		savedProfileImage = "resources/profilePic/gymM.png";
-            	}
-            }
             
             if(name == null || email == null || api == null) {
             	// 이름, 이메일 = NOT NULL / api키 = 소셜로그인에 있어서 반드시 필요함
@@ -518,6 +508,18 @@ public class SocialMemberController {
             	newUser.setGender(gender);
             	newUser.setPhone(mobile);
             	newUser.setApi(api);
+            	
+            	// 프로필 사진 (중복 방지용 로직 포함)
+            	String savedProfileImage = null;
+                if (profileImage != null) {
+                	savedProfileImage = downloadAndRenamePic(profileImage);  // 이미지 다운로드 및 파일명 수정
+                }else {
+                	if(gender.equals("F")) {
+                		savedProfileImage = "resources/profilePic/gymW.png";
+                	}else {
+                		savedProfileImage = "resources/profilePic/gymM.png";
+                	}
+                }
             	newUser.setProfilePic(savedProfileImage);
             	
             	String qrPath = qrCreater(newUser);
@@ -759,7 +761,7 @@ public class SocialMemberController {
             				.get("value")
             				.getAsString() 
             		: null;
-            phoneNumber = phoneNumber.replaceAll("-", "");
+            phoneNumber = phoneNumber != null ? phoneNumber.replaceAll("-", "") : null;
             // 주소 (사용자가 임의로 문자를 직접 입력하는 양식으로부터 가져오는 데이터라서, 우편번호까지 가져오는 것은 불가능함, 주석처리)
 //            String address = userProfile.has("addresses") 
 //            		? userProfile.get("addresses")
@@ -996,7 +998,7 @@ public class SocialMemberController {
         	bodyInfo.setSmm(mSmm);
         	bodyInfo.setFat(mFat);
         	
-        	result1 = mService.addBodyInfo(bodyInfo);
+        	result1 = mService.addSocialMemberBodyInfo(bodyInfo);
         	
 	    }else { // 여자라면
 	    	double fAge = Double.parseDouble(loginMember.getAge());
@@ -1009,10 +1011,10 @@ public class SocialMemberController {
         	bodyInfo.setSmm(fSmm);
         	bodyInfo.setFat(fFat);
         	
-        	result1 = mService.addBodyInfo(bodyInfo);
+        	result1 = mService.addSocialMemberBodyInfo(bodyInfo);
 	    }
 	    
-	    int result2 = mService.addAdditionalInfo(memberInfo);
+	    int result2 = mService.addAdditionalSocialMemberInfo(memberInfo);
 	    
 	    if(result1 > 0 && result2 > 0) {
 	    	// 세션에 입력하는 갱신된 추가정보 넣기

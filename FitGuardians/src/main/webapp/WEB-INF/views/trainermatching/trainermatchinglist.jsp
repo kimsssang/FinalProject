@@ -50,10 +50,7 @@
 
     align-items: center;  /* 수직 중앙 정렬 */
       justify-content: space-between;
- height: 100px;
 
-    align-items: center;  /* 수직 중앙 정렬 */
-      justify-content: space-between;
 
  }
  .membershiplistdiv div{
@@ -73,11 +70,7 @@ border : 1px solid black;
     align-items: center;  /* 수직 중앙 정렬 */
     justify-content: center;
     margin-top: 20px;
- height: 20%;
-     display: flex;
-    align-items: center;  /* 수직 중앙 정렬 */
-    justify-content: center;
-    margin-top: 20px;
+
  }
  .selected {
     background-color: skyblue;
@@ -185,6 +178,7 @@ font-size: 5px;
 		        	 
 		       	  if ($(this).hasClass('selected')) {
 	        		    $('.ptcheck').removeClass('selected');
+	        		    isSelected = false
 	        		    return false;
 	        	  }
 		        	 
@@ -215,7 +209,7 @@ font-size: 5px;
 		         
 		         
 		         $('.buybtn').on('click', function() {
-		        	if(${ empty loginUser.userId})
+		        	
 		        		 var loginUserid = "${loginUser.userId}"
 		        			 if (loginUserid === "" || loginUserid === "null"){
 		        				 alert("로그인이 필요한 서비스입니다")
@@ -370,6 +364,7 @@ font-size: 5px;
 							
 							$('.backdiv').on('click', function() {
 								   $('.ptcheck').removeClass('selected');
+								   isSelected = false
 							    $('.topdiv').fadeOut(500); // 0.5초 동안 천천히 사라짐
 							    $('.backdiv').fadeOut(500);
 							});

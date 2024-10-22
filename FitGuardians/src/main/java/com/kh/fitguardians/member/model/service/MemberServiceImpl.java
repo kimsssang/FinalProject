@@ -240,6 +240,16 @@ public class MemberServiceImpl implements MemberService{
 	public boolean checkBodyInfo(String userId) {
 		return mDao.checkBodyInfo(sqlSession, userId);
 	}
+	
+	@Override
+	public int addAdditionalSocialMemberInfo(MemberInfo addAdditionalInfo) {
+		return mDao.addAdditionalSocialMemberInfo(sqlSession, addAdditionalInfo);
+	}
+	
+	@Override
+	public int addSocialMemberBodyInfo(BodyInfo bodyInfo) {
+		return mDao.addSocialMemberBodyInfo(sqlSession, bodyInfo);
+	}
 
 	
 	

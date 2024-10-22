@@ -81,7 +81,7 @@ public class TrainerMatchingController {
 		Member m =  (Member) session.getAttribute("loginUser");
 		String userId = m.getUserId();
 		Member list =  new TrainermatchingserviceImpl().trainermatchingsearch(sqlsession,userId);
-		System.out.println(list);
+	
 		return list;
 	}
 	

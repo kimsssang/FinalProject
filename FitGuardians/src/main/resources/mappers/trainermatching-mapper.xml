@@ -7,7 +7,7 @@
 		<result column="user_name" property="userName"/>
 		<result column="gender" property="gender"/>
 		<result column="age" property="age"/>
-		<result column="tr_info_no" property="trInfoNo"/>
+
 		<result column="tr_career" property="trCareer"/>
 		<result column="tr_profile" property="trProfile"/>
 		<result column="tr_descript" property="trDescript"/>
@@ -24,14 +24,14 @@
 	
 
 		<select id="trainercount" resultMap="trainermatchingrResultset">
-		select a.user_no,user_id,user_name,gender,age ,tr_info_no , tr_career , tr_profile , tr_descript , tr_certi
+		select a.user_no,user_id,user_name,gender,age , tr_career , tr_profile , tr_descript , tr_certi
 			from member a
 			JOIN trainerinfo b on (a.user_no = b.user_no)
 			where status = 'Y'
 			and user_level = 1
 		</select>
 		<select id="trainerselect" resultMap="trainermatchingrResultset">
-		select a.user_no,user_id,user_name,gender,age ,tr_info_no , tr_career , tr_profile , tr_descript , tr_certi
+		select a.user_no,user_id,user_name,gender,age , tr_career , tr_profile , tr_descript , tr_certi
 			from member a
 			JOIN trainerinfo b on (a.user_no = b.user_no)
 			where status = 'Y'

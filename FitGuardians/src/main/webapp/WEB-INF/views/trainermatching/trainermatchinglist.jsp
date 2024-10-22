@@ -50,6 +50,10 @@
 
     align-items: center;  /* 수직 중앙 정렬 */
       justify-content: space-between;
+ height: 100px;
+
+    align-items: center;  /* 수직 중앙 정렬 */
+      justify-content: space-between;
 
  }
  .membershiplistdiv div{
@@ -64,6 +68,11 @@ border : 1px solid black;
      vertical-align: middle;
  }
  .buydiv{
+ height: 20%;
+     display: flex;
+    align-items: center;  /* 수직 중앙 정렬 */
+    justify-content: center;
+    margin-top: 20px;
  height: 20%;
      display: flex;
     align-items: center;  /* 수직 중앙 정렬 */
@@ -126,6 +135,7 @@ font-size: 5px;
 			         		<div class="20p ptcheck border-left-primary">pt20회권 <br> <br> 60만원
 			         		<input class="ptval" type="hidden" value="20"> </div>
 		         		</div>
+		         		<div class="buydiv "> <button  class="buybtn  btn btn-primary btn-icon-split btn-lg" type="button">구매하기</button></div>
 		         		<div class="buydiv "> <button  class="buybtn  btn btn-primary btn-icon-split btn-lg" type="button">구매하기</button></div>
 		         	</div>
 		         	<script >
@@ -265,6 +275,7 @@ font-size: 5px;
 				             			
 				                		</div>
 				             			<div class="btncssdiv" style="width: 12%; height: 100%"> 
+				             			<div class="btncssdiv" style="width: 12%; height: 100%"> 
 											<input class="newtrainerid" type="hidden" value="${ t.userId }">
 				             			<button style="font-size: 15px; align-items: center; " class="ptchosebtn btn btn-primary btn-icon-split btn-lg">회원권 <br>(pt)신청</button>
 				             			
@@ -323,6 +334,7 @@ font-size: 5px;
   
 				  		<script>
 				  	  let loginUser = "${loginUser.userId}"
+				  	  let loginUser = "${loginUser.userId}"
 
 				  		 if (loginUser === "" || loginUser === "null")
 				  		 {}else{
@@ -334,8 +346,11 @@ font-size: 5px;
 				  						success : function(date){
 				  						
 				  								$('.tid').text(date.userId)
+				  						
+				  								$('.tid').text(date.userId)
 				  								$('.trname').text('현재 트레이너 '+date.pt)
 				  								$('.pttime').text('남은 PT 횟수 : '+date.ptTime)
+				  					
 				  					
 				  						},
 				  						error : function(){

@@ -112,5 +112,11 @@ public interface MemberService {
 
 	// 소셜 회원(신체정보 존재 유무 확인)
 	boolean checkBodyInfo(String userId);
+	
+	// 신규 소셜 회원(추가 정보 입력)
+	public int addAdditionalSocialMemberInfo(MemberInfo addAdditionalInfo);
+	
+	// 신규 소셜 회원(신체 정보 갱신)
+	public int addSocialMemberBodyInfo(BodyInfo bodyInfo);	
 
 }

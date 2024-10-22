@@ -66,9 +66,11 @@ document.addEventListener('DOMContentLoaded', function() {
             // 값 찍기
             $('#modalExerciseNo').text(plan.extendedProps.exerciseNo);
             $('#modalWorkoutTitle').text('제목: ' + plan.title);
-            $('#modalWorkoutTarget').text(' 운동 표적: '+ targetMuscle);
+            $('#modalWorkoutTarget').text('운동 표적: '+ targetMuscle);
             $('#modalDifficulty').text('운동 난이도: ' + difficultyLabel);
             $('#modalDescription').text('운동 설명: '+ plan.extendedProps.description);
+
+            console.log(plan.extendedProps);
 
             // Show the modal
             $('#eventModal').modal('show');
@@ -91,7 +93,8 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     });
- 
+    console.log(exPlanList);
+
     // 캘린더 랜더링
     calendar.render();
     

@@ -99,14 +99,14 @@
 
                                     $(document).ready(function() {
                                         let userId = '${m.userId}';
-                                        console.log(window.isLevel);
+                                        //console.log(window.isLevel);
                                         $.ajax({
                                             url : "selectTodayWorkoutforTrainer.ex",
                                             data : {
                                                 userId : userId,
                                             },
                                             success : function(result){
-                                                console.log(result);
+                                                //console.log(result);
                                                 $('#exercisePlanTable tbody').empty();
             
                                                 // let now = new Date();

@@ -114,7 +114,6 @@ pageEncoding="UTF-8"%>
         >
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item" href="trainermatching.bo">회원권 신청</a>
-            <a class="collapse-item" href="cards.html">트레이너 조회</a>
           </div>
         </div>
       </li>

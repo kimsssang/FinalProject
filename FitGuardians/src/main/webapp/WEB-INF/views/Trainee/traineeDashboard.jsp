@@ -449,11 +449,11 @@
 														            	   let value = "";
 														            	 if (data == ""){
 
-														            		 value = "<tr><td>${loginUser.userName} 님이 " + '오늘' + " 보낸 식단이 없습니다<td></tr>";
+														            		 value = "<tr><td colspan='6'> " + '오늘' + " 보낸 식단이 없습니다<td></tr>";
 
-														            		 value = "<h2>${loginUser.userName} 님이 " + "오늘 보낸 식단이 없습니다</h2>";
+														            		
 
-														            		 $('#mealtable').html(value);
+														            		 $('#mealtable tbody').html(value);
 														            	 }
 														            	 else{
 														            		

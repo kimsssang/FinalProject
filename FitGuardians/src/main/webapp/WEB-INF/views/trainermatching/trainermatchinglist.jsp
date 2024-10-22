@@ -136,7 +136,7 @@ font-size: 5px;
 			         		<input class="ptval" type="hidden" value="20"> </div>
 		         		</div>
 		         		<div class="buydiv "> <button  class="buybtn  btn btn-primary btn-icon-split btn-lg" type="button">구매하기</button></div>
-		         		<div class="buydiv "> <button  class="buybtn  btn btn-primary btn-icon-split btn-lg" type="button">구매하기</button></div>
+		         
 		         	</div>
 		         	<script >
 		         	
@@ -275,12 +275,12 @@ font-size: 5px;
 				             			
 				                		</div>
 				             			<div class="btncssdiv" style="width: 12%; height: 100%"> 
-				             			<div class="btncssdiv" style="width: 12%; height: 100%"> 
+				             		
 											<input class="newtrainerid" type="hidden" value="${ t.userId }">
 				             			<button style="font-size: 15px; align-items: center; " class="ptchosebtn btn btn-primary btn-icon-split btn-lg">회원권 <br>(pt)신청</button>
 				             			
 				           		
-				             			</div>
+				             		
 				                		</div>			             		
 				             		</div>
 				             		</div>
@@ -334,7 +334,7 @@ font-size: 5px;
   
 				  		<script>
 				  	  let loginUser = "${loginUser.userId}"
-				  	  let loginUser = "${loginUser.userId}"
+			
 
 				  		 if (loginUser === "" || loginUser === "null")
 				  		 {}else{

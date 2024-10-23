@@ -107,11 +107,6 @@ public class ChatServiceImpl implements ChatService {
 	// 파일 업로드
 	@Override
 	public int uploadFile(String fileName, String filePath, int userNo) {
-		
-		System.out.println("파일명: " + fileName);
-	    System.out.println("파일경로: " + filePath);
-	    System.out.println("업로드 사용자 ID: " + userNo);
-		
 		return chatDao.uploadFile(sqlSession, fileName, filePath, userNo);
 	}
 

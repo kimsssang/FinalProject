@@ -39,7 +39,6 @@ public class TraineeController {
 
 		// 회원 최근 6개 신체정보 가져오기
 		ArrayList<BodyInfo> recentBi = mService.getRecentInfo(loginUser.getUserId());
-		//System.out.println("로그인 유저의 아이디 : " + loginUser.getUserId());
 
 		// 트레이너 정보 알아오기
 		String trainerId = loginUser.getPt();
@@ -51,7 +50,6 @@ public class TraineeController {
 		session.setAttribute("bi", bi);
 		session.setAttribute("recentBi", recentBi);
 
-		//System.out.println("회원의 recentBi : " + recentBi);
 		return "Trainee/traineeDashboard";
 	}
 	
@@ -73,7 +71,6 @@ public class TraineeController {
 	public int addTraineeExPlan(@RequestBody TnWorkout tn) {
 		// @JsonProperty로 키값을 매핑함 - json 객체가 되어버린다.
 		// @RequestBody를 통해 json객체 -> java객체로 바꾼다. 
-		// System.out.println("tn:" + tn);
 		
 		int result = tnService.addTraineeExPlan(tn);
 		return result;
@@ -82,23 +79,19 @@ public class TraineeController {
 	@ResponseBody
 	@RequestMapping(value ="deleteTraineeExPlan.tn")
 	public int deleteTraineeExPlan(int exerciseNo) {
-		// System.out.println("exerciseNo값 잘 나오는지 : " + exerciseNo);
 		int result = tnService.deleteTraineeExPlan(exerciseNo);
-		// System.out.println(result);
 		return result;
 	}
 	
 	@RequestMapping("sendDatatoTrainer.tn")
 	public String sendDatatoTrainer(@RequestBody TnWorkout tn, HttpSession session, Model model) {
 		
-		// System.out.println("tn 넘어오나 : " + tn);
 		// user의 값을 여기서 얻는다.
 		String userId = ((Member)session.getAttribute("loginUser")).getUserId();
 		tn.setUserId(userId);
 		
 		model.addAttribute("data", tn);
 		
-		// System.out.println("tn 세팅 후 어떻냐 : " + tn);
 		
 		return "Trainer/traineeDetailInfo";
 	}

@@ -62,6 +62,11 @@ public class MemberController {
 		return "Trainee/traineeDashboard";
 	}
 	
+	@RequestMapping("main.co")
+	public String redirectPage() {
+		return "redirect:/loginform.me";
+	}
+	
 	// 회원 상세정보 조회
     @RequestMapping("traineeDetail.me")
     public ModelAndView memberDetailView(@RequestParam("userId") String userId, ModelAndView mv) {
@@ -195,13 +200,47 @@ public class MemberController {
 				info.setDisease(null);
             }
             
+            // 추가정보가 있으면 BodyInfo를 계산해서 DB에 insert해애ㅑ 한다.
+            
+            // BodyInfo테이블 하나 자동으로 생성하기 - 추가정보 입력한 경우
+            BodyInfo bi = new BodyInfo();
+            
+            if(m.getGender() == "M") { // 성별이 남성인 경우
+            	
+            	double heightInMeters = info.getHeight() / 100.0; 
+            	double mAge = Double.parseDouble(m.getAge());
+            	double mBmi = info.getWeight() / Math.pow(heightInMeters, 2);
+            	double mSmm = 0.407 * info.getWeight() + 0.267 * info.getHeight() - 19.2;
+            	double mFat = 1.20 * mBmi + 0.23 * mAge - 16.2;
+            	
+            	bi.setUserId(m.getUserId());
+            	bi.setBmi(mBmi);
+            	bi.setSmm(mSmm);
+            	bi.setFat(mFat);
+            	int biResult1 = mService.addBodyInfo(bi);
+            	
+            }else { // 성별이 여성인 경우
+            	double heightInMeters = info.getHeight() / 100.0; 
+            	double fAge = Double.parseDouble(m.getAge());
+            	double fBmi = info.getWeight() / Math.pow(heightInMeters, 2);
+            	double fSmm = 0.252 * info.getWeight() + 0.473 * info.getHeight() - 48.3;
+            	double fFat = 1.20 * fBmi + 0.23 * fAge - 5.4;
+            	
+            	bi.setUserId(m.getUserId());
+            	bi.setBmi(fBmi);
+            	bi.setSmm(fSmm);
+            	bi.setFat(fFat);
+            	int biResult2 = mService.addBodyInfo(bi);
+            	
+            }
+            
             int result = mService.insertMemberWithInfo(m, info);
             int result2 = mService.insertQrInfo(qr);
             if (result > 0 && result2 > 0) { // 성공적으로 회원가입을 한 경우
                 request.getSession().setAttribute("alertMsg", "회원가입이 완료되었습니다. 환영합니다!");
                 
             	Member mem = mService.getTraineeDetails(m.getUserId());
-            	ArrayList<BodyInfo> bi = mService.getTraineeBodyInfo(m.getUserId());
+            	ArrayList<BodyInfo> biList = mService.getTraineeBodyInfo(m.getUserId());
             	MemberInfo mi = mService.getTraineeInfo(m.getUserNo());
             	// 최근 6개 데이터 조회문
             	ArrayList<BodyInfo> recentBi = mService.getRecentInfo(m.getUserId());
@@ -209,9 +248,10 @@ public class MemberController {
             	// 가장 최근 1개 데이터 조회문
             	BodyInfo lastBodyInfo = null;
             	
-            	for (BodyInfo bodyInfo : bi) {
+            	for (BodyInfo bodyInfo : biList) {
             	    lastBodyInfo = bodyInfo;
             	}
+
             	double lastSmm = lastBodyInfo.getSmm();
             	double lastFat = lastBodyInfo.getFat();
             	double lastBmi = lastBodyInfo.getBmi();
@@ -224,43 +264,11 @@ public class MemberController {
             	mv.addObject("lastBmi", String.format("%.1f", lastBmi));
             	mv.addObject("recentBi", recentBi);
                 
-            	mv.setViewName("Trainer/traineeDetailInfo");
+            	mv.setViewName("common/loginForm");
             	
                 return mv;
             }
-            
-            // BodyInfo테이블 하나 자동으로 생성하기 - 추가정보 입력한 경우
-            BodyInfo bi = new BodyInfo();
-            
-            if(m.getGender() == "M") { // 성별이 남성인 경우
-
-            	double mAge = Double.parseDouble(m.getAge());
-            	double mBmi = info.getWeight() / Math.pow(info.getHeight(), 2);
-            	double mSmm = 0.407 * info.getWeight() + 0.267 * info.getHeight() - 19.2;
-            	double mBfp = 1.20 * mBmi + 0.23 * mAge - 16.2;
-            	double mFat = info.getWeight() * (mBfp / 100);
-            	
-            	bi.setUserId(m.getUserId());
-            	bi.setBmi(mBmi);
-            	bi.setSmm(mSmm);
-            	bi.setFat(mFat);
-            	int biResult1 = mService.addBodyInfo(bi);
-            	
-            }else { // 성별이 여성인 경우
-            	
-            	double fAge = Double.parseDouble(m.getAge());
-            	double fBmi = info.getWeight() / Math.pow(info.getHeight(), 2);
-            	double fSmm = 0.252 * info.getWeight() + 0.473 * info.getHeight() - 48.3;
-            	double fBfp = 1.20 * fBmi + 0.23 * fAge - 5.4;
-            	double fFat = info.getWeight() * (fBfp / 100);
-            	
-            	bi.setUserId(m.getUserId());
-            	bi.setBmi(fBmi);
-            	bi.setSmm(fSmm);
-            	bi.setFat(fFat);
-            	int biResult2 = mService.addBodyInfo(bi);
-            	
-            }
+       
         } else { // 회원 추가정보가 없다면
             // 추가 정보가 없으면 기존 방식대로 회원가입 처리
         	// MemberInfo가  0 or null
@@ -338,7 +346,7 @@ public class MemberController {
 					session.setAttribute("bi", bi);
 					session.setAttribute("recentBi", recentBi);
 					
-					System.out.println("회원의 recentBi : " + recentBi);
+					//System.out.println("회원의 recentBi : " + recentBi);
 
 					return "Trainee/traineeDashboard";
 				}else {
@@ -562,11 +570,13 @@ public class MemberController {
 		Member loginUser = (Member) session.getAttribute("loginUser");
 		
 		Member m = new Member();
-		m.setUserNo(mService.selectMemberByUserId(loginUser.getPt()).getUserNo());
+		int ptNo = mService.selectMemberByUserId(loginUser.getPt()).getUserNo();
+		m.setUserNo(ptNo);
 		m.setUserId(loginUser.getUserId());
 		ArrayList<Schedule> schedule = mService.selectTpSchedule(m);
 		request.setAttribute("schedule", schedule);
-		return "Trainee/TraineeCalendar";
+		return "Trainee/TraineeCalendar"; // 정상
+		
 	}
 	
 	@RequestMapping("changePicture.me")

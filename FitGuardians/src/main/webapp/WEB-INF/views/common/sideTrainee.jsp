@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html>
   <head>
@@ -189,7 +190,9 @@ pageEncoding="UTF-8"%>
         >
           <div class="bg-white py-2 collapse-inner rounded">
             <a class="collapse-item" href="calendar.kt">내 스케줄 설정</a>
+            <c:if test="${not empty loginUser.pt}">
             <a class="collapse-item" href="calendar.me">트레이너가 보내준 일정</a>
+            </c:if>
           </div>
         </div>
       </li>

@@ -236,7 +236,7 @@ $(document).ready(function(){
                     ticks: {
                         beginAtZero: true,
                         min:0,
-                        max:50,
+                        max:80,
                         callback: function(value) {
                             if (value <= 19) return '~19%';
                             else if (value > 19 && value <= 23) return '23%';

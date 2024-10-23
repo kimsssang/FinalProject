@@ -69,14 +69,18 @@
 	
 	                    var trainersList = "";
 	                    response.forEach(function(trainer) {
-	                        trainersList += '<div class="trainer" data-userno="' + trainer.userNo + '" data-name="' + trainer.userName + '" style="flex: 1 1 calc(25% - 10px); box-sizing: border-box;">' +
-	                                        '<p>User No: ' + trainer.userNo + '</p>' +
-	                                        '<p>User ID: ' + trainer.userId + '</p>' +
-	                                        '<p>Name: ' + trainer.userName + '</p>' +
-	                                        '<p>Email: ' + trainer.email + '</p>' +
-	                                        '<p>Phone: ' + trainer.phone + '</p>' +
-	                                        '<img src="' + trainer.profilePic + '" alt="' + trainer.userName + '" style="width: 100px; height: 100px;"/>' +
-	                                        '</div>';
+	                        trainersList += `<div class="card trainer" data-userno=\${trainer.userNo} data-name=\${trainer.userName}>
+	                                        	<div class="card-header">
+	                                        		<img src="\${trainer.profilePic}" alt="\${trainer.userName}" style="width: 210px; height: 200px;"/>
+	                                        	</div>
+	                                        	<div class="card-body">
+		                                        	<p>아이디 : \${trainer.userId} </p>
+		                                        	<p>이름  : \${trainer.userName} </p>
+		                                        	<p>이메일 : \${trainer.email} </p>
+		                                        	<p>핸드폰 : \${trainer.phone} </p>
+	                                        	</div>
+	                                         </div>
+	                                        `;
 	                    });
 	                    $("#trainersContainer").html(trainersList);
 	

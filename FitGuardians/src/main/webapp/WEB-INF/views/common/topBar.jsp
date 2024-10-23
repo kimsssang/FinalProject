@@ -227,7 +227,7 @@
 						                                    <!-- 본인이 보낸 메시지 -->
 						                                    <div class="bg-primary text-white p-2 rounded" style="max-width: 70%; margin-left: auto;">
 						                                        <p class="mb-0">${message.content}</p>
-						                                        <small class="text-muted">You · ${message.timestamp}</small>
+						                                        <small class="text-white-50">You · ${message.timestamp}</small>
 						                                    </div>
 						                                </c:when>
 						                                <c:otherwise>
@@ -249,17 +249,19 @@
 						                <!-- 입력 영역 -->
 						                
 						                <!-- 파일 전송 아이콘 추가 -->
-					                    <button id="fileUploadIcon" class="btn btn-outline-secondary" type="button">
-					                        <img src="/fitguardians/resources/images/fileTransfer.png" alt="파일 전송" />
-					                    </button>
-					
-					                    <!-- 숨겨진 파일 입력창 -->
-					                    <input type="file" id="fileInput" style="display:none;" multiple />
+					                    
 					                    
 						                
 						                <div class="input-group mt-3">
-						                    <input type="text" class="form-control" id="messageInputTopBar" placeholder="메시지를 입력하세요..." />
-						                    <button id="sendMessageButton" class="btn btn-primary" type="button">Send</button>
+						                	<div id="fileUploadIcon" class="btn">
+					                        	<!-- <img src="/fitguardians/resources/images/fileTransfer.png" alt="파일 전송" /> -->
+					                        	<i class="fas fa-file-upload" style="font-size:1.6rem;"></i>
+						                    </div>
+						
+						                    <!-- 숨겨진 파일 입력창 -->
+						                    <input type="file" id="fileInput" style="display:none;" multiple />
+						                    <input type="text" class="form-control mt-1" id="messageInputTopBar" placeholder="메시지를 입력하세요..." />
+						                    <button id="sendMessageButton" class="btn btn-sm btn-primary mt-1" type="button">Send</button>
 						                </div>
 						            </div>
 						        </div>
@@ -511,7 +513,7 @@
 	                messageElement = '<div class="d-flex mb-3" style="position: relative; align-items: flex-start;">' +
 	                    '<div class="bg-primary text-white p-2 rounded" style="max-width: 70%; margin-left: auto;">' +
 	                    '<p class="mb-0">' + message.msgContent + '</p>' +
-	                    '<small class="text-muted">당신 · ' + formattedDate + '</small>' +
+	                    '<small class="text-white-50">당신 · ' + formattedDate + '</small>' +
 	                    '</div>';
 
 	                // 메시지 상태에 따른 표시
@@ -525,9 +527,9 @@
 	                // 상대방이 보낸 메시지
 	                messageElement = '<div class="d-flex mb-3">' +
 	                    '<div class="mr-2">' +
-	                    '<img class="rounded-circle" src="' + message.profileImg + '" alt="' + message.senderName + '" style="width: 40px;">' +
+	                    '<img class="rounded-circle mt-2" src="' + message.profileImg + '" alt="' + message.senderName + '" style="width: 40px;">' +
 	                    '</div>' +
-	                    '<div class="bg-light p-2 rounded" style="max-width: 70%;">' +
+	                    '<div class="bg-light p-2 rounded" style="max-width: 70%; border:1px solid #CCF7F5">' +
 	                    '<p class="mb-0">' + message.msgContent + '</p>' +
 	                    '<small class="text-muted">' + message.senderName + ' · ' + formattedDate + '</small>' +
 	                    '</div></div>';

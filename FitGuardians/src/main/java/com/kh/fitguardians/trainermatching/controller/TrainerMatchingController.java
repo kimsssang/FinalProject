@@ -59,10 +59,9 @@ public class TrainerMatchingController {
 	public String pt(int pttime, String pt, HttpServletRequest request) {
 			HttpSession session = request.getSession();
 			Member m =  (Member) session.getAttribute("loginUser");
-
 			
-	
-
+			m.setPt(pt);
+			m.setPtTime(pttime);
 		int result = new TrainermatchingserviceImpl().trainerupdate(sqlsession,m);
 
 		if(result >0) {

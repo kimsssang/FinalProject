@@ -54,7 +54,7 @@
                            <div class="card-body"  style="display:flex;">
                                <div style="margin-left:30px;">
                                    <div style="border-radius:50%; border:1px solid royalblue; width:150px; height:150px; overflow:hidden;">
-                                       <img src="${loginUser.profilePic}" style="max-width:100%; max-height:100%; object-fit:cover;"/>
+                                       <img src="${m.profilePic}" style="width:100%; height:100%; object-fit:cover;"/>
                                    </div>
                                </div>
                                <div style="margin-left:30px;">

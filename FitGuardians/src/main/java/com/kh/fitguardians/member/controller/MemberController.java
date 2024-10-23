@@ -200,7 +200,7 @@ public class MemberController {
 				info.setDisease(null);
             }
             
-            // 추가정보가 있으면 BodyInfo를 계산해서 DB에 insert해애ㅑ 한다.
+            // 추가정보가 있으면 BodyInfo를 계산해서 DB에 insert해야 한다.
             
             // BodyInfo테이블 하나 자동으로 생성하기 - 추가정보 입력한 경우
             BodyInfo bi = new BodyInfo();
@@ -564,10 +564,10 @@ public class MemberController {
 			Member updateMember = mService.loginMember(m);
 			session.setAttribute("loginUser", updateMember);
 			session.setAttribute("alertMsg", "프로필사진이 변경 되었습니다!");
-			return "redirect:dashboard.me";
+			return "redirect:mypage.me";
 		}else {
 			session.setAttribute("errorMsg", "프로필사진 변경 실패");
-			return "redirect:dashboard.me";
+			return "redirect:mypage.me";
 		}
 		
 	}

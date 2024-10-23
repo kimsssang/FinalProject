@@ -44,8 +44,8 @@
 
                             <div class="row">
 
-                                <div class="col-lg-6">
                                 <c:forEach var="m" items="${list}">
+                                    <div class="col-lg-6">
                                     <div class="card mb-3 py-4 border-left-primary traineeCard" onclick="traineeDetail('${m.userId}');">
                                         <div class="card-body"  style="display:flex;">
                                             <div style="margin-left:30px;">

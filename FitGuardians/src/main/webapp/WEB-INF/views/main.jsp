@@ -38,7 +38,7 @@
     <style>
     img{
     width:98%;
-    height:98%;
+    height:880px;
     margin:1%;
     cursor:pointer;
     }
@@ -49,8 +49,6 @@
 
 </head>
 <body>
-
-<jsp:include page="common/topBar.jsp" />
 
 	<img src="./resources/images/main.gif" alt="메인화면" />
 	

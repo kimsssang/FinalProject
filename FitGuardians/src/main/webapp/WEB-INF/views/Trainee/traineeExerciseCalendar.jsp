@@ -95,10 +95,9 @@
 												name="calendar_title"> <label for="taskId"
 												class="col-form-label">난이도</label>
 											<div style="display: flex;">
-												<label><input type="checkbox" class="difficulty"
-													value="H">어려움(H)</label> <label><input
-													type="checkbox" class="difficulty" value="M">보통(M)</label> <label><input
-													type="checkbox" class="difficulty" value="L">쉬움(L)</label>
+												<label style="margin: 10px;"><input type="radio" class="difficulty" name="difficulty" value="H">어려움(H)</label>
+												<label style="margin: 10px;"><input type="radio" class="difficulty" name="difficulty" value="M">보통(M)</label>
+												<label style="margin: 10px;"><input type="radio" class="difficulty" name="difficulty" value="L">쉬움(L)</label>
 											</div>
 
 											<label for="taskId" class="col-form-label">운동 부위</label>

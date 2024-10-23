@@ -68,7 +68,7 @@ document.addEventListener('DOMContentLoaded', function() {
             $('#modalWorkoutTitle').text('제목: ' + plan.title);
             $('#modalWorkoutTarget').text(' 운동 표적: '+ targetMuscle);
             $('#modalDifficulty').text('운동 난이도: ' + difficultyLabel);
-            $('#modalDescription').text('운동 설명: '+ plan.extendedProps.description);
+            $('#modalDescription').html('운동 설명: '+ plan.extendedProps.description.replace(/\n/g, '<br>')); // 운동 설명에서 엔터 반영
 
             // Show the modal
             $('#eventModal').modal('show');

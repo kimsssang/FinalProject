@@ -265,7 +265,6 @@
                                 <div class="modal-body">
                                     <p id="modalExerciseNo" style="display:none;"></p>
                                     <p id="modalWorkoutTitle"></p>
-                                    <p id="modalWorkoutCategory"></p>
                                     <p id="modalDifficulty"></p>
                                     <p id="modalDescription"></p>
                                 </div>

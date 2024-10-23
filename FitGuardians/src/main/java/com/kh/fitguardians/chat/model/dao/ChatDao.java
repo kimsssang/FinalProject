@@ -126,10 +126,6 @@ public class ChatDao {
     // 파일 업로드
     public int uploadFile(SqlSessionTemplate session, String fileName, String filePath, int userNo) {
     	
-    	System.out.println("dao파일명: " + fileName);
-        System.out.println("dao파일경로: " + filePath);
-        System.out.println("dao업로드 사용자 ID: " + userNo);
-		
     	Map<String, Object> params = new HashMap<>();
         params.put("fileName", fileName);
         params.put("filePath", filePath);

@@ -29,7 +29,6 @@ public class TrainerController {
 		ArrayList<Schedule> schedule = tService.selectSchedule(loginUser.getUserNo());
 		request.setAttribute("schedule", schedule);
 		
-		//System.out.println(schedule);
 		return "Trainer/trainerCalendar";
 	}
 	
@@ -50,12 +49,10 @@ public class TrainerController {
 		boolean flag = false;
 		int count = 0;
 		for (Schedule schedule : schedules) {
-			System.out.println(schedule);
 			
 			
 			if(tService.isDuplicateSchedule(schedule)) {
 				flag = true; // 중복이 있을경우
-				System.out.println("중복된 일정: " + schedule); // 중복된 일정 로그
 			}else {
 				flag = false;
 				int result = tService.insertPtCalendar(schedule);

@@ -173,9 +173,6 @@ public class ChatController {
             uploadedFileUrls.setLength(uploadedFileUrls.length() - 2);
         }
         
-        System.out.println("Uploaded file URLs: " + uploadedFileUrls.toString()); // 업로드된 파일 URL 출력
-        
-
         return "{\"success\": true, \"uploadedFiles\": \"" + uploadedFileNames.toString() + "\", \"uploadedFileUrls\": \"" + uploadedFileUrls.toString() + "\"}"; // JSON 형태로 응답
     }
 

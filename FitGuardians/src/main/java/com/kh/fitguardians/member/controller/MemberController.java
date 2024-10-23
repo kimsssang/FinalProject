@@ -239,30 +239,6 @@ public class MemberController {
             if (result > 0 && result2 > 0) { // 성공적으로 회원가입을 한 경우
                 request.getSession().setAttribute("alertMsg", "회원가입이 완료되었습니다. 환영합니다!");
                 
-            	Member mem = mService.getTraineeDetails(m.getUserId());
-            	ArrayList<BodyInfo> biList = mService.getTraineeBodyInfo(m.getUserId());
-            	MemberInfo mi = mService.getTraineeInfo(m.getUserNo());
-            	// 최근 6개 데이터 조회문
-            	ArrayList<BodyInfo> recentBi = mService.getRecentInfo(m.getUserId());
-            	
-            	// 가장 최근 1개 데이터 조회문
-            	BodyInfo lastBodyInfo = null;
-            	
-            	for (BodyInfo bodyInfo : biList) {
-            	    lastBodyInfo = bodyInfo;
-            	}
-
-            	double lastSmm = lastBodyInfo.getSmm();
-            	double lastFat = lastBodyInfo.getFat();
-            	double lastBmi = lastBodyInfo.getBmi();
-            	
-            	mv.addObject("m" , mem);
-            	mv.addObject("bi" , bi);
-            	mv.addObject("mi", mi);
-            	mv.addObject("lastSmm", String.format("%.1f", lastSmm));
-            	mv.addObject("lastFat", String.format("%.1f", lastFat));
-            	mv.addObject("lastBmi", String.format("%.1f", lastBmi));
-            	mv.addObject("recentBi", recentBi);
                 
             	mv.setViewName("common/loginForm");
             	
@@ -320,8 +296,6 @@ public class MemberController {
 			if(bcryptPasswordEncoder.matches(m.getUserPwd(), loginUser.getUserPwd())) {
 				
 				session.setAttribute("loginUser", loginUser);
-				// System.out.println("회원 아이디 : " + loginUser.getUserId());
-				// System.out.println("회원 정보 : " + loginUser);
 				
 				// 트레이너 정보 알아오기
 				String trainerId = loginUser.getPt();
@@ -338,7 +312,6 @@ public class MemberController {
 					
 					// 회원 최근 6개 신체정보 가져오기
 			    	ArrayList<BodyInfo> recentBi = mService.getRecentInfo(loginUser.getUserId());
-			    	System.out.println("로그인 유저의 아이디 : " + loginUser.getUserId());
 					
 					// 회원
 					session.setAttribute("trainer", trainer);
@@ -346,8 +319,6 @@ public class MemberController {
 					session.setAttribute("bi", bi);
 					session.setAttribute("recentBi", recentBi);
 					
-					//System.out.println("회원의 recentBi : " + recentBi);
-
 					return "Trainee/traineeDashboard";
 				}else {
 					// 트레이너 - 
@@ -372,9 +343,7 @@ public class MemberController {
 
 		ArrayList<Member> list = mService.getTraineeList(userId);
 
-		//System.out.println("userId :" + userId);
 		
-		//System.out.println(list);
 		mv.addObject("list", list)
 		  .setViewName("Trainer/traineeManagement");
 		
@@ -386,7 +355,6 @@ public class MemberController {
 	public String saveBodyInfo(BodyInfo bi){
 		
 		int result = mService.saveBodyInfo(bi);
-		///System.out.println(result);
 		return result>0?"success":"error";
 		
 	}
@@ -435,8 +403,6 @@ public class MemberController {
 						LocalDateTime attendanceTime = LocalDateTime.parse(qrResult.getAttendance(), DateTimeFormatter.ISO_DATE_TIME); 
 						Duration duration = Duration.between(attendanceTime, now);
 						long hours = duration.toHours();
-						System.out.println(hours);
-						
 						
 						if(qrResult.getType().equals("trainee") && hours >= 1) {
 							qrResult.setAttendance(now.toString());
@@ -528,7 +494,6 @@ public class MemberController {
 	@ResponseBody
 	@RequestMapping("changeEmail.me")
 	public String updateMemberEmail(Member m, HttpServletRequest request) {
-		System.out.println(m);
 		int result = mService.updateMemberEmail(m);
 		if (result > 0) {
 			Member updateMember = mService.loginMember(m);
@@ -612,8 +577,6 @@ public class MemberController {
 	public String ajaxUpdateTrainerInfo(
 			@ModelAttribute TrainerInfo trInfo,
 			@RequestParam(value="upfiles", required=false) MultipartFile upfiles, HttpSession session) {
-		System.out.println(trInfo);
-		System.out.println(upfiles);
 		String changeName = "";
 		int result = 0;
 		if(upfiles != null && upfiles.getSize() > 0) { // 새로 변경할 사진 있을 때

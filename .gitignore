@@ -10,3 +10,5 @@ FitGuardians/WebContent/
 /RemoteSystemsTempFiles/
 FitGuardians/src/main/resources/apiProperties.properties
 FitGuardians/.classpath
+FitGuardians/src/main/webapp/resources/qrCodes/
+FitGuardians/src/main/webapp/resources/profilePic/

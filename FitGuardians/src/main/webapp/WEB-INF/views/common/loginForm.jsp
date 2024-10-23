@@ -13,6 +13,16 @@
 		<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.min.css" rel="stylesheet">
     </head>
     <body>
+    	<c:if test="${ not empty alertMsg }">
+    		<script>
+		   		 Swal.fire({
+				      icon: 'success',
+				      title: '성공',
+				      text: "${alertMsg}",
+				    });
+    		</script>
+    		<c:remove var="alertMsg" scope="session"/>
+    	</c:if>
     	<c:if test="${ not empty errorMsg }">
     		<script>
 		   		 Swal.fire({

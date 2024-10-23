@@ -129,7 +129,6 @@ public class ExerciseController {
 		 
 		 HttpResponse<String> response = HttpClient.newHttpClient().send(request, HttpResponse.BodyHandlers.ofString());
 		 
-		 System.out.println(response.body()); 
 		 return response.body();
 		 
 	} // autoExercisePlan
@@ -289,8 +288,6 @@ public class ExerciseController {
 	@ResponseBody
 	@RequestMapping(value="selectWorkout.ex", produces = "application/json; charset=utf-8")
 	public String selectWorkout(@RequestParam String userId) {
-		// System.out.println("userId가 없나 : " + userId);
-		
 		ArrayList<Workout> list = eService.selectWorkoutList(userId);
 		// 이런식으로 HashMap을 사용해도 되지만, Gson을 사용해보자
 		
@@ -310,7 +307,6 @@ public class ExerciseController {
 	@ResponseBody
 	@RequestMapping("deleteExercise.ex")
 	public String deleteExercise(int exerciseNo) {
-		//System.out.println(exerciseNo);
 		int result = eService.deleteExercise(exerciseNo);
 		
 		return result>0?"success":"error";
@@ -331,10 +327,6 @@ public class ExerciseController {
 		requestUrl += "&muscle=" + muscle;
 		requestUrl += "&difficulty=" + difficulty;
 		
-		System.out.println(" type : " +  type);
-		System.out.println(" muscle : " +  muscle);
-		System.out.println(" difficulty : " +  difficulty);
-		
 		// 헤더 (api에게 요청하기)
 		URL url = new URL(requestUrl);
 		HttpURLConnection connection = (HttpURLConnection) url.openConnection();
@@ -350,9 +342,6 @@ public class ExerciseController {
 		// 자바에서 json데이터를 파싱해서 jsonNode 객체려 변환하고 있다.
 		// readTree : 주어진 InputStream에서 JSON데이터를 읽어들이고, 이를 JSON트리 구조로 나타내준다(= json데이터를 동적으로 다룸)
 		JsonNode root = mapper.readTree(responseStream);
-		
-		// root = JsonNode객체, 그걸 toString()으로 문자열화 한것.
-		System.out.println(root.toString());
 		
 		// jsp에서 JsonNode를 사용할 수 없기 때문에 c태그를 사용하고 싶으면 여기서 배열로 만들어야 한다.
 		// [key-value, key-value, key-value]형태
@@ -381,7 +370,6 @@ public class ExerciseController {
 	@ResponseBody
 	@RequestMapping(value="selectTodayWorkout.ex", produces="application/json; charset:utf-8")
 	public String selectTodayWorkout(@RequestParam String userId) {
-		//System.out.println("사용자 아이디 : " + userId);
 		ArrayList<Workout> list = eService.selectWorkoutList(userId);
 		return new Gson().toJson(list);
 	}
@@ -390,7 +378,6 @@ public class ExerciseController {
 	@ResponseBody
 	@RequestMapping(value="selectTodayWorkoutforTrainer.ex", produces="application/json; charset:utf-8")
 	public String selectTodayWorkutforTrainer(@RequestParam String userId) {
-		//System.out.println("사용자 아이디 : " + userId);
 		ArrayList<Workout> list = eService.selectWorkoutList(userId);
 		return new Gson().toJson(list);
 	}

@@ -19,6 +19,7 @@
 		<result column="qr" property="qr"/>
 		<result column="profile_pic" property="profilePic"/>
 		<result column="membership" property="membership"/>
+		<result column="pt_time" property="ptTime"/>
 		<result column="user_no" property="userNo"/>
 		<result column="height" property="height"/>
 		<result column="weight" property="weight"/>
@@ -177,6 +178,7 @@
 		     , qr
 		     , profile_pic
 		     , membership
+		     , pt_time
 		  from member
 		 where status = 'Y'
 		   and user_id = #{userId}

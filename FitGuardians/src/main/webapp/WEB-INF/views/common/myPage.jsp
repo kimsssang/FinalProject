@@ -18,6 +18,12 @@
 		<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.min.css" rel="stylesheet">
 <!-- <script defer src="resources/templates/vendor/jquery/jquery.min.js"></script> -->
 <script defer src="resources/js/jquery.sumoselect.js"></script>
+<style type="text/css">
+	#disease-card{
+		filter: blur(5px);
+	}
+	
+</style>
 </head>
 
 <body id="page-top">
@@ -189,17 +195,25 @@
 											<div class="row no-gutters align-items-center">
 												<div class="col mr-2">
 													<div
-														class="text-xs font-weight-bold text-info text-uppercase mb-1">이번달
-														수업 참여</div>
+														class="text-xs font-weight-bold text-info text-uppercase mb-1">남은 PT 횟수</div>
 													<div class="row no-gutters align-items-center">
 														<div class="col-auto">
-															<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+															<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">${loginUser.ptTime}</div>
 														</div>
 														<div class="col">
 															<div class="progress progress-sm mr-2">
-																<div class="progress-bar bg-info" role="progressbar"
-																	style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-																	aria-valuemax="100"></div>
+															<c:choose>
+																<c:when test="${ loginUser.ptTime eq 0 }">
+																	<div class="progress-bar bg-info" role="progressbar"
+																		style="width: 0%" aria-valuenow="0" aria-valuemin="0"
+																		aria-valuemax="100"></div>
+																</c:when>
+																<c:otherwise>
+																	<div class="progress-bar bg-info" role="progressbar"
+																		style="width: ${loginUser.ptTime % loginUser.membership * 100}%" aria-valuenow="${loginUser.ptTime % loginUser.membership * 100}" aria-valuemin="0"
+																		aria-valuemax="100"></div>
+																</c:otherwise>
+															</c:choose>
 															</div>
 														</div>
 													</div>
@@ -285,7 +299,7 @@
 												</div>
 											</div>
 										</div>
-										<div class="card-body" id="disease-card" >
+										<div class="card-body" id="disease-card">
 											<form action="">
 												<div class="input-group mb-3">
 													<input type="number" id="height" name="height"

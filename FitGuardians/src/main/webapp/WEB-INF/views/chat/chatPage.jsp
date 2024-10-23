@@ -16,7 +16,25 @@
 
         .trainer:hover {
             background-color: #f8f9fa; /* 마우스 오버 시 배경색 변경 */
-        }
+        
+		}
+		.trainer .card-body {
+		    height: 200px;
+		    width: 250px;
+		}
+		
+		.trainer .card-body table {
+		    border-collapse: separate;
+		    border-spacing: 0 8px;
+		    font-size: 16px;
+		}
+
+		.trainer .card-body td {
+		    overflow: hidden;
+		    white-space: nowrap;
+		    text-overflow: ellipsis;
+		    max-width: 140px; /* 필요에 따라 너비 조절 */
+		}
     </style>
 </head>
 <body id="page-top">
@@ -74,10 +92,24 @@
 	                                        		<img src="\${trainer.profilePic}" alt="\${trainer.userName}" style="width: 210px; height: 200px;"/>
 	                                        	</div>
 	                                        	<div class="card-body">
-		                                        	<p>아이디 : \${trainer.userId} </p>
-		                                        	<p>이름  : \${trainer.userName} </p>
-		                                        	<p>이메일 : \${trainer.email} </p>
-		                                        	<p>핸드폰 : \${trainer.phone} </p>
+	                                        		<table>
+	                                        			<tr>
+	                                        				<th>아이디 &nbsp;&nbsp;</th>
+	                                        				<td>\${trainer.userId}</td>
+	                                        			</tr>
+	                                        			<tr>
+		                                        			<th>이 &nbsp;&nbsp;름 &nbsp;&nbsp;</th>
+	                                        				<td>\${trainer.userName}</td>
+	                                        			</tr>
+	                                        			<tr>
+	                                        				<th>이메일 &nbsp;&nbsp;</th>
+                                        					<td>\${trainer.email}</td>
+	                                        			</tr>
+	                                        			<tr>
+	                                        				<th>핸드폰 &nbsp;&nbsp;</th>
+                                        					<td>\${trainer.phone}</td>
+	                                        			</tr>
+	                                        		</table>
 	                                        	</div>
 	                                         </div>
 	                                        `;

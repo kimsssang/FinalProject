@@ -59,7 +59,7 @@ public class TrainerMatchingController {
 	public String pt(int pttime, String pt, HttpServletRequest request) {
 			HttpSession session = request.getSession();
 			Member m =  (Member) session.getAttribute("loginUser");
-			
+			m.setMembership(pttime + "");
 			m.setPt(pt);
 			m.setPtTime(pttime);
 		int result = new TrainermatchingserviceImpl().trainerupdate(sqlsession,m);
@@ -80,7 +80,13 @@ public class TrainerMatchingController {
 		Member m =  (Member) session.getAttribute("loginUser");
 		String userId = m.getUserId();
 		Member list =  new TrainermatchingserviceImpl().trainermatchingsearch(sqlsession,userId);
-	
+		
+		if(list == null) {
+			list = new Member();
+			list.setPt("등록된 트레이너가 없습니다.");
+			list.setPtTime(0);
+		}
+		
 		return list;
 	}
 	

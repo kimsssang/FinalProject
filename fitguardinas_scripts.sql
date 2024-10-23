@@ -400,7 +400,7 @@ CREATE TABLE SCHEDULE (
     DOW VARCHAR2(30),                             -- 요일                              
     back_color varchar2(30),                    -- 배경색
     allday varchar2(10),                         -- 종일 일정 여부
-    kakao_calendar_id		  -- 카카오 캘린더 일때 id
+    kakao_calendar_id varchar2(100)		  -- 카카오 캘린더 일때 id
 );
 
 COMMENT ON COLUMN SCHEDULE.SCHEDULE_NO IS '스케줄 고유번호';

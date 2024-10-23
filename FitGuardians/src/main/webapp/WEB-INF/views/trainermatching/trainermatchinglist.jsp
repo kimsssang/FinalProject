@@ -243,7 +243,7 @@ font-size: 5px;
 				             				<img  alt="" src="resources/trProfilePic/defaultimg.PNG">
 				             				</c:when>
 				             				<c:otherwise>
-				             				<img  alt="" src="resources/trProfilePic/${ t.trProfile }">
+				             				<img  alt="" src="${ t.trProfile }">
 				             				</c:otherwise>
 				             				</c:choose>
 				             			 </div> 
@@ -276,6 +276,7 @@ font-size: 5px;
 				           		
 				             		
 				                		</div>			             		
+				             		</div>
 				             		</div>
 				             		</div>
 				             	

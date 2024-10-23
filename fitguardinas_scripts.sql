@@ -113,54 +113,6 @@ COMMENT ON COLUMN MEMBER_INFO.WEIGHT IS '몸무게';
 COMMENT ON COLUMN MEMBER_INFO.DISEASE IS '기저질환';
 COMMENT ON COLUMN MEMBER_INFO.GOAL IS '운동목표';
 
-
----------------------------------헬스장 관련-----------------------------------------------
-
--- 헬스장 테이블
-CREATE TABLE GYM (
-    GYM_NO NUMBER CONSTRAINT GYM_NO_PK PRIMARY KEY,
-    GYM_NAME VARCHAR2(30) NOT NULL,
-    GYM_ADDRESS VARCHAR2(100) NOT NULL,
-    GYM_LATITUDE NUMBER,
-    GYM_LONGITUDE NUMBER
-);
-
-COMMENT ON COLUMN GYM.GYM_NO IS 'API 헬스장 고유 번호';
-COMMENT ON COLUMN GYM.GYM_NAME IS '헬스장 이름';
-COMMENT ON COLUMN GYM.GYM_ADDRESS IS '헬스장 주소';
-COMMENT ON COLUMN GYM.GYM_LATITUDE IS '헬스장 위도';
-COMMENT ON COLUMN GYM.GYM_LONGITUDE IS '헬스장 경도';
-
-
--- 헬스장 번호 생성 시퀀스
-CREATE SEQUENCE SEQ_GYM NOCACHE;
-
--- 사용자 검색 주변 헬스장
-CREATE TABLE SEARCH_ADDRESS_GYM (
-   GYM_NO NUMBER NOT NULL,
-   USER_NO   NUMBER NOT NULL,
-   SEARCH_ADDRESS VARCHAR2(100) NOT NULL,
-    CONSTRAINT FK_GYM_SEARCH_GYMNO FOREIGN KEY (GYM_NO) REFERENCES GYM(GYM_NO),
-    CONSTRAINT FK_GYM_SEARCH_USERNO FOREIGN KEY (USER_NO) REFERENCES MEMBER(USER_NO)
-);
-
-COMMENT ON COLUMN SEARCH_ADDRESS_GYM.GYM_NO IS 'API헬스장고유번호';
-
-COMMENT ON COLUMN SEARCH_ADDRESS_GYM.USER_NO IS '회원번호';
-
-COMMENT ON COLUMN SEARCH_ADDRESS_GYM.SEARCH_ADDRESS IS '검색한주소';
-
--- 주변 헬스장 --
-CREATE TABLE NEARBY_GYM (
-   GYM_NO NUMBER NOT NULL,
-   USER_NO   NUMBER NOT NULL,
-    CONSTRAINT FK_NEARBY_GYMNO FOREIGN KEY (GYM_NO) REFERENCES GYM(GYM_NO),
-    CONSTRAINT FK_NEARBY_USERNO FOREIGN KEY (USER_NO) REFERENCES MEMBER(USER_NO)
-);
-
-COMMENT ON COLUMN NEARBY_GYM.GYM_NO IS 'API헬스장고유번호';
-COMMENT ON COLUMN NEARBY_GYM.USER_NO IS '회원번호';
-
 ---------------------------출석 sql-------------------------------------
 
 create table qrInfo (
@@ -419,7 +371,6 @@ create sequence seq_cno nocache;
 ----------------------------트레이너 정보-------------------------------------------
 --- 트레이너 정보
 CREATE TABLE trainerInfo (
-    tr_info_no number constraint pk_trainer_info primary key,
     user_no NUMBER NOT NULL,                     -- 회원번호
     tr_career NUMBER,                            -- 경력 년수
     tr_certi varchar2(100),                      -- 자격 사항

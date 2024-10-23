@@ -54,7 +54,7 @@
                            <div class="card-body"  style="display:flex;">
                                <div style="margin-left:30px;">
                                    <div style="border-radius:50%; border:1px solid royalblue; width:150px; height:150px; overflow:hidden;">
-                                       <img src="${m.profilePic}" style="width:100%; height:100%; object-fit:cover;"/>
+                                       <img src="${m.profilePic}"style="width:100%; height:100%; object-fit:cover;"/>
                                    </div>
                                </div>
                                <div style="margin-left:30px;">
@@ -81,7 +81,6 @@
                                     <table class="table table-bordered exerciseTable" id="exercisePlanTable">
                                         <thead class="thead-light">
                                             <tr>
-                                                <th>플랜 번호</th>
                                                 <th>플랜 제목</th>
                                                 <th>날짜</th>
                                                 <th>난이도</th>
@@ -153,12 +152,25 @@
                                                     let workoutCategory = plan.workoutCategory;
                                                     let difficulty = plan.difficulty;
                                                     let description = plan.description;
+
+                                                     // difficulty 값을 변환
+                                                    let difficultyLabel;
+                                                    switch (difficulty) {
+                                                        case 'L':
+                                                            difficultyLabel = '쉬움';
+                                                            break;
+                                                        case 'M':
+                                                            difficultyLabel = '보통';
+                                                            break;
+                                                        case 'H':
+                                                            difficultyLabel = '어려움';
+                                                            break;
+                                                    }
             
                                                     value += "<tr>"
-                                                           + "<td>" + exerciseNo + "</td>"
                                                            + "<td>" + workoutTitle + "</td>"
                                                            + "<td>" + workoutDate + "</td>"
-                                                           + "<td>" + difficulty + "</td>"
+                                                           + "<td>" + difficultyLabel + "</td>"
                                                            + "<td>" + description + "</td>"
                                                            + "</tr>";
                                                         });
@@ -266,7 +278,8 @@
                                     <p id="modalExerciseNo" style="display:none;"></p>
                                     <p id="modalWorkoutTitle"></p>
                                     <p id="modalDifficulty"></p>
-                                    <p id="modalDescription"></p>
+                                     운동 리스트 : 
+                                    <p id="modalDescription" style="border:1px solid rgb(177, 196, 255); margin:10px; padding:10px;"></p>
                                 </div>
                             </div>
                         </div>

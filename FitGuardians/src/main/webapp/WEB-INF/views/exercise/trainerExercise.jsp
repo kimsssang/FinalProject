@@ -204,7 +204,8 @@
 						                <p id="modalWorkoutTitle"></p>
 						                <p id="modalWorkoutCategory"></p>
 						                <p id="modalDifficulty"></p>
-						                <p id="modalDescription"></p>
+										<p>운동 리스트 :</p>
+						                <p id="modalDescription" style="border:1px solid rgb(177, 196, 255); margin:10px; padding:10px;"></p>
 						            </div>
 						            <div class="modal-footer">
 						                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
@@ -569,7 +570,7 @@
 									<div class="form-group">
 										<label for="taskId" class="col-form-label">일정 제목</label> <input
 											type="text" class="form-control" id="calendar_title"
-											name="calendar_title"> <label for="taskId"
+											name="calendar_title" value="(이름입력)님의 n일차 운동 플래너"> <label for="taskId"
 											class="col-form-label">난이도</label>
 										<div style="display: flex;">
 											<label><input type="checkbox" class="difficulty"

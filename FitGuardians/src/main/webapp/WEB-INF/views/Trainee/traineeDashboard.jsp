@@ -400,7 +400,10 @@
                                                                     <p id="modalWorkoutTitle"></p>
                                                                     <p id="modalWorkoutCategory"></p>
                                                                     <p id="modalDifficulty"></p>
-                                                                    <p id="modalDescription"></p>
+                                                                    <p>회원님, 안녕하세요. 금일 운동 플래너를 알려드립니다.</p> 
+                                                                    <div id="modalDescription" style="border:1px solid rgb(177, 196, 255); margin:15px;">
+                                                                    </div>
+                                                                    <p> 언제나 즐거운 운동이 되시길 바랍니다. FitGuardians팀🏃‍♂️ </p>
                                                                 </div>
                                                             </div>
                                                         </div>

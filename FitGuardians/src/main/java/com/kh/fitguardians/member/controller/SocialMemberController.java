@@ -55,7 +55,6 @@ public class SocialMemberController {
 
 	@ResponseBody
 	@RequestMapping(value = "socialLogin.me", produces = "text/plain; charset=UTF-8")
-	// '일단은' produces 속성의 값을 일반 텍스트로 반환하게 만듬(text/plain)
 	public String loginMember(String social) throws IOException {
 		
 		if(social.equals("kakao")) {
@@ -293,7 +292,8 @@ public class SocialMemberController {
             		session.setAttribute("mi", mi);
             		session.setAttribute("bi", bi);
             		
-            		return "Trainee/traineeDashboard";
+            		// MemberController로부터 사용
+            		return "redirect:dashboard.me";
             	}else {
             		// 등록 실패, 기존 로그인 창으로 리다이랙트
             		session.setAttribute("errorMsg", "로그인 실패");
@@ -323,7 +323,7 @@ public class SocialMemberController {
 				session.setAttribute("recentBi", recentBi);
 				
             	
-				return "Trainee/traineeDashboard";
+				return "redirect:dashboard.me";
             }
 		}else {
 			session.setAttribute("errorMsg", "사용자 정보 데이터를 가져올 수 없습니다.");
@@ -535,7 +535,7 @@ public class SocialMemberController {
             		session.setAttribute("mi", mi);
             		session.setAttribute("bi", bi);
             		
-            		return "Trainee/traineeDashboard";
+            		return "redirect:dashboard.me";
             	}else {
             		// 등록 실패, 기존 로그인 창으로 리다이랙트
             		session.setAttribute("errorMsg", "로그인 실패");
@@ -564,7 +564,7 @@ public class SocialMemberController {
             	session.setAttribute("recentBi", recentBi);
             	
             	
-            	return "Trainee/traineeDashboard";
+            	return "redirect:dashboard.me";
             }
 	    }else {
 	    	session.setAttribute("errorMsg", "사용자 정보 데이터를 가져올 수 없습니다.");
@@ -805,7 +805,7 @@ public class SocialMemberController {
             		session.setAttribute("mi", mi);
             		session.setAttribute("bi", bi);
             		
-            		return "Trainee/traineeDashboard";
+            		return "redirect:dashboard.me";
             	}else {
             		// 등록 실패, 기존 로그인 창으로 리다이랙트
             		session.setAttribute("errorMsg", "로그인 실패");
@@ -834,7 +834,7 @@ public class SocialMemberController {
             	session.setAttribute("recentBi", recentBi);
             	
             	
-            	return "Trainee/traineeDashboard";
+            	return "redirect:dashboard.me";
             }
 	    }else {
 	    	session.setAttribute("errorMsg", "사용자 정보 데이터를 가져올 수 없습니다.");
@@ -1072,7 +1072,7 @@ public class SocialMemberController {
 		mi.setHeight(0);
 		mi.setWeight(0);
 		mi.setDisease(null);
-		mi.setGoal("");
+		mi.setGoal(null);
 		
 		int result = mService.defaultMemberInfoInsert(mi);
 		if(result > 0) {
@@ -1097,5 +1097,4 @@ public class SocialMemberController {
 			return null;
 		}
 	}
-	
 }

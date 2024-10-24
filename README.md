@@ -41,7 +41,7 @@ Fit은 건강한 상태를, Guardians는 <b style="color:royalblue;">수호자</
 
 <h3>사이트 맵</h3>
 
-![사이트맵](https://github.com/user-attachments/assets/a0a205c9-0a9d-4de7-9e7a-10184efb97bc)
+![사이트맵](https://github.com/user-attachments/assets/b57a07ed-0f14-47cc-ad24-9b0a5ca2ea0f)
 
 <p>
 &nbsp; &nbsp;웹사이트에 접속하면 로그인 화면이 먼저 화면에 나온다. 회원 · 트레이너에 따라 구분하여 로그인창을 만들었으며, 로그인 전 사용자의 신분 상태를 체크하여 해당 계정으로 접속하면 메인(대시보드)화면이 나온다. <br />

@@ -1039,7 +1039,7 @@ public class SocialMemberController {
 			
 			String qrData = objectMapper.writeValueAsString(qr); 
 			String fileName = newUser.getUserId() + ".png"; // 파일명 설정
-		    filePath = context.getRealPath("/resources/qrCodes/" + fileName); // ServletContext를 이용해 경로 설정
+		    filePath = context.getRealPath("https://kimsssang.github.io/FinalProject/FitGuardians/src/main/webapp/resources/qrCodes/" + fileName); // ServletContext를 이용해 경로 설정
 		    // 디렉터리 존재 여부 확인
 			File dir = new File(context.getRealPath("/resources/qrCodes/"));
 			if (!dir.exists()) {

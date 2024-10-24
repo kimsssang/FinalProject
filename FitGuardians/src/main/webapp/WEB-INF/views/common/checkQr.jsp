@@ -7,6 +7,9 @@
 <meta charset="UTF-8">
 <title>QR 코드 스캔</title>
 <script defer src="resources/js/jsQR.js"></script>
+<!-- sweetalert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.all.min.js"></script>
+	<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.min.css" rel="stylesheet">
 </head>
 
 <body id="page-top">

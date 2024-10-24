@@ -215,7 +215,7 @@ public class MessageController {
 	public String addTrainerCalendar(@RequestBody ArrayList<Schedule> schedules, HttpServletRequest request)
 			throws IOException {
 		Member loginUser = (Member) request.getSession().getAttribute("loginUser");
-		boolean flag = false;
+		boolean flag = true;
 		int count = 0;
 		// 일정 저장시 db에 저장, 톡캘린더 저장
 		// 톡캘린더 저장 메소드 호출
@@ -350,7 +350,7 @@ public class MessageController {
 			String serverUrl = "https://kimsssang.github.io/FinalProject/FitGuardians/src/main/webapp/resources/qrCodes/"; // 실제
 																															// 서버
 																															// 수정
-			String fileName = qrUrl.substring(qrUrl.lastIndexOf("\\") + 1);
+			String fileName = qrUrl.substring(qrUrl.lastIndexOf("/") + 1);
 
 			String templateObject = String.format(
 					"{\"object_type\":\"feed\"," + "\"content\":{\"title\":\"%s\"," + "\"image_url\":\"%s\","

@@ -443,6 +443,14 @@ public class MemberController {
 			request.setAttribute("bodyInfo", bodyInfo);
 		}else {
 			TrainerInfo trInfo = mService.selectTrainerInfo(m.getUserNo());
+			int ptCount = mService.selectMyMember(m.getUserId());
+			int memberCount = mService.selectMemberCount();
+			int todayCount = mService.trainerToday(m.getUserNo());
+			int todayAll = mService.trainerTodayAll(m.getUserNo());
+			request.setAttribute("all", todayAll);
+			request.setAttribute("today", todayCount);
+			request.setAttribute("memberCount", memberCount);
+			request.setAttribute("myMember", ptCount);
 			request.setAttribute("trInfo", trInfo);
 		}
 		return "common/myPage";

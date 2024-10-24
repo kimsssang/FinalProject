@@ -19,10 +19,26 @@
 <!-- <script defer src="resources/templates/vendor/jquery/jquery.min.js"></script> -->
 <script defer src="resources/js/jquery.sumoselect.js"></script>
 <style type="text/css">
-	#disease-card{
-		filter: blur(5px);
-	}
+		#disease-card{
+			filter: blur(5px);
+		}
 	
+		.card.trainer  {
+		    width: 250px;
+		}
+		
+		.card.trainer .card-body table {
+		    border-collapse: separate;
+		    border-spacing: 0 8px;
+		    font-size: 16px;
+		}
+
+		.card.trainer .card-body td {
+		    overflow: hidden;
+		    white-space: nowrap;
+		    text-overflow: ellipsis;
+		    max-width: 140px; /* 필요에 따라 너비 조절 */
+		}
 </style>
 </head>
 
@@ -65,7 +81,7 @@
 													<div
 														class="text-xs font-weight-bold text-primary text-uppercase mb-1">
 														회원수 (개인)</div>
-													<div class="h5 mb-0 font-weight-bold text-gray-800">40명</div>
+													<div class="h5 mb-0 font-weight-bold text-gray-800">${myMember}명</div>
 												</div>
 												<div class="col-auto">
 													<i class="fas fa-user fa-2x text-gray-300"></i>
@@ -84,7 +100,7 @@
 													<div
 														class="text-xs font-weight-bold text-success text-uppercase mb-1">
 														회원수 (전체)</div>
-													<div class="h5 mb-0 font-weight-bold text-gray-800">215</div>
+													<div class="h5 mb-0 font-weight-bold text-gray-800">${memberCount}명</div>
 												</div>
 												<div class="col-auto">
 													<i class="fas fa-users fa-2x text-gray-300"></i>
@@ -105,12 +121,12 @@
 														수업</div>
 													<div class="row no-gutters align-items-center">
 														<div class="col-auto">
-															<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+															<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">${(all-today) / all * 100}%</div>
 														</div>
 														<div class="col">
 															<div class="progress progress-sm mr-2">
 																<div class="progress-bar bg-info" role="progressbar"
-																	style="width: 50%" aria-valuenow="50" aria-valuemin="0"
+																	style="width: ${(all-today) / all * 100 }%" aria-valuenow="${(all-today) / all * 100 }" aria-valuemin="0"
 																	aria-valuemax="100"></div>
 															</div>
 														</div>
@@ -133,7 +149,7 @@
 													<div
 														class="text-xs font-weight-bold text-warning text-uppercase mb-1">
 														회원 문의</div>
-													<div class="h5 mb-0 font-weight-bold text-gray-800">18</div>
+													<div class="h5 mb-0 font-weight-bold text-gray-800" id="memberMsg"></div>
 												</div>
 												<div class="col-auto">
 													<i class="fas fa-comments fa-2x text-gray-300"></i>
@@ -260,22 +276,34 @@
 
 								</div>
 								<!-- Card Body -->
-								<div class="card-body" id="change-pwd">
-									<div class='input-group'>
-										<label class="col-form-label mr-4">현재 비밀번호</label> 
-										<input type="password" id="cChangePwd" class="form-control">
-									</div>
-									<div class="input-group mt-3" id="changePwdBox"	style="display: none">
-										<label class="col-form-label mr-2">변경할 비밀번호</label> 
-										<input type="password" id="newPwd" class="form-control mr-2">
-										<label class="col-form-label mr-2">비밀번호확인</label> 
-										<input type="password" id="newPwdC" class="form-control">
-									</div>
-									<button class="btn btn-primary mt-3" id="checkPwdBtn"
-										onclick="checkPwd();">비밀번호 확인</button>
-									<button class="btn btn-primary mt-3" id="changePwdBtn"
-										onclick="changePwd();" style="display: none">비밀번호 변경</button>
-								</div>
+								<c:choose>
+									<c:when test="${loginUser.userId.substring(0, 2) eq 'K-' or loginUser.userId.substring(0, 2) eq 'N-' or loginUser.userId.substring(0, 2) eq 'G-'}">
+										<div class="card-body" id="change-pwd">
+											<div class='input-group'>
+												<label class="col-form-label mr-4">현재 비밀번호</label> 
+												<input type="password" id="cChangePwd" class="form-control" placeholder="소셜로그인 사용자는 비밀번호를 변경할 수 없습니다." readonly>
+											</div>
+										</div>		
+									</c:when>
+									<c:otherwise>
+										<div class="card-body" id="change-pwd">
+											<div class='input-group'>
+												<label class="col-form-label mr-4">현재 비밀번호</label> 
+												<input type="password" id="cChangePwd" class="form-control">
+											</div>
+											<div class="input-group mt-3" id="changePwdBox"	style="display: none">
+												<label class="col-form-label mr-2">변경할 비밀번호</label> 
+												<input type="password" id="newPwd" class="form-control mr-2">
+												<label class="col-form-label mr-2">비밀번호확인</label> 
+												<input type="password" id="newPwdC" class="form-control">
+											</div>
+											<button class="btn btn-primary mt-3" id="checkPwdBtn"
+												onclick="checkPwd();">비밀번호 확인</button>
+											<button class="btn btn-primary mt-3" id="changePwdBtn"
+												onclick="changePwd();" style="display: none">비밀번호 변경</button>
+										</div>
+									</c:otherwise>								
+								</c:choose>
 							</div>
 							<c:choose>
 								<c:when test="${ loginUser.userLevel == '2' }">
@@ -436,11 +464,18 @@
 
 								</div>
 								<div class="card-body" id="change-email">
-									<div class='input-group'>
-										<label class="col-form-label mr-3">비밀번호 입력</label> <input
-											type="password" id="emailPwd" class="form-control">
-										<button class="btn btn-primary ml-3" onclick="checkPwdE();">확인</button>
-									</div>
+									<c:choose>
+										<c:when test="${loginUser.userId.substring(0, 2) eq 'K-' or loginUser.userId.substring(0, 2) eq 'N-' or loginUser.userId.substring(0, 2) eq 'G-'}">
+											
+										</c:when>
+										<c:otherwise>
+											<div class='input-group'>
+												<label class="col-form-label mr-3">비밀번호 입력</label> <input
+													type="password" id="emailPwd" class="form-control">
+												<button class="btn btn-primary ml-3" onclick="checkPwdE();">확인</button>
+											</div>
+										</c:otherwise>
+									</c:choose>
 									<div class="input-group mt-3">
 										<label class="col-form-label mr-3">변경할 이메일</label> <input
 											type="email" class="form-control mr-2" id="email">
@@ -462,7 +497,7 @@
 									<!-- Card Header - Dropdown -->
 									<div
 										class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-										<h6 class="m-0 font-weight-bold text-primary">트레이너 변경</h6>
+										<h6 class="m-0 font-weight-bold text-primary">내 담당 트레이너</h6>
 										<div class="dropdown no-arrow">
 											<a class="dropdown-toggle" href="#" role="button"
 												id="dropdownMenuLink" data-toggle="dropdown"
@@ -473,7 +508,44 @@
 										</div>
 									</div>
 									<!-- Card Body -->
-									<div class="card-body">개인회원만 보임</div>
+									
+									<div class="card-body">
+										<c:choose>
+											<c:when test="${not empty trainer}">
+												<div class="card trainer" data-userno=\${trainer.userNo} data-name=\${trainer.userName}>
+													<div class="card-header">
+		                                        		<img src="${trainer.profilePic}" alt="${trainer.userName}" style="width: 210px; height: 200px;"/>
+		                                        	</div>
+		                                        	<div class="card-body">
+		                                        		<table>
+		                                        			<tr>
+		                                        				<th>아이디 &nbsp;&nbsp;</th>
+		                                        				<td>${trainer.userId}</td>
+		                                        			</tr>
+		                                        			<tr>
+			                                        			<th>이 &nbsp;&nbsp;름 &nbsp;&nbsp;</th>
+		                                        				<td>${trainer.userName}</td>
+		                                        			</tr>
+		                                        			<tr>
+		                                        				<th>이메일 &nbsp;&nbsp;</th>
+	                                        					<td>${trainer.email}</td>
+		                                        			</tr>
+		                                        			<tr>
+		                                        				<th>핸드폰 &nbsp;&nbsp;</th>
+	                                        					<td>${trainer.phone}</td>
+		                                        			</tr>
+		                                        		</table>
+		                                        	</div>
+                                        		</div>
+											</c:when>
+											<c:otherwise>
+												<div class="card-body">
+													<h5>현재 등록된 트레이너가 없습니다.</h5>
+													<a href="trainermatching.bo" class="btn btn-outline-primary">트레이너 등록하러 가기</a>
+												</div>
+											</c:otherwise>
+										</c:choose>
+									</div>
 								</div>
 							</c:if>
 
@@ -487,10 +559,15 @@
 								<!-- Card Body -->
 								<div class="card-body">
 									<div class="card-body" id="member-cancle">
-										<div class='input-group'>
-											<label class="col-form-label mr-4">비밀번호 입력</label> <input
-												type="password" class="form-control" id="checkPwdD">
-										</div>
+									<c:choose>
+										<c:when test="${loginUser.userId.substring(0, 2) eq 'K-' or loginUser.userId.substring(0, 2) eq 'N-' or loginUser.userId.substring(0, 2) eq 'G-'}"></c:when>
+										<c:otherwise>
+											<div class='input-group'>
+												<label class="col-form-label mr-4">비밀번호 입력</label> <input
+													type="password" class="form-control" id="checkPwdD">
+											</div>
+										</c:otherwise>
+									</c:choose>
 
 										<button class="btn btn-danger mt-3" onclick="deleteUser();">회원탈퇴</button>
 									</div>
@@ -737,6 +814,11 @@
 							}
 						})
 					}
+			
+					let msgCount = sessionStorage.getItem("msgCount");
+					$(()=>{
+						$("#memberMsg").text(msgCount)
+					});
 			</script>
 		</c:otherwise>
 	</c:choose>

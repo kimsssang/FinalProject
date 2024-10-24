@@ -39,7 +39,9 @@
 		</select>
 		<update id="trainerupdate">
 		UPDATE member
-		SET pt = #{pt} , pt_time = pt_time + #{ptTime}
+		SET pt = #{pt},
+		    pt_time = pt_time + #{ptTime},
+		    membership = ${membership}
 		WHERE user_id = #{userId}
 		
 		</update>

@@ -145,6 +145,7 @@
 
 					</div>
 					<script>
+
 						function onReceivePaymentData(paymentData) {
 
 							console.log("결제 완료 데이터:", paymentData);
@@ -169,14 +170,20 @@
 							alert("결제가 실패했습니다 다시 시도해주세요");
 							location.reload();
 						}
+						var trainerId;
+						function getTrainerId(id){
+							console.log(id);
+							trainerId = id;
+						}
+						
 						function successupdateajax() {
-							console.log($('.newtrainerid').val());//선택 트레이너 아이디
 							console.log($('.selected .ptval').val()); //선택한 pt 횟수
 							$.ajax({
 								url : 'membershippt.bo',
 								data : {
 									pttime : $('.selected .ptval').val(),
-									pt : $('.newtrainerid').val()
+									pt : trainerId,
+									
 								},
 								success : function(date) {
 
@@ -187,7 +194,9 @@
 							})
 						}
 						let isSelected = false;
-
+						
+						
+						
 						// .ptcheck 클릭 시 클래스 추가/제거로 선택 상태 업데이트
 						$('.ptcheck').on('click', function() {
 
@@ -295,24 +304,17 @@
 												</c:otherwise>
 											</c:choose>
 										</div>
-
 									</div>
 									<div class="btncssdiv" style="width: 12%; height: 100%">
-
-										<input class="newtrainerid" type="hidden"
-											value="${ t.userId }">
+										<input class="newtrainerid" id="newtrainerid" type="hidden" value="${ t.userId }">
 										<button style="font-size: 15px; align-items: center;"
-											class="ptchosebtn btn btn-primary btn-icon-split btn-lg">
+											class="ptchosebtn btn btn-primary btn-icon-split btn-lg" onclick="getTrainerId('${t.userId}')">
 											회원권 <br>(pt)신청
 										</button>
-
-
-
 									</div>
 								</div>
 							</div>
 						</div>
-
 					</c:forEach>
 
 

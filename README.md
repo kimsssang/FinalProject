@@ -132,6 +132,39 @@ Fit은 건강한 상태를, Guardians는 <b style="color:royalblue;">수호자</
 <details>
   <summary style="list-style:none">🔴 김상우</summary>
   <!-- 내용 -->
+  <h4>회원 가입</h4>
+  
+  ![회원가입-이메일-인증](https://github.com/user-attachments/assets/761cdbc1-244f-45d5-bcea-97810fc49c51)
+  
+  ![우편번호-주소가져오기](https://github.com/user-attachments/assets/218cd1cc-0caa-4666-aea5-b1d84a11089d)
+
+  <h4>마이페이지</h4>
+  
+  ![비밀번호변경](https://github.com/user-attachments/assets/d63fe45e-69db-4664-8f84-8d54f77b0a01)
+  
+  ![이메일-인증-변경](https://github.com/user-attachments/assets/d312b8c4-bc28-436a-8410-a366a34aa841)
+
+  <h4>QR 인증</h4>
+  
+  ![qr인증](https://github.com/user-attachments/assets/4c2fd4a4-0579-498e-8406-e3e84d3a5920)
+  
+  ![qr 출석인증](https://github.com/user-attachments/assets/81f8a839-2db6-4d35-92bc-1379672cabed)
+
+  <h4>QR코드 카톡으로 전송</h4>
+  
+  ![qr코드-전송](https://github.com/user-attachments/assets/0943713b-af15-465d-ad0e-ce69cfc2535f)
+
+  <h4>캘린더</h4>
+  내 캘린더 톡캘린더 저장
+  
+  ![내-캘린더-저장](https://github.com/user-attachments/assets/e1762789-34fe-494d-baa9-3d13a0840893)
+
+  트레이너가 회원 캘린더저장
+  ![트레이너가-회원일정-저장](https://github.com/user-attachments/assets/f4a1f658-3dc6-44c5-b9d5-84ce1ffd8cb5)
+
+  회원이 트레이너가 보내준 캘린더 톡캘린더에 저장
+  ![트레이너가-보내준-일정-내-톡캘린더에-저장](https://github.com/user-attachments/assets/dd257830-1e71-48f7-a7fb-2acdb59a29fe)
+  
 </details>
 
 

@@ -496,7 +496,7 @@
 	 	// 채팅 메시지를 업데이트하는 함수
 	    function updateChatMessages(messages) {
 	        var chatMessagesContainer = $('#chatMessages');
-	        //chatMessagesContainer.empty(); // 기존 메시지 삭제
+	        chatMessagesContainer.empty(); // 기존 메시지 삭제
 
 	        var messagesToStatusUpdate = []; // 메시지들의 상태 업데이트를 담을 변수
 

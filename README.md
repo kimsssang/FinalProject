@@ -2,6 +2,7 @@
 <br />
 <h2>프로젝트 주제 : 헬스장 회원 관리 시스템</h2>
 <br />
+<h2>What is "FitGuardians"❓ </h2>
 <p>
 Fit은 건강한 상태를, Guardians는 <b style="color:royalblue;">수호자</b> 혹은 
 <b style="color:royalblue;">보호자</b>를 의미한다. <br/>

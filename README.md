@@ -139,17 +139,34 @@ Fit은 건강한 상태를, Guardians는 <b style="color:royalblue;">수호자</
   <summary style="list-style:none">🟠 김종열</summary>
   <h4>내 위치 기준 헬스장 조회</h4>
 
-![헬스장 조회](https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Ff18f2976-d334-44a1-a26d-d646ce5a2222%2Fe565b3c7-1855-43db-8a2d-2703042eb306%2F%25EB%2582%25B4%25EC%259C%2584%25EC%25B9%2598%25EA%25B8%25B0%25EC%25A4%2580%25EC%25A7%2580%25EB%258F%2584.gif?table=block&id=1291c746-ba2c-8038-86c9-e7a517e66462&spaceId=f18f2976-d334-44a1-a26d-d646ce5a2222&userId=fe3890c5-09a4-43e9-bb8f-dd11cfb6389f&cache=v2)
+![헬스장](https://github.com/user-attachments/assets/45e3e0a2-50f2-4cf4-9510-b78b1b4df06b)
+
+![헬스장2](https://github.com/user-attachments/assets/b762df65-1bc7-42a2-8754-2f879a6c2e6d)
+
+![헬스장3](https://github.com/user-attachments/assets/a6c9eee2-aa6f-4ad4-b964-68e818a239c4)
 
   <h4>날씨 API</h4>
 
+  ![날씨](https://github.com/user-attachments/assets/3f376522-7d9d-4f37-b9a9-7ac81ed53862)
+
   <h4>채팅</h4>
-  <ol>
-    <li>1:1 채팅 트레이너 검색</li>
-    <li>채팅리스트 및 각 채팅창 열기</li>
-    <li>채팅 화면</li>
-    <li>채팅 내 파일 업로드 및 다운로드</li>
-  </ol>
+
+  <p>1:1 채팅 트레이너 검색</p>
+  
+![트레이너 검색](https://github.com/user-attachments/assets/261c4908-c2a8-44d3-bc0d-a56ec096cd51)
+
+  <p>채팅리스트 및 각 채팅창 열기</p>
+
+  ![트레이너 채팅](https://github.com/user-attachments/assets/f2aa806e-6923-4644-a6a8-c7a86affd37d)
+
+  <p>채팅 화면</p>
+
+  ![채팅](https://github.com/user-attachments/assets/da2fca72-bdf3-4f2e-bf15-cd09597f08a8)
+
+  <p>채팅 내 파일 업로드 및 다운로드</p>
+
+  ![채팅 파일삽입](https://github.com/user-attachments/assets/d7ba1860-67e4-461e-babc-86d1b0e59ff5)
+
 </details>
 
 <details>

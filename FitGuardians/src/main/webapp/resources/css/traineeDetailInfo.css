@@ -23,3 +23,10 @@
     background-color: #f3f3f3; 
     cursor: pointer; 
 }
+
+.exerciseTable {
+    table-layout: auto; 
+}
+.exerciseTable td {
+    white-space: normal; 
+}

@@ -46,23 +46,22 @@
 
                                 <c:forEach var="m" items="${list}">
                                     <div class="col-lg-6">
-                                    <div class="card mb-3 py-4 border-left-primary traineeCard" onclick="traineeDetail('${m.userId}');">
-                                        <div class="card-body"  style="display:flex;">
-                                            <div style="margin-left:30px;">
-                                                <div style="border-radius:50%; border:1px solid royalblue; width:150px; height:150px; overflow:hidden;">
-                                                    <img src="${ pageContext.request.contextPath }/resources/uploadFiles/manprofile.PNG" style="max-width:100%; max-height:100%; object-fit:cover;"/>
-                                                
+                                        <div class="card mb-3 py-4 border-left-primary traineeCard" onclick="traineeDetail('${m.userId}');">
+                                            <div class="card-body"  style="display:flex;">
+                                                <div style="margin-left:30px;">
+                                                    <div style="border-radius:50%; border:1px solid royalblue; width:150px; height:150px; overflow:hidden;">
+                                                        <img src="${m.profilePic}" style="width:100%; height:100%; object-fit:cover;"/>
+                                                    </div>
+                                                </div>
+                                                <div style="margin-left:30px;">
+                                                    <span class = "traineeName">${m.userName}</span>
+                                                    <br/>
+                                                    <span>나이 : ${m.age}살</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>성별: ${m.gender}</span> <br/>
+                                                    <span>키 : ${m.height}cm</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>몸무게 : ${m.weight}kg</span> <br/>
+                                                    <span>골격근량 : <fmt:formatNumber value="${m.smm}" pattern="#.#" /> &#37;</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>BMI(체질량지수) :  <fmt:formatNumber value="${m.bmi}" pattern="#.#" /> &#37;</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>체지방량 : <fmt:formatNumber value="${m.fat}" pattern="#.#" /> &#37;</span> <br/>
+                                                    <span>운동 목표 : ${m.goal}</span> <br/>
                                                 </div>
                                             </div>
-                                            <div style="margin-left:30px;">
-                                                <span class = "traineeName">${m.userName}</span>
-                                                <br/>
-                                                <span>나이 : ${m.age}살</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>성별: ${m.gender}</span> <br/>
-                                                <span>키 : ${m.height}cm</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>몸무게 : ${m.weight}kg</span> <br/>
-                                                <span>골격근량 : <fmt:formatNumber value="${m.smm}" pattern="#.#" /> &#37;</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>BMI(체질량지수) :  <fmt:formatNumber value="${m.bmi}" pattern="#.#" /> &#37;</span> &nbsp;&nbsp;&nbsp;&nbsp; <span>체지방량 : <fmt:formatNumber value="${m.fat}" pattern="#.#" /> &#37;</span> <br/>
-                                                <span>운동 목표 : ${m.goal}</span> <br/>
-                                            </div>
-                                        </div>
                                         </div>
                                     </div>
                                 </c:forEach>

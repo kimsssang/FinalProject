@@ -328,27 +328,20 @@
 										href="trainermatching.bo?cpage=${ pi.currentPage -1 }">이전</a></li>
 								</c:otherwise>
 							</c:choose>
-
 							<c:forEach var="p" begin="${ pi.startPage }"
 								end="${ pi.endPage }">
 								<li class="page-item"><a class="page-link"
 									href="trainermatching.bo?cpage=${ p }">${ p }</a></li>
 							</c:forEach>
-
-
 							<c:choose>
 								<c:when test="${pi.currentPage eq pi.maxPage }">
 									<li class="page-item disabled"><a class="page-link"
 										href="">다음</a></li>
-
 								</c:when>
-
 								<c:otherwise>
 									<li class="page-item"><a class="page-link"
 										href="trainermatching.bo?cpage=${ pi.currentPage +1}">다음</a></li>
 								</c:otherwise>
-
-
 							</c:choose>
 						</ul>
 					</div>
@@ -375,11 +368,13 @@
 				url : 'trainermatchingsearch.bo',
 
 				success : function(date) {
-
+					console.log(date)
+					
 					$('.tid').text(date.userId)
 
 					$('.tid').text(date.userId)
-					$('.trname').text('현재 트레이너 ' + date.pt)
+					
+					$('.trname').text('현재 트레이너 : ' + date.pt)
 					$('.pttime').text('남은 PT 횟수 : ' + date.ptTime)
 
 				},

@@ -27,6 +27,14 @@
  	<result column="workout_status" property="workoutStatus"/>
  </resultMap>
  
+ <!-- 회원 정보 가져오기(MemberInfo) -->
+ <resultMap type="MemberInfo" id="memberInfoResultset">
+	<result column="user_no" property="userNo"/>
+	<result column="height" property="height"/>
+	<result column="weight" property="weight"/>
+	<result column="disease" property="disease"/>
+	<result column="goal" property="goal"/>
+ </resultMap>
  
  <insert id="addExercise">
 	INSERT 
@@ -88,6 +96,16 @@
 	  from tn_workout
 	 where user_id = #{userId}
 	   and workout_status = 'Y'
+ </select>
+ 
+ <select id="getMemberInfo" resultMap="memberInfoResultset">
+    select
+           user_no
+         , disease
+         , goal
+     from member_info
+    where
+           user_no = #{userNo}
  </select>
  
 </mapper>

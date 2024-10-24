@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 import com.kh.fitguardians.exercise.model.vo.TnWorkout;
 import com.kh.fitguardians.exercise.model.vo.Workout;
 import com.kh.fitguardians.member.model.vo.Member;
+import com.kh.fitguardians.member.model.vo.MemberInfo;
 
 
 @Repository
@@ -31,6 +32,10 @@ public class ExerciseDao {
 
 	public ArrayList<TnWorkout> selectTraineeWorkoutList(SqlSessionTemplate sqlSession, String userId) {
 		return (ArrayList)sqlSession.selectList("exerciseMapper.selectTraineeWorkoutList", userId);
+	}
+
+	public MemberInfo getMemberInfo(SqlSessionTemplate sqlSession, int userNo) {
+		return sqlSession.selectOne("exerciseMapper.getMemberInfo", userNo);
 	}
 
 	

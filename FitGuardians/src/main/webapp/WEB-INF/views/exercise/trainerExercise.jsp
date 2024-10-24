@@ -178,8 +178,13 @@
 							&nbsp; &nbsp; &nbsp; <select name="traineeExercise"
 								class="selectTrainee" style="width: 130px; height: 25px;">
 								<option value="none" autofocus>회원 선택하기</option>
-								<c:forEach var="m" items="${list}">
-									<option value="${m.userId}">${m.userName}</option>
+								<c:forEach var="m" items="${list}" varStatus="status">
+									<option value="${m.userId}" 
+									data-user-no="${m.userNo}" 
+									data-goal="${miList[status.index].goal}" 
+									data-disease="${miList[status.index].disease[0]}">
+									${m.userName}
+									</option>
 								</c:forEach>
 							</select>
 						</div>
@@ -199,7 +204,8 @@
 						                <p id="modalWorkoutTitle"></p>
 						                <p id="modalWorkoutCategory"></p>
 						                <p id="modalDifficulty"></p>
-						                <p id="modalDescription"></p>
+										<p>운동 리스트 :</p>
+						                <p id="modalDescription" style="border:1px solid rgb(177, 196, 255); margin:10px; padding:10px;"></p>
 						            </div>
 						            <div class="modal-footer">
 						                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
@@ -247,6 +253,33 @@
 
 						</script>
 						
+						<!-- 회원 선택 시 value값도 바뀌는 ㅅ크립트 -->
+						<script>
+						$(document).ready(function(){
+							$(".selectTrainee").change(function(){
+								let selectUser = $(this).find("option:selected");
+							
+							// 목표와 질병 데이터 가져오기
+							let goal = selectUser.data('goal');
+							let disease = selectUser.data('disease');
+							
+					        // selected 업데이트
+					        if (goal === '없음') {
+					            $('select[name="goal"]').val('none');
+					        } else {
+					            $('select[name="goal"]').val(goal);
+					        }
+
+					        if (disease === '없음') {
+					            $('select[name="health_conditions"]').val('none');
+					        } else {
+					            $('select[name="health_conditions"]').val(disease);
+					        }
+					        
+							});
+							
+						});
+						</script>
 						
 						<div style="display: flex;">
 							<div class="card mb-3 py-2 border-bottom-info"
@@ -257,12 +290,13 @@
 								<div class="prescription" align="center">
 									<div class="exercisePrescription">
 										<span>운동 목적</span> <select class="selectExercise" name="goal">
-											<option value="체중_감량">체중 감량</option>
-											<option value="근력_증가">근력 증가</option>
-											<option value="수술_후_재활">수술 후 재활</option>
-											<option value="유연성_운동">유연성 운동</option>
-											<option value="균형_증가">균형 증가</option>
-											<option value="심혈관_기능증진">심혈관 기능증진</option>
+											<option value="none" >* 필수 항목입니다.</option>
+											<option value="체중_감량" >체중 감량</option>
+											<option value="근력_증가" >근력 증가</option>
+											<option value="수술_후_재활" >수술 후 재활</option>
+											<option value="유연성_운동" >유연성 운동</option>
+											<option value="균형_증가" >균형 증가</option>
+											<option value="심혈관_기능증진" >심혈관 기능증진</option>
 										</select>
 									</div>
 									<div class="exercisePrescription">
@@ -301,17 +335,17 @@
 									<div class="exercisePrescription">
 										<span>건강 상태</span> <select class="selectExercise"
 											name="health_conditions">
-											<option value="none">정상</option>
-											<option value="혈압조절장애">혈압조절장애</option>
-											<option value="고지혈증">고지혈증</option>
-											<option value="당뇨">당뇨</option>
-											<option value="대사증후군">대사증후군</option>
-											<option value="디스크(목,허리)">디스크(목,허리)</option>
-											<option value="천식">천식</option>
+											<option value="none" >정상</option>
+											<option value="혈압조절장애" >혈압조절장애</option>
+											<option value="고지혈증" >고지혈증</option>
+											<option value="당뇨" >당뇨</option>
+											<option value="대사증후군" >대사증후군</option>
+											<option value="디스크(목,허리)" >디스크(목,허리)</option>
+											<option value="천식" >천식</option>
 											<option value="심혈관_질환">심혈관 질환</option>
-											<option value="골다공증">골다공증</option>
-											<option value="관절염">관절염</option>
-											<option value="편두통">편두통</option>
+											<option value="골다공증" >골다공증</option>
+											<option value="관절염" >관절염</option>
+											<option value="편두통" >편두통</option>
 											<option value="갑상선_장애">갑상선 장애</option>
 										</select>
 									</div>
@@ -354,14 +388,53 @@
 
 							<div class="card mb-4 py-3 border-bottom-primary"
 								style="width: 50%; margin: 50px; margin-left: 25px;">
-								<h4
-									style="margin-left: 10px; font-weight: 600; padding: 20px; margin: 20px;"
-									align="center">AI가 추천해준 운동계획</h4>
+								<div style="display:flex; align-items:center; justify-content:center; margin-left:10%;">
+									<h4
+										style="font-weight: 600; padding: 20px; margin: 20px;"
+										align="center">AI가 추천해준 운동계획</h4>
+										<div class="btn btn-danger btn-circle" id="saveBtn">
+											<i class="fas fa-check"></i>
+										</div>
+								</div> 
 								<div class="prescription aiprep">
-
-									<div class="btn btn-danger btn-circle" id="saveBtn">
-										<i class="fas fa-check"></i>
-									</div>
+									<!-- 로딩 중일 때 보이는 화면 -->
+									<div id="loading" style="display:none; align-items:center; justify-content:center; " >
+									   <div class="loader">
+										  <div>
+										    <ul>
+										      <li>
+										        <svg fill="currentColor" viewBox="0 0 90 120">
+										          <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+										        </svg>
+										      </li>
+										      <li>
+										        <svg fill="currentColor" viewBox="0 0 90 120">
+										          <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+										        </svg>
+										      </li>
+										      <li>
+										        <svg fill="currentColor" viewBox="0 0 90 120">
+										          <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+										        </svg>
+										      </li>
+										      <li>
+										        <svg fill="currentColor" viewBox="0 0 90 120">
+										          <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+										        </svg>
+										      </li>
+										      <li>
+										        <svg fill="currentColor" viewBox="0 0 90 120">
+										          <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+										        </svg>
+										      </li>
+										      <li>
+										        <svg fill="currentColor" viewBox="0 0 90 120">
+										          <path d="M90,0 L90,120 L11,120 C4.92486775,120 0,115.075132 0,109 L0,11 C0,4.92486775 4.92486775,0 11,0 L90,0 Z M71.5,81 L18.5,81 C17.1192881,81 16,82.1192881 16,83.5 C16,84.8254834 17.0315359,85.9100387 18.3356243,85.9946823 L18.5,86 L71.5,86 C72.8807119,86 74,84.8807119 74,83.5 C74,82.1745166 72.9684641,81.0899613 71.6643757,81.0053177 L71.5,81 Z M71.5,57 L18.5,57 C17.1192881,57 16,58.1192881 16,59.5 C16,60.8254834 17.0315359,61.9100387 18.3356243,61.9946823 L18.5,62 L71.5,62 C72.8807119,62 74,60.8807119 74,59.5 C74,58.1192881 72.8807119,57 71.5,57 Z M71.5,33 L18.5,33 C17.1192881,33 16,34.1192881 16,35.5 C16,36.8254834 17.0315359,37.9100387 18.3356243,37.9946823 L18.5,38 L71.5,38 C72.8807119,38 74,36.8807119 74,35.5 C74,34.1192881 72.8807119,33 71.5,33 Z"></path>
+										        </svg>
+										      </li>
+										    </ul>
+										  </div><span style="font-size:20px; font-family:'DungGeunMo'">AI가 열심히 <br /> 만들고 있어요👽</span></div>
+										</div>
 									<div class="aiRecommend aiInfo">
 										<!-- 운동 정보 삽입될 예정 -->
 									</div>
@@ -497,7 +570,7 @@
 									<div class="form-group">
 										<label for="taskId" class="col-form-label">일정 제목</label> <input
 											type="text" class="form-control" id="calendar_title"
-											name="calendar_title"> <label for="taskId"
+											name="calendar_title" value="(이름입력)님의 n일차 운동 플래너"> <label for="taskId"
 											class="col-form-label">난이도</label>
 										<div style="display: flex;">
 											<label><input type="checkbox" class="difficulty"
@@ -539,6 +612,10 @@
                 $(function(){
                 	
                 	$("#aiPlan").click(function(){
+                		// 로딩 화면 보여주는 메소드
+                		$("#loading").css("display","flex");
+                		$("#loading").show();
+                		
                 		let daysPerWeek = $('select[name="days_per_week"]').val();
                 		console.log("Days per week:", daysPerWeek); // 추가된 디버깅 코드
                 		
@@ -557,6 +634,8 @@
 	                         plan_duration_weeks : encodeURIComponent($('select[name="plan_duration_weeks"]').val()),
                 		}),
                 		success: function(data){
+                			// loading화면 숨기기
+                			$("#loading").hide();
                 			
                 			let exerciseArr = data.result;
                 			let info = '<span>운동 정보</span>';

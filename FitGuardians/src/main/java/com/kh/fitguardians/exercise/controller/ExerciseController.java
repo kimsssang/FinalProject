@@ -52,6 +52,7 @@ import com.kh.fitguardians.exercise.model.vo.ExercisePlan;
 import com.kh.fitguardians.exercise.model.vo.TnWorkout;
 import com.kh.fitguardians.exercise.model.vo.Workout;
 import com.kh.fitguardians.member.model.vo.Member;
+import com.kh.fitguardians.member.model.vo.MemberInfo;
 
 
 @Controller
@@ -60,6 +61,7 @@ public class ExerciseController {
 	@Autowired
 	private ExerciseServiceImpl eService;
 
+
 	// trainerExercise로 포워딩 위한 메소드
 	@RequestMapping("exercise.bo")
 	public ModelAndView showExercisePage(HttpSession session, ModelAndView mv) {
@@ -67,9 +69,17 @@ public class ExerciseController {
 		
 		// 1. 페이지가 로드 되자마자 트레이너의 담당 회원이 조회되야 한다.
 		ArrayList<Member> list = eService.getTrainee(userId);
-		
-		
 		mv.addObject("list", list).setViewName("exercise/trainerExercise");;
+		
+		// 2. 담당한 회원의 가장 최신의 memberInfo를 가져와야 한다. 
+		// 가져오기 위해선 담당한 회원의 번호가 필요하다.
+		ArrayList<MemberInfo> miList = new ArrayList<>();
+		for(Member m : list) {
+			MemberInfo mi = eService.getMemberInfo(m.getUserNo());
+			miList.add(mi);
+		}
+		
+		mv.addObject("miList", miList);
 		
 		return mv;
 	} // showExercisePage

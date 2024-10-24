@@ -117,7 +117,7 @@ $(document).ready(function(){
             cancelButtonColor:"#3085d6",
             confirmButtonText: "삭제"
         }).then((result) => {
-            if(result.isConfirmned){
+            if(result.isConfirmed){
                 // 삭제 ajax 실행할 것
                 $.ajax({
                     url : 'deleteBodyInfo.me',
@@ -128,6 +128,16 @@ $(document).ready(function(){
                             title: "성공적으로 삭제하였습니다!",
                             icon: "success"
                           });
+
+                    // 해당 행을 테이블에서 제거
+                    $('.deleteButton[data-body-info-no="' + bodyInfoNo + '"]').closest('tr').remove();
+
+                    // tbody의 행 수 확인
+                    if ($('tbody tr').length === 0) {
+                        // tbody가 비어 있으면 thead도 제거
+                        $('table').remove();
+                    }
+                                    
                     },
                     error : function(){
                         console.log("error got occured");

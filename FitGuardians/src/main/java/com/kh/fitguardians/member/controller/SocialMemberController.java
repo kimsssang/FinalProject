@@ -55,7 +55,6 @@ public class SocialMemberController {
 
 	@ResponseBody
 	@RequestMapping(value = "socialLogin.me", produces = "text/plain; charset=UTF-8")
-	// '일단은' produces 속성의 값을 일반 텍스트로 반환하게 만듬(text/plain)
 	public String loginMember(String social) throws IOException {
 		
 		if(social.equals("kakao")) {
@@ -293,7 +292,8 @@ public class SocialMemberController {
             		session.setAttribute("mi", mi);
             		session.setAttribute("bi", bi);
             		
-            		return "Trainee/traineeDashboard";
+            		// MemberController로부터 사용
+            		return "redirect:dashboard.me";
             	}else {
             		// 등록 실패, 기존 로그인 창으로 리다이랙트
             		session.setAttribute("errorMsg", "로그인 실패");
@@ -323,7 +323,7 @@ public class SocialMemberController {
 				session.setAttribute("recentBi", recentBi);
 				
             	
-				return "Trainee/traineeDashboard";
+				return "redirect:dashboard.me";
             }
 		}else {
 			session.setAttribute("errorMsg", "사용자 정보 데이터를 가져올 수 없습니다.");
@@ -535,7 +535,7 @@ public class SocialMemberController {
             		session.setAttribute("mi", mi);
             		session.setAttribute("bi", bi);
             		
-            		return "Trainee/traineeDashboard";
+            		return "redirect:dashboard.me";
             	}else {
             		// 등록 실패, 기존 로그인 창으로 리다이랙트
             		session.setAttribute("errorMsg", "로그인 실패");
@@ -564,7 +564,7 @@ public class SocialMemberController {
             	session.setAttribute("recentBi", recentBi);
             	
             	
-            	return "Trainee/traineeDashboard";
+            	return "redirect:dashboard.me";
             }
 	    }else {
 	    	session.setAttribute("errorMsg", "사용자 정보 데이터를 가져올 수 없습니다.");
@@ -805,7 +805,7 @@ public class SocialMemberController {
             		session.setAttribute("mi", mi);
             		session.setAttribute("bi", bi);
             		
-            		return "Trainee/traineeDashboard";
+            		return "redirect:dashboard.me";
             	}else {
             		// 등록 실패, 기존 로그인 창으로 리다이랙트
             		session.setAttribute("errorMsg", "로그인 실패");
@@ -834,7 +834,7 @@ public class SocialMemberController {
             	session.setAttribute("recentBi", recentBi);
             	
             	
-            	return "Trainee/traineeDashboard";
+            	return "redirect:dashboard.me";
             }
 	    }else {
 	    	session.setAttribute("errorMsg", "사용자 정보 데이터를 가져올 수 없습니다.");
@@ -982,11 +982,11 @@ public class SocialMemberController {
 	    
 	    // 성별에 따라 계산
 	    if(loginMember.getGender().equals("M")) { // 남자라면
+	    	double heightInMeters = memberInfo.getHeight() / 100.0;
 	    	double mAge = Double.parseDouble(loginMember.getAge());
-        	double mBmi = memberInfo.getWeight() / Math.pow(memberInfo.getHeight(), 2);
+        	double mBmi = memberInfo.getWeight() / Math.pow(heightInMeters, 2);
         	double mSmm = 0.407 * memberInfo.getWeight() + 0.267 * memberInfo.getHeight() - 19.2;
-        	double mBfp = 1.20 * mBmi + 0.23 * mAge - 16.2;
-        	double mFat = memberInfo.getWeight() * (mBfp / 100);
+        	double mFat = 1.20 * mBmi + 0.23 * mAge - 16.2;
         	
         	bodyInfo.setBmi(mBmi);
         	bodyInfo.setSmm(mSmm);
@@ -995,11 +995,11 @@ public class SocialMemberController {
         	result1 = mService.addSocialMemberBodyInfo(bodyInfo);
         	
 	    }else { // 여자라면
+	    	double heightInMeters = memberInfo.getHeight() / 100.0;
 	    	double fAge = Double.parseDouble(loginMember.getAge());
-        	double fBmi = memberInfo.getWeight() / Math.pow(memberInfo.getHeight(), 2);
+        	double fBmi = memberInfo.getWeight() / Math.pow(heightInMeters, 2);
         	double fSmm = 0.252 * memberInfo.getWeight() + 0.473 * memberInfo.getHeight() - 48.3;
-        	double fBfp = 1.20 * fBmi + 0.23 * fAge - 5.4;
-        	double fFat = memberInfo.getWeight() * (fBfp / 100);
+        	double fFat = 1.20 * fBmi + 0.23 * fAge - 5.4;
         	
         	bodyInfo.setBmi(fBmi);
         	bodyInfo.setSmm(fSmm);
@@ -1097,5 +1097,4 @@ public class SocialMemberController {
 			return null;
 		}
 	}
-	
 }

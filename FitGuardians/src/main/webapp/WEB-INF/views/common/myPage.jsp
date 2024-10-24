@@ -18,6 +18,12 @@
 		<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.14.1/dist/sweetalert2.min.css" rel="stylesheet">
 <!-- <script defer src="resources/templates/vendor/jquery/jquery.min.js"></script> -->
 <script defer src="resources/js/jquery.sumoselect.js"></script>
+<style type="text/css">
+	#disease-card{
+		filter: blur(5px);
+	}
+	
+</style>
 </head>
 
 <body id="page-top">
@@ -189,17 +195,25 @@
 											<div class="row no-gutters align-items-center">
 												<div class="col mr-2">
 													<div
-														class="text-xs font-weight-bold text-info text-uppercase mb-1">이번달
-														수업 참여</div>
+														class="text-xs font-weight-bold text-info text-uppercase mb-1">남은 PT 횟수</div>
 													<div class="row no-gutters align-items-center">
 														<div class="col-auto">
-															<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">50%</div>
+															<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">${loginUser.ptTime}</div>
 														</div>
 														<div class="col">
 															<div class="progress progress-sm mr-2">
-																<div class="progress-bar bg-info" role="progressbar"
-																	style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-																	aria-valuemax="100"></div>
+															<c:choose>
+																<c:when test="${ loginUser.ptTime eq 0 }">
+																	<div class="progress-bar bg-info" role="progressbar"
+																		style="width: 0%" aria-valuenow="0" aria-valuemin="0"
+																		aria-valuemax="100"></div>
+																</c:when>
+																<c:otherwise>
+																	<div class="progress-bar bg-info" role="progressbar"
+																		style="width: ${loginUser.ptTime % loginUser.membership * 100}%" aria-valuenow="${loginUser.ptTime % loginUser.membership * 100}" aria-valuemin="0"
+																		aria-valuemax="100"></div>
+																</c:otherwise>
+															</c:choose>
 															</div>
 														</div>
 													</div>
@@ -285,7 +299,7 @@
 												</div>
 											</div>
 										</div>
-										<div class="card-body" id="disease-card" >
+										<div class="card-body" id="disease-card">
 											<form action="">
 												<div class="input-group mb-3">
 													<input type="number" id="height" name="height"
@@ -308,43 +322,43 @@
 														<c:if test="${memberInfo.disease.contains('당뇨')}">selected</c:if>>당뇨</option>
 													<option value="대사증후군"
 														<c:if test="${memberInfo.disease.contains('대사증후군')}">selected</c:if>>대사증후군</option>
-													<option value="디스크(허리)"
-														<c:if test="${memberInfo.disease.contains('디스크(허리)')}">selected</c:if>>디스크(허리)</option>
+													<option value="디스크(목,허리)"
+														<c:if test="${memberInfo.disease.contains('디스크(목,허리)')}">selected</c:if>>디스크(허리)</option>
 													<option value="천식"
 														<c:if test="${memberInfo.disease.contains('천식')}">selected</c:if>>천식</option>
-													<option value="심혈관질환"
-														<c:if test="${memberInfo.disease.contains('심혈관 질환')}">selected</c:if>>심혈관
+													<option value="심혈관_질환"
+														<c:if test="${memberInfo.disease.contains('심혈관_질환')}">selected</c:if>>심혈관
 														질환</option>
 													<option value="골다골증"
 														<c:if test="${memberInfo.disease.contains('골다골증')}">selected</c:if>>골다골증</option>
 													<option value="관절염"
 														<c:if test="${memberInfo.disease.contains('관절염')}">selected</c:if>>관절염(류마티스
 														등)</option>
-													<option value="편두통혹은만성두통"
-														<c:if test="${memberInfo.disease.contains('편두통혹은만성두통')}">selected</c:if>>편두통
+													<option value="편두통"
+														<c:if test="${memberInfo.disease.contains('편두통')}">selected</c:if>>편두통
 														혹은 만성두통</option>
-													<option value="갑상선장애"
-														<c:if test="${memberInfo.disease.contains('갑상선장애')}">selected</c:if>>갑상선
+													<option value="갑상선_장애"
+														<c:if test="${memberInfo.disease.contains('갑상선_장애')}">selected</c:if>>갑상선
 														장애</option>
 												</select> <select id="goal" name="goal" class="custom-select mb-2">
 													<option value="없음">운동 목표</option>
-													<option value="체중 감량"
-														<c:if test="${memberInfo.goal.contains('체중 감량')}">selected</c:if>>체중
+													<option value="체중_감량"
+														<c:if test="${memberInfo.goal.contains('체중_감량')}">selected</c:if>>체중
 														감량</option>
-													<option value="근력 증가"
-														<c:if test="${memberInfo.goal.contains('근력 증가')}">selected</c:if>>근력
+													<option value="근력_증가"
+														<c:if test="${memberInfo.goal.contains('근력_증가')}">selected</c:if>>근력
 														증가</option>
-													<option value="수술 후 재활"
-														<c:if test="${memberInfo.goal.contains('수술 후 재활')}">selected</c:if>>수술
+													<option value="수술_후_재활"
+														<c:if test="${memberInfo.goal.contains('수술_후_재활')}">selected</c:if>>수술
 														후 재활</option>
-													<option value="유연성 운동"
-														<c:if test="${memberInfo.goal.contains('유연성 운동')}">selected</c:if>>유연성
+													<option value="유연성_운동"
+														<c:if test="${memberInfo.goal.contains('유연성_운동')}">selected</c:if>>유연성
 														운동</option>
-													<option value="균형 증가"
-														<c:if test="${memberInfo.goal.contains('균형 증가')}">selected</c:if>>균형
+													<option value="균형_증가"
+														<c:if test="${memberInfo.goal.contains('균형_증가')}">selected</c:if>>균형
 														증가</option>
-													<option value="심혈관 기능 증진"
-														<c:if test="${memberInfo.goal.contains('심혈관 기능 증진')}">selected</c:if>>심혈관
+													<option value="심혈관_기능증진"
+														<c:if test="${memberInfo.goal.contains('심혈관_기능증진')}">selected</c:if>>심혈관
 														기능증진</option>
 												</select>
 												<div class="input-group mb-3">

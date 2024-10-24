@@ -281,7 +281,7 @@
 		                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
 		                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 		                                <span class="mr-2 d-none d-lg-inline text-gray-600 small">${ loginUser.userName }</span>
-		                                <img class="img-profile rounded-circle" src="${ loginUser.profilePic }" />
+		                                <img class="img-profile rounded-circle" src="${loginUser.profilePic}" />
 		                            </a>
 		                            <!-- Dropdown - User Information -->
 		                            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
@@ -801,86 +801,119 @@
 	    <c:when test="${not empty loginUser && not empty loginUser.api}">
 	        <c:if test="${not hasAdditionalInfo && not hasBodyInfo}">
 	            <script>
-					$(function(){
-						Swal.fire({
-							title: '추가 정보 입력',
-							html: `
-								<input type="number" id="height" name="height" class="swal2-input" placeholder="키 (cm)">
-								<input type="number" id="weight" name="weight" class="swal2-input" placeholder="몸무게 (kg)">
-								
-								<select id="disease" name="disease" class="sumoselect_multiple mt-3" multiple=multiple>
-									<option value="" hidden selected disabled>기저질환</option>
-									<option value="없음">없음</option>
-									<option value="혈압조절장애">혈압조절장애(고혈압, 저혈압)</option>
-									<option value="고지혈증">고지혈증</option>
-									<option value="당뇨">당뇨</option>
-									<option value="대사증후군">대사증후군</option>
-									<option value="디스크">디스크(목, 허리)</option>
-									<option value="천식">천식</option>
-									<option value="심혈관_질환">심혈관 질환</option>
-									<option value="골다공증">골다공증</option>
-									<option value="관절염">관절염(류마티스 등)</option>
-									<option value="편두통_혹은_만성두통">편두통 혹은 만성두통</option>
-									<option value="갑상선_장애">디스크(목, 허리)</option>
-								</select>
-								<select id="goal" class="custom-select">
-									<option value="" hidden selected disabled>운동 목표</option>
-									<option value="체중_감량">체중 감량</option>
-									<option value="근력_증가">근력 증가</option>
-									<option value="수술_후_재활">수술 후 재활</option>
-									<option value="유연성_운동">유연성 운동</option>
-									<option value="균형_증가">균형 증가</option>
-									<option value="심혈관_기능증진">심혈관 기능증진</option>
-								</select>
-							`,
-							confirmButtonText: '저장',
-							customClass: {
-								popup: 'custom-popup',    // 팝업 전체에 커스텀 스타일 적용
-								content: 'custom-content' // 컨텐츠에 대한 스타일 적용
-							},
-							preConfirm: () => {
-								return {
-									height: $("#height").val(),
-									weight: $("#weight").val(),
-									disease: $("#disease").val(),
-									goal: $("#goal").val(),
-								}
-							},
-							showCancelButton: true,
-							cancelButtonText: '나중에 하기',
-						}).then((result) => {
-						        if (result.isConfirmed) {
-						            let info = result.value;
-						            if (info.height && info.weight && info.disease && info.goal) {
-						            	console.log(JSON.stringify(info))
-						            	$.ajax({
-						            	    type: 'POST',
-						            	    url: 'addAdditionalInfo.me',
-						            	    data: JSON.stringify(info),  // JSON 데이터로 전송
-						            	    contentType: 'application/json',
-						            	    success: function(response) {
-						            	        if (response === "success") {
-						            	            Swal.fire('저장되었습니다!', '', 'success');
-						            	        } else {
-						            	            Swal.fire('저장에 실패했습니다.', '', 'error');
-						            	        }
-						            	    }
-						            	});
-						            } else {
-						                Swal.fire('모든 정보를 입력해 주세요', '', 'error');
-						            }
-						        }else if (result.dismiss === Swal.DismissReason.cancel) {
-				                       // '나중에 하기' 버튼 클릭 시 세션에 값을 저장
-				                       $.ajax({
-				                           type: 'POST',
-				                           url: 'delayAdditionalInfo.me',
-				                       });
-				                   }
-						    });
-				            $(".sumoselect_multiple").SumoSelect({
-								placeholder: "Select options",
-							});
-					})
+		            $(function(){
+		            	function showAdditionalInfoModal() {
+							Swal.fire({
+								title: '추가 정보 입력',
+								html: `
+									<h5 style="font-weight: 550;">키와 몸무게</h5>
+									<input type="number" id="height" name="height" class="swal2-input custom-input" placeholder="키 (cm)">
+									<input type="number" id="weight" name="weight" class="swal2-input custom-input" placeholder="몸무게 (kg)">
+									
+									<hr>
+									
+									<h5 style="font-weight: 550;">기저질환과 운동목표</h5>
+									<select id="disease" name="disease" class="sumoselect_multiple mt-3 disease" multiple=multiple>
+										<option value="없음">없음</option>
+										<option value="혈압조절장애">혈압조절장애(고혈압, 저혈압)</option>
+										<option value="고지혈증">고지혈증</option>
+										<option value="당뇨">당뇨</option>
+										<option value="대사증후군">대사증후군</option>
+										<option value="디스크">디스크(목, 허리)</option>
+										<option value="천식">천식</option>
+										<option value="심혈관_질환">심혈관 질환</option>
+										<option value="골다공증">골다공증</option>
+										<option value="관절염">관절염(류마티스 등)</option>
+										<option value="편두통_혹은_만성두통">편두통 혹은 만성두통</option>
+										<option value="갑상선_장애">디스크(목, 허리)</option>
+									</select>
+									<select id="goal" name="goal" class="sumoselect goal">
+										<option value="" disabled selected hidden>운동 목표</option>
+										<option value="체중_감량">체중 감량</option>
+										<option value="근력_증가">근력 증가</option>
+										<option value="수술_후_재활">수술 후 재활</option>
+										<option value="유연성_운동">유연성 운동</option>
+										<option value="균형_증가">균형 증가</option>
+										<option value="심혈관_기능증진">심혈관 기능증진</option>
+									</select>
+									<div class="additionalInfoLogo">
+										<img src="resources/images/FitGuardians로고-001.png" alt="">
+									</div>
+								`,
+								confirmButtonText: '저장',
+								customClass: {
+									popup: 'custom-popup',    // 팝업 전체에 커스텀 스타일 적용
+									content: 'custom-content', // 컨텐츠에 대한 스타일 적용
+									input: 'custom-input',
+								},
+								preConfirm: () => {
+									return {
+										height: $("#height").val(),
+										weight: $("#weight").val(),
+										disease: $("#disease").val(),
+										goal: $("#goal").val(),
+									}
+								},
+								showCancelButton: true,
+								cancelButtonText: '나중에 하기',
+							}).then((result) => {
+							        if (result.isConfirmed) {
+							            let info = result.value;
+							            if (info.height && info.weight && info.disease && info.goal) {
+							            	console.log(JSON.stringify(info))
+							            	$.ajax({
+							            	    type: 'POST',
+							            	    url: 'addAdditionalInfo.me',
+							            	    data: JSON.stringify(info),  // JSON 데이터로 전송
+							            	    contentType: 'application/json',
+							            	    success: function(response) {
+							            	        if (response === "success") {
+							            	            Swal.fire({
+							            	            	title: '저장되었습니다!',
+										                	text: '추가 정보를 기반으로 신체 정보를 갱신했습니다!',
+										                	icon: 'success',
+										                	confirmButtonText: '좋아요!',
+							            	            });
+							            	        } else {
+							            	            Swal.fire({
+							            	            	title: '저장에 실패했습니다.',
+							            	            	text: '',
+							            	            	icon: 'error',
+							            	            	confirmButtonText: '확인',
+							            	            }).then(() => {
+										                	showAdditionalInfoModal();
+										                });
+							            	        }
+							            	    }
+							            	});
+							            } else {
+							                Swal.fire({
+							                	title: '모든 정보를 입력해 주세요!',
+							                	text: '',
+							                	icon: 'error',
+							                	confirmButtonText: '확인',
+							                }).then(() => {
+							                	// 확인버튼 누르면 다시 창 띄우게 하기
+							                	showAdditionalInfoModal();
+							                });
+							            }
+							        }else if (result.dismiss === Swal.DismissReason.cancel) {
+					                       // '나중에 하기' 버튼 클릭 시 세션에 값을 저장
+					                       $.ajax({
+					                           type: 'POST',
+					                           url: 'delayAdditionalInfo.me',
+					                       });
+					                   }
+							    });
+					            $(".sumoselect_multiple.mt-3.disease").SumoSelect({
+									placeholder: "기저질환",
+								});
+					            $(".sumoselect.goal").SumoSelect({
+									placeholder: "운동 목표",
+								});
+		            	}
+		            showAdditionalInfoModal();
+					});
 	            </script>
 	        </c:if>
 	    </c:when>

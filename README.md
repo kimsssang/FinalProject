@@ -139,6 +139,8 @@ Fit은 건강한 상태를, Guardians는 <b style="color:royalblue;">수호자</
   <summary style="list-style:none">🟠 김종열</summary>
   <h4>내 위치 기준 헬스장 조회</h4>
 
+![헬스장 조회](https://www.notion.so/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2Ff18f2976-d334-44a1-a26d-d646ce5a2222%2Fe565b3c7-1855-43db-8a2d-2703042eb306%2F%25EB%2582%25B4%25EC%259C%2584%25EC%25B9%2598%25EA%25B8%25B0%25EC%25A4%2580%25EC%25A7%2580%25EB%258F%2584.gif?table=block&id=1291c746-ba2c-8038-86c9-e7a517e66462&spaceId=f18f2976-d334-44a1-a26d-d646ce5a2222&userId=fe3890c5-09a4-43e9-bb8f-dd11cfb6389f&cache=v2)
+
   <h4>날씨 API</h4>
 
   <h4>채팅</h4>

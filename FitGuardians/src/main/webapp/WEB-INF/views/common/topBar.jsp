@@ -397,6 +397,7 @@
 	        selectedUserNo = userNo; // 상대방 유저 NO
 	        chNo = chatRoomNo; // 채팅방 NO
 	        chatMessagesContainer = $('#chatMessages');
+	        chatMessagesContainer.empty();
 	        
 	    	 // 디버깅을 위한 콘솔 로그 추가
 	        console.log('모달 열기 - 트레이너 이름:', participantName);
@@ -496,7 +497,7 @@
 	 	// 채팅 메시지를 업데이트하는 함수
 	    function updateChatMessages(messages) {
 	        var chatMessagesContainer = $('#chatMessages');
-	        chatMessagesContainer.empty(); // 기존 메시지 삭제
+	        //chatMessagesContainer.empty(); // 기존 메시지 삭제
 
 	        var messagesToStatusUpdate = []; // 메시지들의 상태 업데이트를 담을 변수
 

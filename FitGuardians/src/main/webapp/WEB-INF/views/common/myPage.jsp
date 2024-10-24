@@ -121,7 +121,14 @@
 														수업</div>
 													<div class="row no-gutters align-items-center">
 														<div class="col-auto">
-															<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">${(all-today) / all * 100}%</div>
+															<c:choose>
+																<c:when test="${(all-today) / all * 100} eq NaN"}>
+																	<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">등록된 회원이 없습니다</div>	
+																</c:when>
+																<c:otherwise>
+																	<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">${(all-today) / all * 100}%</div>
+																</c:otherwise>
+															</c:choose>
 														</div>
 														<div class="col">
 															<div class="progress progress-sm mr-2">

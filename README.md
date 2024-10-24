@@ -196,15 +196,25 @@ Fit은 건강한 상태를, Guardians는 <b style="color:royalblue;">수호자</
   <h4>운동 플래너 작성(트레이너)</h4>
 
   <p>회원 선택</p>
+  
+  ![트레이너의 회원선택](https://github.com/user-attachments/assets/451373c6-0e27-4e6a-b5c0-b24345ca79c7)
 
   <p>운동 플랜 추가</p>
+
+  ![트레이너운동입력](https://github.com/user-attachments/assets/9a3f2f66-4865-431e-8550-d10e443727e0)
 
   <p>운동 플랜 조회</p>
   &lt; 트레이너 화면
 
+  ![트레이너운동조회(트레이너)](https://github.com/user-attachments/assets/7d8c53db-6929-4fe1-86a1-152fb13d8c92)
+  
   &lt; 회원 화면
 
+  ![트레이너운동조회(회원)](https://github.com/user-attachments/assets/82f42234-a2f6-4bba-b262-66d6dd08bc40)
+
   <p>운동 플랜 삭제</p>
+  
+  ![트레이너운동삭제](https://github.com/user-attachments/assets/0d444071-39e2-4671-a523-f77911e1d025)
 
   </ol>
 
@@ -212,20 +222,34 @@ Fit은 건강한 상태를, Guardians는 <b style="color:royalblue;">수호자</
 
   <p>회원 운동 플래너 작성</p>
 
+  ![회원운동입력](https://github.com/user-attachments/assets/bb31dd18-1439-419d-9114-1cd0416abfd9)
+
   <p>회원 운동 플래너 조회</p>
   &lt; 트레이너 화면
 
+  ![회원운동조회(트레이너)](https://github.com/user-attachments/assets/59b0c0ef-e20b-4b50-b264-ce6d4885398c)
+
   &lt; 회원 화면
 
+  ![회원운동조회(회원)](https://github.com/user-attachments/assets/80fe6cf7-ec68-49a7-95ce-e85bc233c3fd)
+
   <p>회원 운동 플래너 삭제</p>
+
+  ![회원운동삭제](https://github.com/user-attachments/assets/01a346b7-f8d4-44d9-91e1-2ca6196afaad)
 
   <h4>AI 운동스케줄 생성</h4>
 
   <p>스케줄 생성</p>
 
+  ![AI운동플랜](https://github.com/user-attachments/assets/b754e06d-73ca-441c-ab38-9b7c7f19bdb4)
+
   <p>PDF 다운로드</p>
 
+  ![pdf출력](https://github.com/user-attachments/assets/59e05e0f-dd41-4e90-8fe6-b16a9309cf2a)
+
   <h4>운동 검색</h4>
+
+  ![운동검색](https://github.com/user-attachments/assets/a9d5a986-1229-4dc4-96e3-33244ed476e9)
   
 </details>
 

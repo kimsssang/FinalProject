@@ -191,7 +191,7 @@ form .signin__btn:hover {
 	background: #4285F4;
     color: white;
     display: block;
-    width: 92.5%;
+    width: 100%;
     max-width: 680px;
     height: 50px;
     border-radius: 8px;

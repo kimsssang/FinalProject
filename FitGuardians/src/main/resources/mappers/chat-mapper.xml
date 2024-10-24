@@ -182,8 +182,14 @@
 	        (CR.user_no = #{userNo} OR CR.trainer_no = #{userNo}) 
 	        AND CR.status = 'Y'
 	</select>
-
 	
+	<select id="getUnReadMsgCount" resultType="int">
+		select count(*)
+		  from message
+		 where receiver_no = #{userNo}
+  		   and msg_status = 'U'
+	</select>
+
 	<!-- 사용자 활성 채팅 참가자 조회 -->
 	<select id="getActiveParticipantsForUser" parameterType="int" resultMap="MessageParticipantDTOResult">
 	    SELECT 

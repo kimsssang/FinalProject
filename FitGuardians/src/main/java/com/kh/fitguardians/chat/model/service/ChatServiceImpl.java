@@ -77,14 +77,18 @@ public class ChatServiceImpl implements ChatService {
 		return chatDao.updateMessageStatus(sqlSession, messagesToUpdate);
 	}
 
-	
-	
-	
 	// 활성화된 채팅 수 조회
     @Override
     public int getActiveChatCount(int userNo) {
         return chatDao.getActiveChatCount(sqlSession, userNo);
     }
+    
+    // 안 읽은 채팅 수 조회
+    @Override
+	public int getUnReadMsgCount(int userNo) {
+		return chatDao.getUnReadMsgCount(sqlSession, userNo);
+	}
+
     
     // 활성화된 채팅 참가자 조회 (회원 기준)
 	@Override
@@ -110,6 +114,8 @@ public class ChatServiceImpl implements ChatService {
 		return chatDao.uploadFile(sqlSession, fileName, filePath, userNo);
 	}
 
+
+	
 	
 
 	

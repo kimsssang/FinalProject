@@ -122,12 +122,20 @@ public class ChatController {
     public int getActiveChatCount(@PathVariable int userNo) {
         return chatService.getActiveChatCount(userNo);
     }
+    
+    @ResponseBody
+    @GetMapping("/unReadMsg/{userNo}")
+    public int getUnReadMsgCount(@PathVariable int userNo) {
+    	return chatService.getUnReadMsgCount(userNo);
+    }
+    
 
     // 활성화된 채팅 참가자 조회 (회원)
     @GetMapping("/activeParticipants/user/{userNo}")
     @ResponseBody // JSON 형태로 응답
     public ArrayList<MessageParticipantDTO> getActiveParticipantsForUser(@PathVariable int userNo) {
         return chatService.getActiveParticipantsForUser(userNo);
+        
     }
 
     // 활성화된 채팅 참가자 조회 (트레이너)
@@ -136,6 +144,8 @@ public class ChatController {
     public ArrayList<MessageParticipantDTO> getActiveParticipantsForTrainer(@PathVariable int userNo) {
         return chatService.getActiveParticipantsForTrainer(userNo);
     }
+    
+    
     
     // 채팅 모달에서 파일 업로드
     @PostMapping("/fileUpload")
@@ -176,8 +186,7 @@ public class ChatController {
         return "{\"success\": true, \"uploadedFiles\": \"" + uploadedFileNames.toString() + "\", \"uploadedFileUrls\": \"" + uploadedFileUrls.toString() + "\"}"; // JSON 형태로 응답
     }
 
-    
-    
+   
     
     public String saveFile(MultipartFile upfile, HttpSession session) {
 		String originName = upfile.getOriginalFilename(); // "flower.png" 원본명

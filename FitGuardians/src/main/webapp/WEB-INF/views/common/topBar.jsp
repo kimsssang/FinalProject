@@ -72,7 +72,7 @@
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
-                    <div id="weather"></div>
+                   	<div id="weather"></div>
 
 					<script>
 				    $(document).ready(function() {
@@ -125,16 +125,14 @@
 		                                </form>
 		                            </div>
 		                        </li>
-		
-		                        <!-- Nav Item - Alerts -->
+								
+		                        <!--  나중에 알림 생기면 추가
 		                        <li class="nav-item dropdown no-arrow mx-1">
 		                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
 		                                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 		                                <i class="fas fa-bell fa-fw"></i>
-		                                <!-- Counter - Alerts -->
 		                                <span class="badge badge-danger badge-counter">3+</span>
 		                            </a>
-		                            <!-- Dropdown - Alerts -->
 		                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
 		                                aria-labelledby="alertsDropdown">
 		                                <h6 class="dropdown-header">
@@ -176,7 +174,7 @@
 		                                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
 		                            </div>
 		                        </li>
-								
+								-->
 		                        <!-- 채팅 목록 -->
 								<li class="nav-item dropdown no-arrow mx-1">
 								    <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"
@@ -292,8 +290,7 @@
 		                                </a>
 		                                <a class="dropdown-item" onclick="changePicture();">
 		                                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-		                                    Settings
-											<a id="qr" href="${loginUser.qr}"></a>
+		                                    프로필 사진 변경
 		                                </a>
 		                                <a class="dropdown-item" href="sendQr.me">
 		                                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
@@ -653,12 +650,26 @@
 	            type: 'GET',
 	            success: function(activeChatCount) {
 	                // 활성화 채팅 수 업데이트
-	                $('#activeChatCount').text(activeChatCount);
+	                //$('#activeChatCount').text(activeChatCount);
+	                
 	            },
 	            error: function(xhr, status, error) {
 	                console.error('활성화 채팅 수를 가져오는 중 오류 발생:', error);
 	            }
 	        });
+	        
+	        $.ajax({
+	        	url: '/fitguardians/chat/unReadMsg/' + userNo,
+	        	type: 'GET',
+	        	success: (result)=>{
+	        		// 안읽은 채팅 수 업데이트
+	        		$("#activeChatCount").text(result);
+					sessionStorage.setItem("msgCount", result);
+	        	},
+	        	error: ()=>{
+	        		console.error("unread msg ajax failed");
+	        	}
+	        })
 	
 	        // 사용자 레벨에 따라 활성화된 참가자 가져오기
 	        var participantUrl = userLevel === 2 ? '/fitguardians/chat/activeParticipants/user/' : '/fitguardians/chat/activeParticipants/trainer/';
@@ -977,7 +988,6 @@
 	 	    });
 	 	})
 	</script>
-
 
 </body>
 </html>

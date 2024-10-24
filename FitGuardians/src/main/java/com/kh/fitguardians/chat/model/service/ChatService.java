@@ -33,6 +33,9 @@ public interface ChatService {
 	// 활성화된 채팅 수 조회
     int getActiveChatCount(int userNo);
     
+    // 안읽은 메시지 개수
+    int getUnReadMsgCount(int userNo);
+    
     // 활성화된 채팅 참가자 조회 (회원 기준)
     ArrayList<MessageParticipantDTO> getActiveParticipantsForUser(int userNo);
 

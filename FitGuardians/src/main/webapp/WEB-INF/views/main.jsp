@@ -38,7 +38,7 @@
     <style>
     img{
     width:98%;
-    height:880px;
+    height:57rem;
     margin:1%;
     cursor:pointer;
     }

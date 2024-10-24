@@ -255,6 +255,25 @@ public class MemberServiceImpl implements MemberService{
 		return mDao.selectTpShedule(sqlSession, m);
 	}
 
+	@Override
+	public int selectMyMember(String userId) {
+		return mDao.selectMyMember(sqlSession, userId);
+	}
+
+	@Override
+	public int selectMemberCount() {
+		return mDao.selectMemberCount(sqlSession);
+	}
+
+	@Override
+	public int trainerToday(int userNo) {
+		return mDao.trainerToday(sqlSession, userNo);
+	}
+
+	@Override
+	public int trainerTodayAll(int userNo) {
+		return mDao.trainerTodayAll(sqlSession, userNo);
+	}
 	
 	
 

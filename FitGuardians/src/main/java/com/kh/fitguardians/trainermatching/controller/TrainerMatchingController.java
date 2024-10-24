@@ -62,6 +62,7 @@ public class TrainerMatchingController {
 			m.setMembership(pttime + "");
 			m.setPt(pt);
 			m.setPtTime(pttime);
+			System.out.println(m);
 		int result = new TrainermatchingserviceImpl().trainerupdate(sqlsession,m);
 
 		if(result >0) {

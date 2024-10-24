@@ -175,7 +175,7 @@ public class MemberController {
 				Path path = FileSystems.getDefault().getPath(filePath);
 				MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
 				
-				String qrCodeUrl = "http://localhost:8282/fitguardians/resources/qrCodes/" + fileName;
+				String qrCodeUrl = "https://kimsssang.github.io/FinalProject/FitGuardians/src/main/webapp/resources/qrCodes/" + fileName;
 				m.setQr(qrCodeUrl);
 			} catch (WriterException e) {
 				e.printStackTrace();

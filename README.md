@@ -35,33 +35,36 @@ Fit은 건강한 상태를, Guardians는 <b style="color:royalblue;">수호자</
 <!-- 사이트맵 사진 삽입 -->
 
 <h3>개발 환경</h3>
-| 구분         | 기술                  |
-|--------------|-----------------------|
-| **Front-end**| JavaScript, jQuery, HTML5, CSS3, Ajax |
-| **Back-end** | Java 11, JSP & Servlet |
-| **DBMS**     | Oracle                |
-| **Framework**| Mybatis, Spring Framework |
-| **Tool**     | Eclipse, Visual Studio Code |
-| **Environment** | Windows 10, Apache Tomcat 9.0 |
-| **Management**| GitHub, Notion       |
+
+|구분|기술|
+|:------:|:---:|
+|**Front-end**|JavaScript, jQuery, HTML5, CSS3, Ajax|
+|**Back-end**|Java 11, JSP & Servlet |
+|**DBMS**|Oracle|
+|**Framework**|Mybatis, Spring Framework|
+|**Tool**|STS, Visual Studio Code |
+|**Environment**|Windows 10, Apache Tomcat 9.0 |
+|**Management**|GitHub, Notion|
 
 
 <h3>팀원 소개</h3>
 
 <ol>
-    <li>🔴 김상우</li> 
+    🔴 김상우
     <div>회원 가입, 로그인, qr코드인증 , 일정생성, 마이페이지, 카카오톡으로 qr코드 전송시키기</div> 
     <br />
-    <li>🟠 김종열</li>
+    🟠 김종열
     <div> 회원-트레이너 1:1 채팅, 위치에 따른 날씨 정보, 현재 위치 및 주소 입력에 따른 주변 헬스장 위치 마커로 표시</div>
     <br />
-    <li> 🟡 박경원</li>
+    🟡 박경원
     <div> 회원가입 추가 정보 입력, (카카오, 네이버, 구글) API를 활용한 소셜 로그인 및 회원가입</div>
     <br />
-    <li> 🟢 (조장👑)이주영</li>
+    🟢 (조장👑)이주영
     <div> 트레이너 · 회원 운동 플래너 입력 및 조회, openAPI를 이용한 AI운동플래너 생성 서비스 및 PDF 출력, 운동 검색 기능, 트레이너 · 회원 메인 대시보드 구성, 회원의 키 · 몸무게 등을 이용한 골격근량, 체질량지수(BMI), 체지방량 계산 및 조회</div>
     <br />
-    <li> 🔵 이준영</li>
+    🔵 이준영
     <div>open API를 이용한 트레이너 · 회원 식단 플래너 서비스, 트레이너 조회, 토스 openAPI를 이용한 회원권 구매</div>
     <br />
 </ol>
+
+<h3>느낀점</h3>

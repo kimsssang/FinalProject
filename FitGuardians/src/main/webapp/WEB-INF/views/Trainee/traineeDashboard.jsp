@@ -151,7 +151,14 @@
                                                                 </div>
                                                                 <div class="row no-gutters align-items-center">
                                                                     <div class="col-auto">
-                                                                        <div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">${mi.goal}</div>
+                                                                    	<c:choose>
+	                                                                    	<c:when test="${not empty mi.goal}">
+	                                                                    		<div class="h5 mb-0 mr-3 font-weight-bold text-gray-800">${mi.goal}</div>
+	                                                                    	</c:when>
+	                                                                    	<c:otherwise>
+	                                                                    		<div class="h6 mb-0 mr-3 font-weight text-gray-800">현재 목표가 없습니다</div>
+	                                                                    	</c:otherwise>
+                                                                    	</c:choose>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -171,7 +178,16 @@
                                                             <div class="col mr-2">
                                                                 <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">
                                                                     담당 트레이너</div>
-                                                                <div class="h5 mb-0 font-weight-bold text-gray-800">${trainer.userName}</div>
+                                                                <c:choose>
+                                                                	<c:when test="${not empty trainer.userName}">
+		                                                                <div class="h5 mb-0 font-weight-bold text-gray-800">${trainer.userName}</div>
+                                                                	</c:when>
+                                                                	<c:otherwise>
+                                                                		<div class="h6 mb-0 font-weight text-gray-800">
+                                                                			현재 등록된 트레이너가 없습니다.
+                                                                		</div>
+                                                                	</c:otherwise>
+                                                                </c:choose>
                                                             </div>
                                                             <div class="col-auto">
                                                                 <i class="fas fa-comments fa-2x text-gray-300"></i>

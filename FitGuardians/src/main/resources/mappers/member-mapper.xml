@@ -760,4 +760,33 @@
 		 where USER_ID = #{userId}
 	</update>
 	
+	<select id="selectMyMember" resultType="int">
+		select count(*)
+		  from member
+		 where pt = #{userId}
+		   and status = 'Y'
+	</select>
+	
+	<select id="selectMemberCount" resultType="int">
+		select count(*)
+		  from member
+		 where status = 'Y'
+	</select>
+	
+	<select id="trainerToday" resultType="int">
+		SELECT COUNT(*)
+		  FROM schedule
+		 WHERE TO_TIMESTAMP_TZ(start_date, &apos;YYYY-MM-DD&quot;T&quot;HH24:MI:SS.FF3 TZR&apos;) &gt;= SYSTIMESTAMP AT TIME ZONE &apos;UTC&apos;
+		   AND TO_TIMESTAMP_TZ(start_date, &apos;YYYY-MM-DD&quot;T&quot;HH24:MI:SS.FF3 TZR&apos;) &lt; SYSTIMESTAMP AT TIME ZONE &apos;UTC&apos; + INTERVAL &apos;1&apos; DAY
+		   AND user_no = #{userNo}
+		   AND pt_user IS NOT NULL
+	</select>
+	
+	<select id="trainerTodayAll" resultType="int">
+		SELECT COUNT(*)
+		  FROM schedule
+		 WHERE TRUNC(TO_TIMESTAMP_TZ(start_date, &apos;YYYY-MM-DD&quot;T&quot;HH24:MI:SS.FF3 TZR&apos;)) = TRUNC(SYSDATE)
+	 	   and user_no = #{userNo}
+		   and pt_user is not null
+	</select>
 </mapper>

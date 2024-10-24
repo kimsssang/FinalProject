@@ -186,4 +186,20 @@ public class MemberDao {
 		return (ArrayList)sqlSession.selectList("memberMapper.selectTpSchedule", m);
 	}
 
+	public int selectMyMember(SqlSessionTemplate sqlSession, String userId) {
+		return sqlSession.selectOne("memberMapper.selectMyMember", userId);
+	}
+
+	public int selectMemberCount(SqlSessionTemplate sqlSession) {
+		return sqlSession.selectOne("memberMapper.selectMemberCount");
+	}
+	
+	public int trainerToday(SqlSessionTemplate sqlSession,int userNo) {
+		return sqlSession.selectOne("memberMapper.trainerToday", userNo);
+	}
+
+	public int trainerTodayAll(SqlSessionTemplate sqlSession, int userNo) {
+		return sqlSession.selectOne("memberMapper.trainerTodayAll", userNo);
+	}
+
 }

@@ -106,6 +106,10 @@ public class ChatDao {
     public int getActiveChatCount(SqlSessionTemplate sqlSession, int userNo) {
         return sqlSession.selectOne("ChatMapper.getActiveChatCount", userNo);
     }
+    // 안읽은 채팅 수
+    public int getUnReadMsgCount(SqlSessionTemplate sqlSession, int userNo) {
+		return sqlSession.selectOne("ChatMapper.getUnReadMsgCount", userNo);
+	}  
 
     // 활성화된 채팅 상대 조회 (회원용)
     public ArrayList<MessageParticipantDTO> getActiveParticipantsForUser(SqlSessionTemplate sqlSession, int userNo) {
@@ -132,6 +136,8 @@ public class ChatDao {
         params.put("uploadedBy", userNo);
     	
     	return session.insert("ChatMapper.uploadFile", params);
-	}  
+	}
+
+	
 
 }

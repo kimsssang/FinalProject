@@ -120,4 +120,13 @@ public interface MemberService {
 	public int addSocialMemberBodyInfo(BodyInfo bodyInfo);	
 
 	public ArrayList<Schedule> selectTpSchedule(Member m);
+	
+	public int selectMyMember(String userId);
+	
+	public int selectMemberCount();
+
+	int trainerToday(int userNo);
+	
+	int trainerTodayAll(int userNo);
+
 }

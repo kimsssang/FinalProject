@@ -32,14 +32,15 @@ Fit은 건강한 상태를, Guardians는 <b style="color:royalblue;">수호자</
 ![요구사항분석-회원](https://github.com/user-attachments/assets/41a44378-5990-4524-aaae-c127e28b4d30)
 
 <h3>유스케이스 다이어그램</h3>
-<!-- 유스케이스 사진 삽입 -->
+
 ![유스케이스](https://github.com/user-attachments/assets/a8186f9d-79a9-4bac-95cf-701f215d4bac)
 
 <h3>DB 설계도(ERD)</h3>
-<!-- 설계도 사진 삽입 -->
+
 ![fitguardianserd](https://github.com/user-attachments/assets/e51be120-463e-4ce1-9feb-eabeaf983016)
 
 <h3>사이트 맵</h3>
+
 ![사이트맵](https://github.com/user-attachments/assets/a0a205c9-0a9d-4de7-9e7a-10184efb97bc)
 
 <p>

@@ -171,31 +171,59 @@ Fit은 건강한 상태를, Guardians는 <b style="color:royalblue;">수호자</
 
 <details>
   <summary style="list-style:none">🟡 박경원</summary>
-  <!-- 내용 -->
+  <h4>API 회원가입, 로그인</h4>
+
+  <p>카카오 API</p>
+
+  ![카카오로그인](https://github.com/user-attachments/assets/c72df8e7-a47f-4126-aa43-6dbeaf2e1392)
+
+  <p>네이버 API</p>
+
+  ![네이버로그인](https://github.com/user-attachments/assets/9f7d2799-c546-486a-b85d-522a958bdd03)
+
+  <p>구글 API</p>
+
+  ![구글로그인](https://github.com/user-attachments/assets/8d7f4032-0992-411b-9f96-b0c47c69f597)
+
+  <h4>추가정보 입력란</h4>
+
+  ![추가정보입력](https://github.com/user-attachments/assets/fdf0476c-4271-4131-8bf8-c689d34ecccb)
+  
 </details>
 
 <details>
   <summary style="list-style:none"> 🟢 이주영</summary>
   <h4>운동 플래너 작성(트레이너)</h4>
-    <ol>
-    <li>회원 선택</li>
-    <li>운동 플랜 추가</li>
-    <li>운동 플랜 조회</li>
-    <li>운동 플랜 삭제</li>
+
+  <p>회원 선택</p>
+
+  <p>운동 플랜 추가</p>
+
+  <p>운동 플랜 조회</p>
+  &lt; 트레이너 화면
+
+  &lt; 회원 화면
+
+  <p>운동 플랜 삭제</p>
+
   </ol>
 
   <h4>운동 플래너 작성(회원)</h4>
-    <ol>
-    <li>회원 운동 플래너 작성</li>
-    <li>회원 운동 플래너 조회</li>
-    <li>회원 운동 플래너 삭제</li>
-  </ol>
+
+  <p>회원 운동 플래너 작성</p>
+
+  <p>회원 운동 플래너 조회</p>
+  &lt; 트레이너 화면
+
+  &lt; 회원 화면
+
+  <p>회원 운동 플래너 삭제</p>
 
   <h4>AI 운동스케줄 생성</h4>
-    <ol>
-    <li>스케줄 생성</li>
-    <li>PDF 다운로드</li>
-  </ol>
+
+  <p>스케줄 생성</p>
+
+  <p>PDF 다운로드</p>
 
   <h4>운동 검색</h4>
   

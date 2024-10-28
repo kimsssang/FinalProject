@@ -272,7 +272,7 @@ public class MemberController {
     			trInfo.setTrCareer("");
     			trInfo.setTrCerti("");
     			trInfo.setTrDescript("");
-    			trInfo.setTrProfile("resources/trProfile/blank-profile-picture.webp");
+    			trInfo.setTrProfile("resources/trProfilePic/blank-profile-picture.webp");
     			int result3 = mService.insertTrainerInfo(trInfo); 
     		
             }

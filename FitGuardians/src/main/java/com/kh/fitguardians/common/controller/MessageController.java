@@ -1,6 +1,5 @@
 package com.kh.fitguardians.common.controller;
 
-import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -17,14 +16,11 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.kh.fitguardians.member.model.service.TrainerServiceImpl;
 import com.kh.fitguardians.member.model.vo.Events;
 import com.kh.fitguardians.member.model.vo.Member;
@@ -34,28 +30,19 @@ import static com.kh.fitguardians.common.template.APIPropertiesSelecter.*;
 
 import java.io.IOException;
 import java.net.URLEncoder;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
 
 @Controller
 public class MessageController {
 
 	private static final String KAKAO_API_URL = "https://kapi.kakao.com/v2/api/talk/memo/default/send";
-	private static final String KAKAO_CALENDAR_API_URL = "https://kapi.kakao.com/v2/api/calendar/calendars";
 
 	@Autowired
 	private TrainerServiceImpl tService;

@@ -49,14 +49,16 @@
 
 </head>
 <body>
-
-	<img src="./resources/images/main.gif" alt="메인화면" />
-	
-	<script>
-	$("img").click(()=>{
-		window.location.href="loginform.me";
-	})
-	</script>
+	<!--  
+		<img src="./resources/images/main.gif" alt="메인화면" />
+		
+		<script>
+		$("img").click(()=>{
+			window.location.href="loginform.me";
+		})
+		</script>
+	-->
+	<jsp:forward page="../views/common/loginForm.jsp"></jsp:forward>
 
 
 </body>

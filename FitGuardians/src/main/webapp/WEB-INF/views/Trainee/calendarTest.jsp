@@ -11,10 +11,7 @@
             <!-- calendar -->
             <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-			<!-- bootstrap	
-			<link href='https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.css' rel='stylesheet'>
-			<link href='https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.13.1/css/all.css' rel='stylesheet'>
-			-->
+			
         </head>
         <body>
             <c:if test="${ not empty alertMsg }">
@@ -67,7 +64,21 @@
 										end:"${s.endDate}",
 										allDay: "${s.allDay}",
 										backColor:"${s.color}",
+										isHoliday: false,
 									});
+								</script>
+							</c:forEach>
+							<c:forEach var="h" items="${holiday}">
+								<script>
+									sch.push({
+										id: "${h.id}",
+										title:"${h.title}",
+										start:"${h.startDate}",
+										end:"${h.endDate}",
+										allDay:"${h.allDay}",
+										backColor:"red",
+										isHoliday: true,
+									})
 								</script>
 							</c:forEach>
 								<script>
@@ -80,6 +91,7 @@
 											end: event.end,
 											color: event.backColor,
 											allDay: event.allDay === 'true' ? true : false,
+											isHoliday: event.isHoliday,
 										}))
 										
 										console.log(eventDate);
@@ -111,37 +123,49 @@
 														text:"저장하기",
 														click: ()=>{
 															const events = calendar.getEvents();
-															const eventsData = events.map(event=> ({
-																scheduleTitle: event.title,
-																startDate: event.start ? event.start : null,
-																endDate: event.end ? event.end : null,
-																backColor: event.backgroundColor,
-																allDay: event.allDay,
-																scheduleDes: event.extendedProps.description,
-															}));
-															console.log(events);
-															console.log(eventsData);
 															
-															
-															 $.ajax({
-																url:"addCalendar.tr",
-																type:"POST",
-																contentType: 'application/json',
-																data: JSON.stringify(eventsData),
-																success:(result)=>{
-																	if(result === "YYYC"){
-																		Swal.fire({icon: 'success', text: "일정 저장 성공!"});
-																	}else if(result === "NNNC"){
-																		Swal.fire({icon: 'error', text: "일정 저장에 실패 했습니다"});
-																	}else if(result === "DDDC"){
-																		Swal.fire({icon: 'warning', text: "새로운 일정이 없습니다."});
-																	}
+															const eventsData = events.map(event => {
+																if(!event.extendedProps.isHoliday){
+																	return{
+																		scheduleTitle: event.title,
+																		startDate: event.start ? event.start : null,
+																		endDate: event.end ? event.end : null,
+																		backColor: event.backgroundColor,
+																		allDay: event.allDay,
+																		scheduleDes: event.extendedProps.description,
+																		//isHoliday: event.extendedProps.isHoliday
+																	};
+																}else{
 																	
-																},
-																error:()=>{
-																	console.log("add calendar ajax failed");
-																},
-															}) 
+																	return null;
+																}
+																 
+															}).filter(event => event !== null);
+															
+														
+															console.log(eventsData);
+															 
+															if(eventsData.length > 0){
+																 $.ajax({
+																	url:"addCalendar.tr",
+																	type:"POST",
+																	contentType: 'application/json',
+																	data: JSON.stringify(eventsData),
+																	success:(result)=>{
+																		if(result === "YYYC"){
+																			Swal.fire({icon: 'success', text: "일정 저장 성공!"});
+																		}else if(result === "NNNC"){
+																			Swal.fire({icon: 'error', text: "일정 저장에 실패 했습니다"});
+																		}else if(result === "DDDC"){
+																			Swal.fire({icon: 'warning', text: "새로운 일정이 없습니다."});
+																		}
+																		
+																	},
+																	error:()=>{
+																		console.log("add calendar ajax failed");
+																	},
+																}) 
+															}
 															
 														}
 													}

@@ -292,48 +292,39 @@ public class MemberController {
 	public String memberLogin(Member m, HttpServletRequest request) {
 		Member loginUser = mService.loginMember(m);
 		HttpSession session = request.getSession();
+		
 		if(loginUser != null) {
 			if(bcryptPasswordEncoder.matches(m.getUserPwd(), loginUser.getUserPwd())) {
-				
 				session.setAttribute("loginUser", loginUser);
 				
 				// 트레이너 정보 알아오기
 				String trainerId = loginUser.getPt();
-			
 				Member trainer = mService.getTrainerInfo(trainerId);
 	
 				if(loginUser.getUserLevel().equals("2")) {
-					
 					// 회원 추가정보 가져오기
 					MemberInfo mi = mService.getMemberInfo(loginUser.getUserNo());
-					
 					// 회원 신체정보 가져오기
 					BodyInfo bi = mService.getBodyInfo(loginUser.getUserId());
-					
 					// 회원 최근 6개 신체정보 가져오기
 			    	ArrayList<BodyInfo> recentBi = mService.getRecentInfo(loginUser.getUserId());
-					
 					// 회원
 					session.setAttribute("trainer", trainer);
 					session.setAttribute("mi", mi);
 					session.setAttribute("bi", bi);
 					session.setAttribute("recentBi", recentBi);
-					
 					return "Trainee/traineeDashboard";
-				}else {
-					// 트레이너 - 
+				}else {// 트레이너
 					return "redirect:traineeList.me";
 				}
 			}else {
 				session.setAttribute("errorMsg", "비밀번호가 일치하지 않습니다. 다시 입력해주세요!");
 				return "redirect:loginform.me";
 			}
-			
 		}else {
 			session.setAttribute("errorMsg", "아이디가 틀렸습니다 다시 입력해주세요!");
 			return "redirect:loginform.me";
 		}
-		
 	}
 	
 	@RequestMapping("traineeList.me")

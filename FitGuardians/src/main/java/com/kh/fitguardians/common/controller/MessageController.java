@@ -87,13 +87,29 @@ public class MessageController {
 			return redirectToKakaoLogin();
 
 		}
-
+		// 현재 날짜를 가공 from 월의1일 to 월의 마지막일
+		ZonedDateTime utcNow = ZonedDateTime.now(java.time.ZoneOffset.UTC);
+		
+		// from
+		ZonedDateTime firstDay = utcNow.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
+		String fromDate = firstDay.format(DateTimeFormatter.ISO_INSTANT);
+		
+		// to
+		ZonedDateTime lastDay = utcNow.withDayOfMonth(utcNow.getMonth().length(utcNow.toLocalDate().isLeapYear())).withHour(0).withMinute(0).withSecond(0).withNano(0);
+		String toDate = lastDay.format(DateTimeFormatter.ISO_INSTANT);
+		
 		String calendarId = getKakaoCalendarId(accessToken);
 		ArrayList<Events> schedule = getKakaoCalendarEvents(accessToken, calendarId);
+		ArrayList<Events> holidaysEvents = getKakakoCalendarHolidays(fromDate, toDate);
+		
+		//System.out.println(holidaysEvents);
+		request.setAttribute("holiday", holidaysEvents);
 		request.setAttribute("schedule", schedule);
 
 		return "Trainee/calendarTest";
 	}
+
+	
 
 	private String getKakaoCalendarId(String accessToken) {
 		if (accessToken == null) {
@@ -194,6 +210,70 @@ public class MessageController {
 			events.add(eventBrief);
 		}
 
+		return events;
+	}
+	
+	private ArrayList<Events> getKakakoCalendarHolidays(String fromDate, String toDate) {
+		ArrayList<Events> events = new ArrayList<>();
+		String adminKey = "83613635a8f12096c54b1a77492c0318";
+		
+		RestTemplate restTemplate = new RestTemplate();
+		HttpHeaders headers = new HttpHeaders();
+		headers.set("Authorization", "KakaoAK " + adminKey);
+		
+		String eventsApiUrl = "https://kapi.kakao.com/v2/api/calendar/holidays";
+		
+		// GET 요청
+		ResponseEntity<String> response = restTemplate.exchange(
+				eventsApiUrl + "?from="+fromDate + "&to=" + toDate , HttpMethod.GET,
+				new HttpEntity<>(headers), String.class);
+
+		if (response.getStatusCode() != HttpStatus.OK) {
+			System.out.println("Failed to fetch events: " + response.getStatusCode());
+			return events; // 빈 리스트 반환
+		}
+		
+		Gson gson = new Gson();
+		JsonObject jsonResponse = gson.fromJson(response.getBody(), JsonObject.class);
+		System.out.println(jsonResponse);
+		JsonArray jsonEvents = jsonResponse.getAsJsonArray("events");
+		
+		for (int i = 0; i < jsonEvents.size(); i++) {
+			JsonObject event = jsonEvents.get(i).getAsJsonObject();
+			Events eventBrief = new Events();
+			eventBrief.setId(event.get("id").getAsString());
+			eventBrief.setTitle(event.get("title").getAsString());
+			eventBrief.setIsHost(event.get("holiday").getAsBoolean());
+			
+			JsonObject time = event.getAsJsonObject("time");
+			if (time != null) {
+				ZonedDateTime start = ZonedDateTime.parse(time.get("start_at").getAsString());
+				ZonedDateTime startDateTime = start.withZoneSameInstant(ZoneId.systemDefault());
+				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SS");
+				eventBrief.setStartDate(startDateTime.format(formatter));
+
+				// all_day 속성 체크
+				if (time.has("all_day") && !time.get("all_day").isJsonNull()) {
+					// 종일 일정 일때 종료일자 null
+					boolean isAllday = time.get("all_day").getAsBoolean();
+					if (isAllday) {
+						eventBrief.setStartDate(time.get("start_at").getAsString());
+						eventBrief.setEndDate(time.get("start_at").getAsString());
+					} else {
+						ZonedDateTime end = ZonedDateTime.parse(time.get("end_at").getAsString());
+						ZonedDateTime endDateTime = end.withZoneSameInstant(ZoneId.systemDefault());
+						eventBrief.setEndDate(endDateTime.format(formatter));
+					}
+					eventBrief.setAllDay(time.get("all_day").getAsBoolean());
+				} else {
+					eventBrief.setAllDay(false); // 기본값 설정
+				}
+
+			}
+
+			events.add(eventBrief);
+		}
+		
 		return events;
 	}
 

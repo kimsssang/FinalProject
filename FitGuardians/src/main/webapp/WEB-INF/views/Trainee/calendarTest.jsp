@@ -136,7 +136,6 @@
 																		//isHoliday: event.extendedProps.isHoliday
 																	};
 																}else{
-																	
 																	return null;
 																}
 																 
@@ -182,7 +181,26 @@
 												selectable: true,
 												editable: true,
 												displayEventTime: true,
-												events:eventDate,											
+												events:eventDate,
+												datesSet: function(dateInfo){
+													const start = new Date(dateInfo.startStr);
+													const end = new Date(dateInfo.endStr);
+													
+													$.ajax({
+														url:"fetchSchedule.me",
+														method: "POST",
+														contentType: "application/json",
+														data: JSON.stringify({start:start, end:end}),
+														success: (response)=>{
+															calendar.removeAllEvents();
+															calendar.addEventSource(response);
+														},
+														error: ()=>{
+															console.log("fetch schedule ajax faild")
+														}
+														
+													})
+												}
 											}
 										
 										)

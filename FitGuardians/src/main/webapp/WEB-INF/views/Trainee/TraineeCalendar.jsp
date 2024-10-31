@@ -62,20 +62,22 @@
 										title:"${s.scheduleTitle}",
 										start:"${s.startDate}",
 										end:"${s.endDate}",
-										backColor:"${s.backColor}"
+										allDay: "${s.allDay}",
+										backColor:"${s.backColor}",
+										isHoliday: false,
 									});
 								</script>
 							</c:forEach>
 								<script>
 									document.addEventListener('DOMContentLoaded', function () {
-										
 										const eventDate = sch.map(event => ({
 											title: event.title,
 											start: event.start,
 											end: event.end,
 											color: event.backColor,
+											allDay: event.allDay === 'true' ? true : false,
+											isHoliday: event.isHoliday,
 										}))
-										
 										
 										$("input[id=allday]").on('change', ()=>{
 											if($("input[id=allday]").is(":checked")){

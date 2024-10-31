@@ -68,7 +68,7 @@
 										title:"${s.scheduleTitle}",
 										start:"${s.startDate}",
 										end:"${s.endDate}",
-										allDay: "${s.allDay}",
+										allDay: ${s.allDay eq 'false' ? false : true},
 										backColor:"${s.backColor}"
 									});
 								</script>
@@ -125,6 +125,7 @@
 															startDate: event.start ? event.start.toISOString() : null,
 															endDate: event.end ? event.end.toISOString() : null,
 															backColor: event.backgroundColor,
+															allDay: event.allDay
 														}));
 														console.log(eventsData);
 														$.ajax({
@@ -188,7 +189,7 @@
 												start: new Date(start_date + "T" + start_time),
 												end: new Date(end_date + "T" + end_time),
 												color: $("#color").val(),
-												allday: allday,
+												allDay: allday,
 										}
 										
 										
@@ -236,7 +237,7 @@
 														start: event.startDate,
 														end:event.endDate,
 														color:event.backColor,
-														allDay:event.allDay,
+														allDay:event.allDay == 'true' ? true : false,
 														
 													});
 												}

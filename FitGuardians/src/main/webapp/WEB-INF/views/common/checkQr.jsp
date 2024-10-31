@@ -43,7 +43,7 @@
                 <!-- Begin Page Content -->
                 <div class="container-fluid">
                     <div id="test">
-                        <h1>QR 코드 리더</h1>
+                        <h1>QR 출석체크</h1>
                         <div id="output">
                             <div id="outputMessage">QR코드를 카메라에 노출시켜 주세요</div>
                             <div id="outputLayer" hidden="hidden">
@@ -93,7 +93,6 @@
                                     video.play();
                                     requestAnimationFrame(tick);
                                 });
-
                             function tick() {
                                 loadingMessage.innerText = "⌛ 스캔 기능을 활성화 중입니다."
                                 if (video.readyState === video.HAVE_ENOUGH_DATA) {
@@ -110,14 +109,12 @@
                                         canvasElement.width,
                                         canvasElement.height
                                     );
-
                                     var code = jsQR(
                                         imageData.data,
                                         imageData.width,
                                         imageData.height,
                                         {inversionAttempts: "dontInvert"}
                                     );
-
                                     // QR코드 인식에 성공한 경우
                                     if (code) {
                                         // 인식한 QR코드의 영역을 감싸는 사용자에게 보여지는 테두리 생성
@@ -137,7 +134,6 @@
                                             code.location.topLeftCorner,
                                             "#FF0000"
                                         );
-
                                         outputMessage.hidden = true;
                                         outputData.parentElement.hidden = false;
                                         // QR코드 메시지 출력
@@ -154,14 +150,11 @@
 														icon: 'success', 
 														title: '성공', 
 														text: "QR 인증 되었습니다!",
-														
 													}).then((result)=>{
 														if(result.isConfirmed){
 															location.reload();
 														}
 													})
-													
-													//location.reload();
 												}else if(result === 'YYQQ'){ // qr 확인 후 출석되었을때 
 													Swal.fire({
 														icon: 'success',
@@ -189,17 +182,13 @@
 											}
 										})
 										return;
-
-
 										// QR코드 인식에 실패한 경우;
                                     } else {
                                         outputMessage.hidden = false;
                                         outputData.parentElement.hidden = true;
                                     }
                                 }
-
                                 requestAnimationFrame(tick);
-
                             }
 
                         });

@@ -49,8 +49,6 @@ public class TrainerController {
 		boolean flag = false;
 		int count = 0;
 		for (Schedule schedule : schedules) {
-			
-			
 			if(tService.isDuplicateSchedule(schedule)) {
 				flag = true; // 중복이 있을경우
 			}else {
@@ -61,21 +59,14 @@ public class TrainerController {
 					count++;
 					String userNo = tService.selectUserNo(schedule.getPtUser());
 					schedule.setUserNo(userNo);
-					int result2 = tService.insertTrainerCalendar(schedule);
+					//int result2 = tService.insertTrainerCalendar(schedule);
 				}
 			}
-			
-			
-			
 		}
-		
 		if(flag) {
 			return "DDDC";
 		} else {
 			return count > 0 ? "YYYC" : "NNNC";
 		}
-		
 	}
-
-
 }

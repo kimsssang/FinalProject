@@ -138,9 +138,9 @@ public class MemberController {
 	
 	@ResponseBody
 	@RequestMapping("auth.email")
-	public String ajaxAuthEmail(String email) {
+	public int ajaxAuthEmail(String email) {
 		int randomCode = mService.authEmail(email);
-		return randomCode + "";
+		return randomCode;
 	}
 	
 	
@@ -148,9 +148,8 @@ public class MemberController {
 	public ModelAndView memberEnroll(Member m, String memberInfo, HttpServletRequest request, ModelAndView mv) throws IOException {
 		String encPwd = bcryptPasswordEncoder.encode(m.getUserPwd());
 		m.setUserPwd(encPwd);
-		
 		String type = m.getUserLevel().equals("1") ? "trainer" : "trainee";
-		
+		//QR생성 및 QR정보 DB에 저장
 		QrInfo qr = new QrInfo();
 		if(m.getQr() == null) {
 			qr.setId(m.getUserId());
@@ -167,84 +166,64 @@ public class MemberController {
 			if (!dir.exists()) {
 		        dir.mkdirs(); // 디렉터리가 없으면 생성
 			}
-		
 			QRCodeWriter qrCodeWriter = new QRCodeWriter();
-			
 			try {
 				BitMatrix bitMatrix = qrCodeWriter.encode(qrData, BarcodeFormat.QR_CODE, 200, 200);
 				Path path = FileSystems.getDefault().getPath(filePath);
 				MatrixToImageWriter.writeToPath(bitMatrix, "PNG", path);
-				
+				// QR을 카톡으로 전송하기 위해 GitHub에 pages를 이용하기위해 DB에 주소를 GitHub주소 저장
 				String qrCodeUrl = "https://kimsssang.github.io/FinalProject/FitGuardians/src/main/webapp/resources/qrCodes/" + fileName;
 				m.setQr(qrCodeUrl);
 			} catch (WriterException e) {
 				e.printStackTrace();
 			}
 		}
-		
-		
 		// 기본 프로필 사진 설정
         String profile = m.getProfilePic() == null ? 
-            (m.getGender().equals("F") ? "resources/profilePic/gymW.png" : "resources/profilePic/gymM.png") : 
-            m.getProfilePic();
+        			(m.getGender().equals("F") ? "resources/profilePic/gymW.png" : "resources/profilePic/gymM.png") 
+        		: m.getProfilePic();
         m.setProfilePic(profile);
-        
-        
 		// 회원 추가 정보가 있는지 확인
         if (memberInfo != null && !memberInfo.isEmpty()) { // 회원 추가정보가 있다면
             // 추가 정보가 있으면 추가 정보 저장
             MemberInfo info = new Gson().fromJson(memberInfo, MemberInfo.class);
-            
             // 추가 정보중에서 기저질환이 없으면 값을 비게 만들기
             if(info.getDisease().equals("없음")) {
 				info.setDisease(null);
             }
-            
             // 추가정보가 있으면 BodyInfo를 계산해서 DB에 insert해야 한다.
-            
             // BodyInfo테이블 하나 자동으로 생성하기 - 추가정보 입력한 경우
             BodyInfo bi = new BodyInfo();
-            
             if(m.getGender() == "M") { // 성별이 남성인 경우
-            	
             	double heightInMeters = info.getHeight() / 100.0; 
             	double mAge = Double.parseDouble(m.getAge());
             	double mBmi = info.getWeight() / Math.pow(heightInMeters, 2);
             	double mSmm = 0.407 * info.getWeight() + 0.267 * info.getHeight() - 19.2;
             	double mFat = 1.20 * mBmi + 0.23 * mAge - 16.2;
-            	
             	bi.setUserId(m.getUserId());
             	bi.setBmi(mBmi);
             	bi.setSmm(mSmm);
             	bi.setFat(mFat);
             	int biResult1 = mService.addBodyInfo(bi);
-            	
             }else { // 성별이 여성인 경우
             	double heightInMeters = info.getHeight() / 100.0; 
             	double fAge = Double.parseDouble(m.getAge());
             	double fBmi = info.getWeight() / Math.pow(heightInMeters, 2);
             	double fSmm = 0.252 * info.getWeight() + 0.473 * info.getHeight() - 48.3;
             	double fFat = 1.20 * fBmi + 0.23 * fAge - 5.4;
-            	
             	bi.setUserId(m.getUserId());
             	bi.setBmi(fBmi);
             	bi.setSmm(fSmm);
             	bi.setFat(fFat);
             	int biResult2 = mService.addBodyInfo(bi);
-            	
             }
-            
             int result = mService.insertMemberWithInfo(m, info);
             int result2 = mService.insertQrInfo(qr);
             if (result > 0 && result2 > 0) { // 성공적으로 회원가입을 한 경우
                 request.getSession().setAttribute("alertMsg", "회원가입이 완료되었습니다. 환영합니다!");
-                
-                
             	mv.setViewName("common/loginForm");
-            	
                 return mv;
             }
-       
         } else { // 회원 추가정보가 없다면
             // 추가 정보가 없으면 기존 방식대로 회원가입 처리
         	// MemberInfo가  0 or null
@@ -254,7 +233,6 @@ public class MemberController {
 			info.setWeight(0);
 			info.setDisease(null);
 			info.setGoal("");
-            
             // BodyInfo테이블 하나 자동으로 생성하기 - 추가정보 입력 안한 경우 (BodyInfo가 0 혹은 null)
             BodyInfo bi = new BodyInfo();
             bi.setUserId(m.getUserId());
@@ -262,7 +240,6 @@ public class MemberController {
             bi.setSmm(0);
             bi.setFat(0);
             int biResult3 = mService.addBodyInfo(bi);
-            
             int result = mService.insertMemberWithInfo(m, info);
             int result2 = mService.insertQrInfo(qr);
             // 트레이너일때 기본 트레이너 정보 입력
@@ -274,9 +251,7 @@ public class MemberController {
     			trInfo.setTrDescript("");
     			trInfo.setTrProfile("resources/trProfilePic/blank-profile-picture.webp");
     			int result3 = mService.insertTrainerInfo(trInfo); 
-    		
             }
-            
             if (result > 0 && result2 > 0) {
                 request.getSession().setAttribute("alertMsg", "회원가입이 완료되었습니다. 환영합니다!");
                 mv.setViewName("common/loginForm");
@@ -382,7 +357,6 @@ public class MemberController {
 				// qr 일치 확인
 				QrInfo qrResult = mService.qrCheck(qrInfo);
 				LocalDateTime now = LocalDateTime.now();
-				
 				if(qrResult != null) {
 					// 출석
 					if(qrResult.getAttendance() == null) {
@@ -390,11 +364,9 @@ public class MemberController {
 						int upResult = mService.updateAttendance(qrResult);
 						return "YYYQ";
 					}else {
-						
 						LocalDateTime attendanceTime = LocalDateTime.parse(qrResult.getAttendance(), DateTimeFormatter.ISO_DATE_TIME); 
 						Duration duration = Duration.between(attendanceTime, now);
 						long hours = duration.toHours();
-						
 						if(qrResult.getType().equals("trainee") && hours >= 1) {
 							qrResult.setAttendance(now.toString());
 							result1 = mService.updateAttStatus(qrResult);
@@ -402,16 +374,11 @@ public class MemberController {
 							qrResult.setAttendance(now.toString());
 							result2 = mService.updateAttStatus(qrResult);
 						}
-						
-						
 					}
 				}
-				
-				
 		} catch (JsonProcessingException e) {
 			e.printStackTrace();
 		}
-		
 		if(result1 > 0 || result2 > 0) {
 			return "YYQQ";
 		}else {

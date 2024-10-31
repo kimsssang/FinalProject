@@ -230,7 +230,7 @@
 					$(this).parent().parent().siblings("form").find(".input").val("");
 				})
 				
-			   // 이메일 인증
+			    // 이메일 인증
 				$("#emailBtn").click(()=>{
 					$.ajax({
 						url:"auth.email",
@@ -245,7 +245,6 @@
 									text: "인증번호가 발송되었습니다. 이메일을 확인해 주세요",
 								});
 							timeoutTimer(new Date(Date.now() + 180000), 1000);
-							
 						},
 						error:()=>{
 							console.log("auth email ajax failed");
@@ -255,10 +254,10 @@
 				
 			   // 이메일로 전송된 번호와 입력된 번호 확인
 				$("#checkEmail").keyup(()=>{
-					let val = getCookie("auth");
+					
 					let inputNum = $("#checkEmail").val();
 					if(inputNum.length > 4){
-						
+						let val = getCookie("auth");
 						if(val === inputNum){
 							Swal.fire({
 									icon: 'success',
@@ -269,11 +268,10 @@
 							timeBtn.hide();
 						}else{
 							Swal.fire({
-									icon: 'warning',
-									title: '이메일인증',
-									text: "인증번호가 다릅니다.",
-								});
-							
+								icon: 'warning',
+								title: '이메일인증',
+								text: "인증번호가 다릅니다.",
+							});
 						}
 					}
 				})

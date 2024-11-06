@@ -64,7 +64,7 @@
 										end:"${s.endDate}",
 										allDay: "${s.allDay}",
 										backColor:"${s.color}",
-										isHoliday: false,
+										isHoliday: ${s.host},
 									});
 								</script>
 							</c:forEach>
@@ -83,7 +83,6 @@
 							</c:forEach>
 								<script>
 									document.addEventListener('DOMContentLoaded', function () {
-										
 										const eventDate = sch.map(event => ({
 											id: event.id,
 											title: event.title,
@@ -93,10 +92,6 @@
 											allDay: event.allDay === 'true' ? true : false,
 											isHoliday: event.isHoliday,
 										}))
-										
-										console.log(eventDate);
-										
-										
 										$("input[id=allday]").on('change', ()=>{
 											if($("input[id=allday]").is(":checked")){
 												// 체크 됐을 때
@@ -108,7 +103,6 @@
 												$("#calendar_end_time").val("");
 											}
 										})
-										
 										const calendarEl = document.getElementById('calendar');
 										const calendar = new FullCalendar.Calendar(calendarEl,
 											{
@@ -123,7 +117,6 @@
 														text:"저장하기",
 														click: ()=>{
 															const events = calendar.getEvents();
-															
 															const eventsData = events.map(event => {
 																if(!event.extendedProps.isHoliday){
 																	return{
@@ -133,17 +126,11 @@
 																		backColor: event.backgroundColor,
 																		allDay: event.allDay,
 																		scheduleDes: event.extendedProps.description,
-																		//isHoliday: event.extendedProps.isHoliday
 																	};
 																}else{
 																	return null;
 																}
-																 
 															}).filter(event => event !== null);
-															
-														
-															console.log(eventsData);
-															 
 															if(eventsData.length > 0){
 																 $.ajax({
 																	url:"addCalendar.tr",
@@ -158,14 +145,12 @@
 																		}else if(result === "DDDC"){
 																			Swal.fire({icon: 'warning', text: "새로운 일정이 없습니다."});
 																		}
-																		
 																	},
 																	error:()=>{
 																		console.log("add calendar ajax failed");
 																	},
 																}) 
 															}
-															
 														}
 													}
 												},
@@ -181,10 +166,15 @@
 												selectable: true,
 												editable: true,
 												displayEventTime: true,
+												showNonCurrentDates: false,
 												events:eventDate,
+												/*
 												datesSet: function(dateInfo){
-													const start = new Date(dateInfo.startStr);
-													const end = new Date(dateInfo.endStr);
+													const from = new Date(dateInfo.startStr);
+													const start = new Date(from.getFullYear(), from.getMonth(), 1);
+													const end = new Date(from.getFullYear(), from.getMonth() + 1, 0);
+													console.log(start)
+													console.log(end)
 													
 													$.ajax({
 														url:"fetchSchedule.me",
@@ -192,6 +182,7 @@
 														contentType: "application/json",
 														data: JSON.stringify({start:start, end:end}),
 														success: (response)=>{
+															console.log(response)
 															calendar.removeAllEvents();
 															calendar.addEventSource(response);
 														},
@@ -201,14 +192,13 @@
 														
 													})
 												}
+												*/
 											}
-										
 										)
 										calendar.render();
 										calendar.on('eventClick', (info)=>{
 											console.log(info);
 										})
-									
 										// 캘린더에 추가
 										$("#addCalendar").on("click",()=>{
 											let start_date = $("#calendar_start_date").val();
@@ -216,7 +206,6 @@
 											let start_time = $("#calendar_start_time").val();
 											let end_time = $("#calendar_end_time").val();
 											let allday = $("input[id=allday]").is(":checked");
-											
 											var eventData = {
 													title: $("#calendar_content").val(),
 													start: allday ? new Date(start_date) : new Date(start_date + "T" + start_time),
@@ -225,7 +214,6 @@
 													allDay: allday,
 													description: $("#calendar_description").val(),
 											}
-											
 											if(eventData.title === null || eventData.title === ""){
 												Swal.fire({icon: 'warning', text: "내용을 입력해주세요"});
 											}else if(eventData.start === "" || eventData.end === ""){
@@ -247,7 +235,7 @@
 												$("#calendar_description").val("");
 												$("input[id=allday]").prop("checked", false);
 											}
-										})
+										});
 										
 										flatpickr("#calendar_start_time", {
 								            enableTime: true,
@@ -257,7 +245,6 @@
 								            maxTime: "23:55",
 								            minuteIncrement: 5 // 5분 단위로 증가
 								        });
-										
 										flatpickr("#calendar_end_time", {
 								            enableTime: true,
 								            noCalendar: true,
@@ -266,12 +253,8 @@
 								            maxTime: "23:55",
 								            minuteIncrement: 5 // 5분 단위로 증가
 								        });
-										
 									})
-									
-								
 								</script>
-							<%-- </c:if> --%>
 						<div id='calendar'></div>
 
 						<div class="modal fade" id="calendarModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">

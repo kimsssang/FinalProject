@@ -17,8 +17,8 @@ public class Events {
 	private String startDate;
 	private String endDate;
 	private boolean allDay;
-	private boolean IsHost;
-	private boolean IsRecurEvent;
+	private boolean host;
+	private boolean recurEvent;
 	private String color;
 	
 }

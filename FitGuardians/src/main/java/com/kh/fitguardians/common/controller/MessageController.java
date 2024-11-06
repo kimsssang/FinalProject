@@ -120,24 +120,26 @@ public class MessageController {
 			return redirectToKakaoLogin();
 
 		}
-		// 공휴일 정보를 가져오기 위해 현재 날짜를 가공 from 월의1일 to 월의 마지막일
-		ZonedDateTime utcNow = ZonedDateTime.now(java.time.ZoneOffset.UTC);
-		// from
-		ZonedDateTime firstDay = utcNow.withDayOfMonth(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
-		String fromDate = firstDay.format(DateTimeFormatter.ISO_INSTANT);
-		// to
-		ZonedDateTime lastDay = utcNow.withDayOfMonth(utcNow.getMonth().length(utcNow.toLocalDate().isLeapYear())).withHour(0).withMinute(0).withSecond(0).withNano(0);
-		String toDate = lastDay.format(DateTimeFormatter.ISO_INSTANT);
+		ZonedDateTime start = ZonedDateTime.parse(dateRange.get("start").toString());
+		ZonedDateTime startDateTime = start.withZoneSameInstant(ZoneId.systemDefault());
+		DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'");
+		dateRange.replace("start", startDateTime.format(formatter));
+		
+		ZonedDateTime end = ZonedDateTime.parse(dateRange.get("end").toString());
+		ZonedDateTime endDateTime = end.withZoneSameInstant(ZoneId.systemDefault());
+		dateRange.replace("end", endDateTime.format(formatter));
 		
 		String calendarId = getKakaoCalendarId(accessToken);
 		ArrayList<Events> schedule = getFetchKakaoCalendarEvents(accessToken, calendarId, dateRange);
-		ArrayList<Events> holidaysEvents = getKakakoCalendarHolidays(fromDate, toDate);
+		ArrayList<Events> holidaysEvents = getKakakoCalendarHolidays(dateRange.get("start"), dateRange.get("end"));
 		
 		//System.out.println(holidaysEvents);
 		request.setAttribute("holiday", holidaysEvents);
 		request.setAttribute("schedule", schedule);
 
-		return "Trainee/calendarTest";
+		ObjectMapper objectMapper = new ObjectMapper();
+		String jsonSchedule = objectMapper.writeValueAsString(schedule);
+		return jsonSchedule;
 	}
 	
 	
@@ -165,7 +167,7 @@ public class MessageController {
 		Gson gson = new Gson();
 		JsonObject jsonResponse = gson.fromJson(response.getBody(), JsonObject.class);
 		JsonArray jsonCalendars = jsonResponse.getAsJsonArray("calendars");
-
+		
 		// 첫 번째 캘린더 ID 반환
 		if (jsonCalendars != null && jsonCalendars.size() > 0) {
 			JsonObject firstCalendar = jsonCalendars.get(0).getAsJsonObject();
@@ -185,31 +187,42 @@ public class MessageController {
 
 		// 카카오 캘린더 이벤트 API URL
 		String eventsApiUrl = "https://kapi.kakao.com/v2/api/calendar/events";
-
+		
 		// GET 요청
 		ResponseEntity<String> response = restTemplate.exchange(
 				eventsApiUrl + "?calendar_id=" + calendarId + "&preset=THIS_MONTH&limit=100", HttpMethod.GET,
 				new HttpEntity<>(headers), String.class);
-
+		
+		
+		// 일정 전체 조회
 		if (response.getStatusCode() != HttpStatus.OK) {
 			System.out.println("Failed to fetch events: " + response.getStatusCode());
 			return events; // 빈 리스트 반환
 		}
-
+		
 		Gson gson = new Gson();
 		JsonObject jsonResponse = gson.fromJson(response.getBody(), JsonObject.class);
 		JsonArray jsonEvents = jsonResponse.getAsJsonArray("events");
-
+		
 		for (int i = 0; i < jsonEvents.size(); i++) {
 			JsonObject event = jsonEvents.get(i).getAsJsonObject();
 			Events eventBrief = new Events();
-			eventBrief.setId(event.get("id").getAsString());
-			eventBrief.setTitle(event.get("title").getAsString());
-			eventBrief.setType(event.get("type").getAsString());
-			eventBrief.setCalendarId(event.get("calendar_id").getAsString());
-			eventBrief.setIsRecurEvent(event.get("is_recur_event").getAsBoolean());
-			eventBrief.setIsHost(event.get("is_host").getAsBoolean());
-			eventBrief.setColor(event.get("color").getAsString());
+			if(event.get("id") != null && event.get("title") != null && event.get("type") != null &&
+					event.get("calendar_id") != null && event.get("is_recur_event") != null &&
+					event.get("is_host") != null && event.get("color") != null) {
+				eventBrief.setId(event.get("id").getAsString());
+				eventBrief.setTitle(event.get("title").getAsString());
+				eventBrief.setType(event.get("type").getAsString());
+				eventBrief.setCalendarId(event.get("calendar_id").getAsString());
+				eventBrief.setRecurEvent(event.get("is_recur_event").getAsBoolean());
+				eventBrief.setHost(event.get("is_host").getAsBoolean());
+				eventBrief.setColor(event.get("color").getAsString());
+			}else {
+				eventBrief.setId("톡캘린더에서생성된일정");
+				eventBrief.setTitle("톡캘린더에서생성된일정");
+				eventBrief.setColor("gray");
+				eventBrief.setHost(true);
+			}
 
 			JsonObject time = event.getAsJsonObject("time");
 			if (time != null) {
@@ -236,10 +249,8 @@ public class MessageController {
 				}
 
 			}
-
 			events.add(eventBrief);
 		}
-
 		return events;
 	}
 	
@@ -248,8 +259,8 @@ public class MessageController {
 			ArrayList<Events> events = new ArrayList<>();
 			String starts = dateRange.get("start");
 			String ends = dateRange.get("end");
-			System.out.println(starts);
-			System.out.println(ends);
+			System.out.println(starts + "Z");
+			System.out.println(ends + "Z");
 			RestTemplate restTemplate = new RestTemplate();
 			HttpHeaders headers = new HttpHeaders();
 			headers.set("Authorization", "Bearer " + accessToken);
@@ -259,7 +270,7 @@ public class MessageController {
 
 			// GET 요청
 			ResponseEntity<String> response = restTemplate.exchange(
-					eventsApiUrl + "?calendar_id=" + calendarId + "&from=" + starts + "&to=" + ends, HttpMethod.GET,
+					eventsApiUrl + "?from=" + starts + "&to=" + ends + "&limit=100", HttpMethod.GET,
 					new HttpEntity<>(headers), String.class);
 
 			if (response.getStatusCode() != HttpStatus.OK) {
@@ -274,13 +285,22 @@ public class MessageController {
 			for (int i = 0; i < jsonEvents.size(); i++) {
 				JsonObject event = jsonEvents.get(i).getAsJsonObject();
 				Events eventBrief = new Events();
-				eventBrief.setId(event.get("id").getAsString());
-				eventBrief.setTitle(event.get("title").getAsString());
-				eventBrief.setType(event.get("type").getAsString());
-				eventBrief.setCalendarId(event.get("calendar_id").getAsString());
-				eventBrief.setIsRecurEvent(event.get("is_recur_event").getAsBoolean());
-				eventBrief.setIsHost(event.get("is_host").getAsBoolean());
-				eventBrief.setColor(event.get("color").getAsString());
+				if(event.get("id") != null && event.get("title") != null && event.get("type") != null &&
+						event.get("calendar_id") != null && event.get("is_recur_event") != null &&
+						event.get("is_host") != null && event.get("color") != null) {
+					eventBrief.setId(event.get("id").getAsString());
+					eventBrief.setTitle(event.get("title").getAsString());
+					eventBrief.setType(event.get("type").getAsString());
+					eventBrief.setCalendarId(event.get("calendar_id").getAsString());
+					eventBrief.setRecurEvent(event.get("is_recur_event").getAsBoolean());
+					eventBrief.setHost(event.get("is_host").getAsBoolean());
+					eventBrief.setColor(event.get("color").getAsString());
+				}else {
+					eventBrief.setId("톡캘린더에서생성된일정");
+					eventBrief.setTitle("톡캘린더에서생성된일정");
+					eventBrief.setColor("gray");
+					eventBrief.setHost(true);
+				}
 
 				JsonObject time = event.getAsJsonObject("time");
 				if (time != null) {
@@ -344,7 +364,7 @@ public class MessageController {
 			Events eventBrief = new Events();
 			eventBrief.setId(event.get("id").getAsString());
 			eventBrief.setTitle(event.get("title").getAsString());
-			eventBrief.setIsHost(event.get("holiday").getAsBoolean());
+			eventBrief.setHost(event.get("holiday").getAsBoolean());
 			
 			JsonObject time = event.getAsJsonObject("time");
 			if (time != null) {
@@ -386,7 +406,6 @@ public class MessageController {
 		boolean flag = true;
 		int count = 0;
 		// 일정 저장시 db에 저장, 톡캘린더 저장
-		// 톡캘린더 저장 메소드 호출
 		String accessToken = (String) request.getSession().getAttribute("accessToken");
 		// 카카오 로그인이 되어 있지 않다면 로그인 먼저
 		String userId = loginUser.getUserId();
@@ -408,7 +427,6 @@ public class MessageController {
 			if (schedule.getAllDay().equals("true")) {
 				ZonedDateTime start = ZonedDateTime.parse(schedule.getStartDate());
 				ZonedDateTime startDateTime = start.withZoneSameInstant(ZoneId.systemDefault());
-
 				DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SS'Z'");
 				schedule.setStartDate(startDateTime.format(formatter));
 			}
@@ -420,7 +438,6 @@ public class MessageController {
 			if (result != null) {
 				// 톡캘린더 저장 성공시 DB 저장
 				schedule.setKakaoCalendarId(result);
-				
 				if (schedule.getAllDay().equals("true")) {
 					schedule.setEndDate(null);
 				}
@@ -435,7 +452,6 @@ public class MessageController {
 		} else {
 			return "NNNC";
 		}
-
 	}
 
 	// 카카오톡 캘린더 생성 호출 메소드
@@ -451,7 +467,7 @@ public class MessageController {
 		MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
 		params.add("calendar_id", "primary");
 
-		// 종일 일정 일때 enddate를 다음 날짜로 변경
+		// 종일 일정 일때 endDate를 다음 날짜로 변경
 		if (s.getAllDay().equals("true")) {
 			OffsetDateTime startDateTime = OffsetDateTime.parse(s.getStartDate());
 			OffsetDateTime endDateTime = startDateTime.plusDays(1).withHour(0).withMinute(0).withSecond(0).withNano(0);
@@ -463,17 +479,15 @@ public class MessageController {
 				+ s.getStartDate() + "\"," + "\"end_at\": \"" + s.getEndDate() + "\","
 				+ "\"time_zone\": \"Asia/Seoul\"," + "\"all_day\": " + s.getAllDay() + "," + "\"lunar\": false" + "},"
 				+ "\"description\": \"" + s.getScheduleDes() + "\"," + "\"color\": \"" + s.getBackColor() + "\"" + "}";
-
 		params.add("event", eventJson); // 이벤트 객체 추가
 		System.out.println(eventJson);
 		ResponseEntity<String> response = restTemplate.postForEntity(createEventsApiUrl,
 				new HttpEntity<>(params, headers), String.class);
-
+		
 		if (response.getStatusCode() == HttpStatus.OK) {
 			System.out.println("Event created successfully: " + response.getBody());
 			String json = response.getBody();
 			ObjectMapper objectMapper = new ObjectMapper();
-			
 			JsonNode jsonNode = objectMapper.readTree(json);
 			return jsonNode.get("event_id").asText();
 		} else {

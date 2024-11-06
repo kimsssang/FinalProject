@@ -131,9 +131,6 @@
 					}						
 					
 				})
-				
-
-
 				let submit = $("#enrollBtn");
 				// 아이디 유효성
 				$("#userId").keyup(()=>{
